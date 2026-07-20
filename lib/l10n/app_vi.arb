@@ -1,0 +1,380 @@
+{
+  "@@locale": "vi",
+  "appName": "AI Fitness Coach",
+  "commonContinue": "Tiếp tục",
+  "commonNone": "Không có",
+  "commonEdit": "Sửa",
+  "commonYes": "Có",
+  "commonNo": "Không",
+  "commonBack": "Quay lại",
+  "commonDelete": "Xóa",
+  "localeVietnamese": "VI",
+  "localeEnglish": "EN",
+  "sexMale": "Nam",
+  "sexFemale": "Nữ",
+  "sexOther": "Khác",
+  "experienceBeginner": "Mới bắt đầu",
+  "experienceIntermediate": "Trung bình",
+  "experienceAdvanced": "Nâng cao",
+  "injuryAreaKnee": "Đầu gối",
+  "injuryAreaShoulder": "Vai",
+  "injuryAreaLowerBack": "Lưng dưới",
+  "injuryAreaAnkle": "Cổ chân",
+  "injuryAreaWrist": "Cổ tay",
+  "injuryAreaOther": "Khác",
+  "severityMild": "Nhẹ",
+  "severityModerate": "Vừa",
+  "severitySevere": "Nặng",
+  "mobilityDeepSquat": "Khó squat sâu",
+  "mobilityOverhead": "Khó đưa tay qua đầu",
+  "mobilityHipHinge": "Khó gập hông",
+  "mobilityRunning": "Khó chạy/nhảy",
+  "equipmentDumbbell": "Tạ đơn",
+  "equipmentResistanceBand": "Dây kháng lực",
+  "equipmentPullupBar": "Xà đơn",
+  "equipmentFullGym": "Gym đầy đủ",
+  "spaceHome": "Ở nhà",
+  "spaceGym": "Phòng gym",
+  "spaceOutdoor": "Ngoài trời",
+  "spaceMinimal": "Rất ít chỗ",
+  "budgetNone": "Không — dùng những gì đang có",
+  "budgetMinimal": "Có thể mua món nhỏ, giá thấp",
+  "budgetInvest": "Sẵn sàng đầu tư nếu cần",
+  "dietOmnivore": "Ăn đa dạng",
+  "dietVegetarian": "Ăn chay có trứng/sữa",
+  "dietVegan": "Thuần chay",
+  "dietPescatarian": "Có ăn cá",
+  "dietOther": "Khác",
+  "weekdayMonShort": "T2",
+  "weekdayTueShort": "T3",
+  "weekdayWedShort": "T4",
+  "weekdayThuShort": "T5",
+  "weekdayFriShort": "T6",
+  "weekdaySatShort": "T7",
+  "weekdaySunShort": "CN",
+  "unitYears": "tuổi",
+  "unitCm": "cm",
+  "unitKg": "kg",
+  "unitMinutes": "phút",
+  "accountEyebrow": "Hồ sơ của bạn sẽ được lưu",
+  "accountHeadline": "Tạo tài khoản\ntrước khi bắt đầu.",
+  "accountBody": "Kế hoạch sẽ tiếp tục học từ từng buổi tập. Cần một tài khoản để giữ hồ sơ và lịch sử của bạn.",
+  "accountAppleCta": "Tiếp tục với Apple",
+  "accountDividerOr": "hoặc",
+  "accountEmailHint": "Email của bạn",
+  "accountEmailCta": "Tiếp tục bằng email",
+  "accountDisclaimer": "Demo giao diện — không gửi hoặc lưu dữ liệu thật.",
+  "accountInvalidEmail": "Hãy nhập email hợp lệ",
+  "welcomeStepBadge": "BƯỚC ĐẦU",
+  "welcomeEyebrow": "Không chọn plan từ menu",
+  "welcomeHeadline": "Hãy kể điều\nbạn đang gặp.",
+  "welcomeBody": "Bạn kể bằng ngôn ngữ của mình. Sau đó chúng tôi chỉ hỏi thêm những dữ liệu cần để tạo plan an toàn và khả thi.",
+  "welcomeCta": "Kể tình huống của tôi",
+  "storyTitle": "Tình huống & mục tiêu",
+  "storyHeadline": "Điều gì khiến bạn\nmuốn bắt đầu lúc này?",
+  "storyBody": "Kể về điều bạn đang gặp và kết quả bạn muốn hướng tới.",
+  "storyLabel": "Tình huống của bạn",
+  "storyHint": "Ví dụ: Tôi mới quay lại đá bóng nhưng nhanh xuống sức...",
+  "storyGoalLabel": "Bạn muốn cải thiện điều gì?",
+  "storyGoalHint": "Mỗi dòng là một mục tiêu...",
+  "storyCharCount": "{count} ký tự",
+  "@storyCharCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyRequired": "Hãy kể một chút về tình huống của bạn",
+  "basicsTitle": "Thông tin cơ bản",
+  "basicsHeadline": "Một vài thông tin\nvề bạn.",
+  "basicsBody": "Giúp kế hoạch phù hợp hơn với thể trạng và kinh nghiệm hiện tại.",
+  "basicsSexLabel": "Giới tính",
+  "basicsAgeLabel": "Tuổi",
+  "basicsExperienceLabel": "Kinh nghiệm",
+  "basicsHeightLabel": "Chiều cao",
+  "basicsWeightLabel": "Cân nặng",
+  "safetyTitle": "Chấn thương & vận động",
+  "safetyHeadline": "Có điều gì cần\nđược lưu ý?",
+  "safetyBody": "Cho biết các vùng đang đau hoặc những động tác bạn thấy khó thực hiện.",
+  "safetyInjuryQuestion": "Bạn có đang bị đau hoặc chấn thương?",
+  "safetyInjuryNotesHint": "Khi nào đau? Động tác nào gây khó chịu?",
+  "safetyInjuryActive": "Hiện vẫn còn triệu chứng",
+  "safetyAddInjury": "+ Thêm vùng khác",
+  "safetyExtraInjury": "Vùng bổ sung",
+  "safetyMobilityLabel": "Hạn chế vận động",
+  "contextTitle": "Điều kiện tập luyện",
+  "contextHeadline": "Bạn có thể tập\nkhi nào và ở đâu?",
+  "contextSpaceLabel": "Không gian chính",
+  "contextEquipmentLabel": "Thiết bị đang có",
+  "contextBudgetLabel": "Bạn có sẵn sàng mua thêm thiết bị?",
+  "contextDurationLabel": "Thời lượng mỗi buổi",
+  "contextTimeLabel": "Giờ bắt đầu phù hợp",
+  "contextDaysLabel": "Ngày bạn có thể tập",
+  "contextDayCount": "{count, plural, other{{count} ngày đã chọn}}",
+  "@contextDayCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contextNoDaySelected": "Hãy chọn ít nhất một ngày có thể tập",
+  "dietTitle": "Ăn uống",
+  "dietHeadline": "Có điều gì về ăn uống\ncần được lưu ý?",
+  "dietBody": "Cho biết chế độ ăn, dị ứng hoặc những món bạn cần tránh.",
+  "dietTypeLabel": "Chế độ ăn",
+  "dietAllergiesLabel": "Dị ứng thực phẩm",
+  "dietAllergiesHint": "Ví dụ: đậu phộng, sữa...",
+  "dietRestrictionsLabel": "Hạn chế hoặc điều cần tránh",
+  "dietRestrictionsHint": "Ví dụ: không ăn được bữa lớn buổi sáng, hạn chế đồ cay...",
+  "reviewTitle": "Xác nhận thông tin",
+  "reviewHeadline": "Kiểm tra lại trước khi\ntạo kế hoạch.",
+  "reviewBody": "Bạn có thể quay lại sửa bất kỳ phần nào.",
+  "reviewStorySection": "Tình huống & mục tiêu",
+  "reviewBodySection": "Cơ thể & kinh nghiệm",
+  "reviewSafetySection": "Chấn thương & vận động",
+  "reviewContextSection": "Điều kiện tập",
+  "reviewDietSection": "Ăn uống",
+  "reviewNoStory": "Chưa nhập tình huống",
+  "reviewNoGoals": "Chưa có mục tiêu riêng",
+  "reviewInjuryLabel": "Chấn thương",
+  "reviewMobilityLabel": "Hạn chế vận động",
+  "reviewEquipmentLabel": "Thiết bị",
+  "reviewBudgetLabel": "Mua thêm thiết bị",
+  "reviewDurationLabel": "Thời lượng",
+  "reviewScheduleLabel": "Ngày & giờ",
+  "reviewDietTypeLabel": "Chế độ",
+  "reviewAllergiesLabel": "Dị ứng",
+  "reviewRestrictionsLabel": "Hạn chế",
+  "reviewMinutesPerSession": "{count} phút / buổi",
+  "@reviewMinutesPerSession": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewAgeValue": "{count, plural, other{{count} tuổi}}",
+  "@reviewAgeValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewInjuryStillActive": "đang còn triệu chứng",
+  "reviewInjuryResolved": "đã ổn",
+  "reviewConfirmCheckbox": "Tôi xác nhận các thông tin trên là chính xác.",
+  "reviewGenerateCta": "Xác nhận và tạo kế hoạch",
+  "loadingEyebrow": "Đang tạo kế hoạch",
+  "loadingTitle1": "Đang hiểu tình huống của bạn...",
+  "loadingTitle2": "Đang sắp xếp ưu tiên...",
+  "loadingTitle3": "Đang chọn bài tập phù hợp...",
+  "loadingTitle4": "Đang hoàn thiện kế hoạch...",
+  "loadingBody": "Kế hoạch đang được sắp xếp theo mục tiêu, lịch tập và điều kiện bạn đã chọn.",
+  "loadingStage1": "Xác định điều bạn muốn cải thiện",
+  "loadingStage2": "Sắp xếp thứ tự ưu tiên",
+  "loadingStage3": "Chọn lịch và bài tập phù hợp",
+  "loadingStage4": "Hoàn thiện hướng dẫn cho bạn",
+  "planTitle": "Kế hoạch của bạn",
+  "planRestart": "Làm lại",
+  "planEyebrow": "Lộ trình 8 tuần",
+  "planTimelineEyebrow": "Tiến trình",
+  "planTimelineHeadline": "Hai giai đoạn, một hướng đi",
+  "planNeedsEyebrow": "Mục tiêu & ưu tiên",
+  "planRationaleEyebrow": "Vì sao kế hoạch này phù hợp",
+  "planNutritionTitle": "Mục tiêu dinh dưỡng mỗi ngày",
+  "planCaloriesCaption": "kcal / ngày",
+  "planProteinCaption": "protein / ngày",
+  "planScheduleEyebrow": "Lịch tập của bạn",
+  "planScheduleHint": "Chạm để mở",
+  "planStartCta": "Bắt đầu buổi đầu tiên",
+  "planSavedToast": "Đã lưu kế hoạch mẫu vào hồ sơ",
+  "planDisclaimer": "Kế hoạch trong demo chỉ là dữ liệu mẫu minh họa giao diện, không phải tư vấn y tế hoặc chương trình tập cá nhân thật.",
+  "planMetricSessions": "buổi/tuần",
+  "planMetricMinutes": "mỗi buổi",
+  "planMetricWeeks": "tuần",
+  "planSessionExercises": "{count, plural, other{{count} bài tập}}",
+  "@planSessionExercises": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "planSetsReps": "{sets} hiệp × {reps}",
+  "@planSetsReps": {
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "seedStory": "Gần đây tôi quay lại đá bóng nhưng nhanh xuống sức, tranh chấp yếu. Tôi làm văn phòng, khá gầy và lâu rồi không tập đều. Tôi muốn khỏe hơn, tăng cân nhưng vẫn giữ được sức bền để đá bóng.",
+  "seedGoals": "Đá bóng khỏe hơn và không bị sụt cân\nTăng cân theo cách bền vững",
+  "planHeadlineStrength": "Xây nền sức mạnh để trở lại sân bóng bền hơn.",
+  "planHeadlineGeneral": "Xây nền thể lực vững để tiến xa hơn.",
+  "planSummaryUnderweight": "Bạn đang thiếu cân so với chiều cao, nên kế hoạch ưu tiên tăng khối lượng cơ một cách bền vững thay vì đốt calo. Khối lượng tập được giữ vừa sức để bạn hồi phục kịp giữa các buổi.",
+  "planSummaryGeneral": "Kế hoạch tập trung vào nền tảng sức mạnh và sức bền, với khối lượng vừa sức để bạn duy trì đều đặn.",
+  "planRationaleBody": "Bạn tập được số buổi đã chọn mỗi tuần với thời lượng đã đặt, nên mỗi buổi là toàn thân thay vì chia nhỏ nhóm cơ. Các bài tập được chọn theo thiết bị bạn đang có và tránh những động tác bạn đã báo là khó hoặc gây đau.",
+  "planPhase1Range": "Tuần 1–4",
+  "planPhase1Focus": "Làm quen và tạo nền",
+  "planPhase1Detail": "Học đúng kỹ thuật với mức tạ nhẹ, tăng dần số hiệp mỗi tuần.",
+  "planPhase2Range": "Tuần 5–8",
+  "planPhase2Focus": "Tăng dần cường độ",
+  "planPhase2Detail": "Tăng mức tạ hoặc số lần khi bạn hoàn thành đủ hiệp một cách thoải mái.",
+  "planNeedStrength": "Tăng sức mạnh nền",
+  "planNeedEndurance": "Giữ sức bền cho môn thể thao",
+  "planNeedWeightGain": "Tăng cân bền vững",
+  "planNeedMobility": "Cải thiện biên độ vận động",
+  "planNeedInjuryCare": "Bảo vệ vùng đang đau",
+  "planNutritionSurplus": "Ăn dư nhẹ so với nhu cầu để tăng cân từ từ, ưu tiên protein trong mỗi bữa.",
+  "planNutritionMaintain": "Ăn quanh mức duy trì và giữ protein ổn định để hỗ trợ hồi phục.",
+  "planHealthNote": "Con số chỉ là ước lượng ban đầu. Nếu bạn có bệnh nền hoặc đang điều trị, hãy hỏi ý kiến bác sĩ trước khi thay đổi chế độ ăn.",
+  "planSessionFullBody": "Toàn thân",
+  "planSessionLower": "Thân dưới",
+  "planSessionUpper": "Thân trên",
+  "exerciseGobletSquat": "Squat ôm tạ trước ngực",
+  "exerciseSplitSquat": "Squat chân trước chân sau",
+  "exerciseHipHinge": "Gập hông (hip hinge)",
+  "exerciseGluteBridge": "Đẩy hông nằm ngửa",
+  "exercisePushup": "Chống đẩy",
+  "exerciseInclinePushup": "Chống đẩy nghiêng cao tay",
+  "exerciseRow": "Kéo ngang",
+  "exerciseOverheadPress": "Đẩy tạ qua đầu",
+  "exercisePlank": "Plank",
+  "exerciseDeadBug": "Dead bug",
+  "exerciseCalfRaise": "Nhón bắp chân",
+  "exerciseStepUp": "Bước lên bục",
+  "noteLowImpact": "Ít tác động lên khớp",
+  "noteControlledRange": "Giữ biên độ trong ngưỡng không đau",
+  "bmiUnderweight": "thiếu cân",
+  "bmiNormal": "bình thường",
+  "bmiOverweight": "thừa cân",
+  "bmiObese": "béo phì",
+  "homeGreeting": "Hôm nay",
+  "homeNextEyebrowToday": "Buổi tiếp theo · Hôm nay",
+  "homeNextEyebrowTomorrow": "Buổi tiếp theo · Ngày mai",
+  "homeNextEyebrowRest": "Ngày nghỉ",
+  "homeRestTitle": "Ngày hồi phục",
+  "homeRestBody": "Hồi phục cũng là một phần của kế hoạch. Hẹn gặp bạn ở buổi tới.",
+  "homeSessionRpe": "Mức gắng sức",
+  "homeStartCta": "Bắt đầu buổi tập",
+  "homeViewCta": "Xem chi tiết",
+  "homeCompletedCta": "Đã hoàn thành",
+  "homeTomorrowToast": "Buổi tập ngày mai chưa mở",
+  "homeAlreadyLoggedToast": "Bạn đã ghi lại buổi này rồi",
+  "homeStreakToast": "Chuỗi hiện tại: {count} tuần",
+  "@homeStreakToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeWeekTitle": "Tuần này",
+  "homeWeekPlanLink": "Xem kế hoạch",
+  "homeWeekOnTrack": "Đang đúng nhịp",
+  "homeWeekComplete": "Đã xong tuần này",
+  "homeWeekBehind": "Đang chậm nhịp",
+  "homeWeekSessions": "{done}/{total} buổi",
+  "@homeWeekSessions": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStreakLabel": "Chuỗi ngày",
+  "homeStreakUnit": "tuần liên tiếp",
+  "homeStreakBest": "Tốt nhất: {count} tuần",
+  "@homeStreakBest": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAdherenceLabel": "Mức bám sát",
+  "homeAdherenceFoot": "Đã hoàn thành {done}/{total} buổi theo kế hoạch",
+  "@homeAdherenceFoot": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgressTitle": "Tiến bộ",
+  "homeProgressUpsellLink": "Nâng cấp để xem chi tiết",
+  "homeProgressProLink": "Tìm hiểu Pro",
+  "homeProgressQuestion": "Dựa trên các buổi bạn đã ghi lại",
+  "homeProgressWindow": "4 tuần gần nhất",
+  "homeVerdictProgressing": "Bạn đang tiến bộ",
+  "homeVerdictEarly": "Tín hiệu tích cực ban đầu",
+  "homeVerdictInsufficient": "Cần thêm buổi tập để đánh giá.",
+  "homeDomainStrength": "Sức mạnh",
+  "homeDomainEndurance": "Sức bền",
+  "homeTrendRising": "Đang lên",
+  "homeTrendSteady": "Giữ vững",
+  "homeTrendInsufficient": "Chưa đủ dữ liệu",
+  "homeConfidenceLabel": "Độ tin cậy",
+  "homeConfidenceLow": "Thấp",
+  "homeConfidenceMedium": "Trung bình",
+  "homeLockedTitle": "Chưa đủ dữ liệu",
+  "homeLockedReady": "Đã đủ dữ liệu để đánh giá.",
+  "homeLockedCounting": "Đã có {current}/{target} buổi",
+  "@homeLockedCounting": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockedPreviewStrength": "Sức mạnh sẽ được theo dõi tại đây.",
+  "homeLockedPreviewEndurance": "Sức bền sẽ được theo dõi tại đây.",
+  "homeUnlockCta": "Mở khóa Tiến bộ",
+  "homeUnlockToast": "Hãy ghi lại thêm buổi tập để mở phần này",
+  "homeRecentTitle": "Gần đây",
+  "homeRecentEmpty": "Chưa có buổi tập nào được ghi lại.",
+  "homeRecentMeta": "{volume} kg · {exercises} bài",
+  "@homeRecentMeta": {
+    "placeholders": {
+      "volume": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRecentToast": "Chi tiết buổi tập chưa có trong demo",
+  "homeNavHome": "Trang chính",
+  "homeNavPlan": "Kế hoạch",
+  "homeNavLog": "Nhật ký",
+  "homeNavProfile": "Cá nhân",
+  "homeNavToast": "Phần này chưa có trong demo",
+  "homeProfileToast": "Trang cá nhân chưa có trong demo",
+  "safetyInjurySubtitle": "Thêm vùng cần tránh hoặc giảm tải",
+  "dietOmnivoreSub": "Có thịt, cá, trứng hoặc sữa",
+  "dietVegetarianSub": "Có thể dùng trứng hoặc sữa",
+  "dietVeganSub": "Không dùng sản phẩm động vật",
+  "dietPescatarianSub": "Có cá và hải sản",
+  "dietOtherSub": "Chế độ riêng của bạn",
+  "contextBody": "Chọn lịch bạn thực sự có thể duy trì.",
+  "budgetNoneShort": "Không",
+  "budgetMinimalShort": "Một ít",
+  "budgetInvestShort": "Sẵn sàng"
+}

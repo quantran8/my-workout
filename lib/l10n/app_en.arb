@@ -1,0 +1,380 @@
+{
+  "@@locale": "en",
+  "appName": "AI Fitness Coach",
+  "commonContinue": "Continue",
+  "commonNone": "None",
+  "commonEdit": "Edit",
+  "commonYes": "Yes",
+  "commonNo": "No",
+  "commonBack": "Back",
+  "commonDelete": "Remove",
+  "localeVietnamese": "VI",
+  "localeEnglish": "EN",
+  "sexMale": "Male",
+  "sexFemale": "Female",
+  "sexOther": "Other",
+  "experienceBeginner": "Just starting",
+  "experienceIntermediate": "Intermediate",
+  "experienceAdvanced": "Advanced",
+  "injuryAreaKnee": "Knee",
+  "injuryAreaShoulder": "Shoulder",
+  "injuryAreaLowerBack": "Lower back",
+  "injuryAreaAnkle": "Ankle",
+  "injuryAreaWrist": "Wrist",
+  "injuryAreaOther": "Other",
+  "severityMild": "Mild",
+  "severityModerate": "Moderate",
+  "severitySevere": "Severe",
+  "mobilityDeepSquat": "Deep squat is hard",
+  "mobilityOverhead": "Overhead reach is hard",
+  "mobilityHipHinge": "Hip hinge is hard",
+  "mobilityRunning": "Running/jumping is hard",
+  "equipmentDumbbell": "Dumbbells",
+  "equipmentResistanceBand": "Resistance bands",
+  "equipmentPullupBar": "Pull-up bar",
+  "equipmentFullGym": "Full gym",
+  "spaceHome": "At home",
+  "spaceGym": "At a gym",
+  "spaceOutdoor": "Outdoors",
+  "spaceMinimal": "Very little space",
+  "budgetNone": "No — use what I have",
+  "budgetMinimal": "Small, low-cost items are fine",
+  "budgetInvest": "Happy to invest if needed",
+  "dietOmnivore": "Everything",
+  "dietVegetarian": "Vegetarian (eggs/dairy)",
+  "dietVegan": "Vegan",
+  "dietPescatarian": "Pescatarian",
+  "dietOther": "Other",
+  "weekdayMonShort": "Mon",
+  "weekdayTueShort": "Tue",
+  "weekdayWedShort": "Wed",
+  "weekdayThuShort": "Thu",
+  "weekdayFriShort": "Fri",
+  "weekdaySatShort": "Sat",
+  "weekdaySunShort": "Sun",
+  "unitYears": "years",
+  "unitCm": "cm",
+  "unitKg": "kg",
+  "unitMinutes": "min",
+  "accountEyebrow": "Your profile will be saved",
+  "accountHeadline": "Create an account\nbefore we start.",
+  "accountBody": "Your plan keeps learning from every session. An account gives your profile and history somewhere to live.",
+  "accountAppleCta": "Continue with Apple",
+  "accountDividerOr": "or",
+  "accountEmailHint": "Your email",
+  "accountEmailCta": "Continue with email",
+  "accountDisclaimer": "Interface demo — no real data is sent or stored.",
+  "accountInvalidEmail": "Enter a valid email address",
+  "welcomeStepBadge": "FIRST STEP",
+  "welcomeEyebrow": "No plan menu to pick from",
+  "welcomeHeadline": "Tell us what\nyou're dealing with.",
+  "welcomeBody": "Describe it in your own words. We'll only ask for the details we need to build a safe, realistic plan.",
+  "welcomeCta": "Tell my story",
+  "storyTitle": "Situation & goals",
+  "storyHeadline": "What made you want\nto start right now?",
+  "storyBody": "Describe what you're dealing with and the result you're after.",
+  "storyLabel": "Your situation",
+  "storyHint": "For example: I started playing football again but I run out of steam fast...",
+  "storyGoalLabel": "What do you want to improve?",
+  "storyGoalHint": "One goal per line...",
+  "storyCharCount": "{count} characters",
+  "@storyCharCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyRequired": "Tell us a little about your situation",
+  "basicsTitle": "The basics",
+  "basicsHeadline": "A few details\nabout you.",
+  "basicsBody": "This helps the plan fit your current condition and experience.",
+  "basicsSexLabel": "Sex",
+  "basicsAgeLabel": "Age",
+  "basicsExperienceLabel": "Experience",
+  "basicsHeightLabel": "Height",
+  "basicsWeightLabel": "Weight",
+  "safetyTitle": "Injuries & mobility",
+  "safetyHeadline": "Anything we should\nwatch out for?",
+  "safetyBody": "Tell us about areas that hurt or movements you find difficult.",
+  "safetyInjuryQuestion": "Are you dealing with pain or an injury?",
+  "safetyInjuryNotesHint": "When does it hurt? Which movements bother you?",
+  "safetyInjuryActive": "Still symptomatic",
+  "safetyAddInjury": "+ Add another area",
+  "safetyExtraInjury": "Additional area",
+  "safetyMobilityLabel": "Movement limits",
+  "contextTitle": "Training setup",
+  "contextHeadline": "When and where\ncan you train?",
+  "contextSpaceLabel": "Main space",
+  "contextEquipmentLabel": "Equipment you have",
+  "contextBudgetLabel": "Willing to buy more equipment?",
+  "contextDurationLabel": "Time per session",
+  "contextTimeLabel": "Preferred start time",
+  "contextDaysLabel": "Days you can train",
+  "contextDayCount": "{count, plural, one{{count} day selected} other{{count} days selected}}",
+  "@contextDayCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contextNoDaySelected": "Pick at least one day you can train",
+  "dietTitle": "Nutrition",
+  "dietHeadline": "Anything about food\nwe should know?",
+  "dietBody": "Tell us about your diet, allergies, or anything you need to avoid.",
+  "dietTypeLabel": "Diet",
+  "dietAllergiesLabel": "Food allergies",
+  "dietAllergiesHint": "For example: peanuts, dairy...",
+  "dietRestrictionsLabel": "Restrictions or things to avoid",
+  "dietRestrictionsHint": "For example: can't eat a big breakfast, limited spicy food...",
+  "reviewTitle": "Confirm your details",
+  "reviewHeadline": "Check everything before\nwe build the plan.",
+  "reviewBody": "You can go back and edit any section.",
+  "reviewStorySection": "Situation & goals",
+  "reviewBodySection": "Body & experience",
+  "reviewSafetySection": "Injuries & mobility",
+  "reviewContextSection": "Training setup",
+  "reviewDietSection": "Nutrition",
+  "reviewNoStory": "No situation entered yet",
+  "reviewNoGoals": "No specific goals yet",
+  "reviewInjuryLabel": "Injuries",
+  "reviewMobilityLabel": "Movement limits",
+  "reviewEquipmentLabel": "Equipment",
+  "reviewBudgetLabel": "Buying equipment",
+  "reviewDurationLabel": "Session length",
+  "reviewScheduleLabel": "Days & time",
+  "reviewDietTypeLabel": "Diet",
+  "reviewAllergiesLabel": "Allergies",
+  "reviewRestrictionsLabel": "Restrictions",
+  "reviewMinutesPerSession": "{count} min / session",
+  "@reviewMinutesPerSession": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewAgeValue": "{count, plural, one{{count} year old} other{{count} years old}}",
+  "@reviewAgeValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewInjuryStillActive": "still symptomatic",
+  "reviewInjuryResolved": "resolved",
+  "reviewConfirmCheckbox": "I confirm the details above are accurate.",
+  "reviewGenerateCta": "Confirm and build my plan",
+  "loadingEyebrow": "Building your plan",
+  "loadingTitle1": "Understanding your situation...",
+  "loadingTitle2": "Ordering your priorities...",
+  "loadingTitle3": "Choosing the right exercises...",
+  "loadingTitle4": "Finishing your plan...",
+  "loadingBody": "Your plan is being arranged around your goals, schedule, and the setup you described.",
+  "loadingStage1": "Identify what you want to improve",
+  "loadingStage2": "Put priorities in order",
+  "loadingStage3": "Pick a schedule and exercises",
+  "loadingStage4": "Finalise your guidance",
+  "planTitle": "Your plan",
+  "planRestart": "Start over",
+  "planEyebrow": "8-week roadmap",
+  "planTimelineEyebrow": "Progression",
+  "planTimelineHeadline": "Two phases, one direction",
+  "planNeedsEyebrow": "Goals & priorities",
+  "planRationaleEyebrow": "Why this plan fits you",
+  "planNutritionTitle": "Daily nutrition targets",
+  "planCaloriesCaption": "kcal / day",
+  "planProteinCaption": "protein / day",
+  "planScheduleEyebrow": "Your schedule",
+  "planScheduleHint": "Tap to open",
+  "planStartCta": "Start your first session",
+  "planSavedToast": "Sample plan saved to your profile",
+  "planDisclaimer": "This demo plan is sample data illustrating the interface — not medical advice or a real personalised programme.",
+  "planMetricSessions": "sessions/week",
+  "planMetricMinutes": "per session",
+  "planMetricWeeks": "weeks",
+  "planSessionExercises": "{count, plural, one{{count} exercise} other{{count} exercises}}",
+  "@planSessionExercises": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "planSetsReps": "{sets} × {reps}",
+  "@planSetsReps": {
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "seedStory": "I recently started playing football again but I run out of steam fast and lose every physical duel. I work a desk job, I'm fairly skinny, and I haven't trained consistently in a long time. I want to get stronger and gain weight without losing the endurance I need on the pitch.",
+  "seedGoals": "Play football stronger without losing weight\nGain weight in a sustainable way",
+  "planHeadlineStrength": "Build a strength base so you last on the pitch.",
+  "planHeadlineGeneral": "Build a solid base of fitness to grow from.",
+  "planSummaryUnderweight": "You're underweight for your height, so this plan prioritises building muscle sustainably rather than burning calories. Volume stays manageable so you recover between sessions.",
+  "planSummaryGeneral": "This plan focuses on foundational strength and endurance, at a volume you can sustain week to week.",
+  "planRationaleBody": "You train the number of days you selected, for the length you set, so each session is full-body rather than a split. Exercises are chosen around the equipment you have and avoid the movements you flagged as painful or difficult.",
+  "planPhase1Range": "Weeks 1–4",
+  "planPhase1Focus": "Learn the patterns",
+  "planPhase1Detail": "Groove the technique at light loads, adding a set per week.",
+  "planPhase2Range": "Weeks 5–8",
+  "planPhase2Focus": "Build intensity",
+  "planPhase2Detail": "Add load or reps once you finish every set comfortably.",
+  "planNeedStrength": "Build base strength",
+  "planNeedEndurance": "Keep your sport endurance",
+  "planNeedWeightGain": "Gain weight sustainably",
+  "planNeedMobility": "Improve range of motion",
+  "planNeedInjuryCare": "Protect the painful area",
+  "planNutritionSurplus": "Eat slightly above maintenance to gain weight gradually, with protein at every meal.",
+  "planNutritionMaintain": "Eat around maintenance and keep protein steady to support recovery.",
+  "planHealthNote": "These numbers are a starting estimate. If you have a medical condition or are under treatment, talk to a doctor before changing your diet.",
+  "planSessionFullBody": "Full body",
+  "planSessionLower": "Lower body",
+  "planSessionUpper": "Upper body",
+  "exerciseGobletSquat": "Goblet squat",
+  "exerciseSplitSquat": "Split squat",
+  "exerciseHipHinge": "Hip hinge",
+  "exerciseGluteBridge": "Glute bridge",
+  "exercisePushup": "Push-up",
+  "exerciseInclinePushup": "Incline push-up",
+  "exerciseRow": "Row",
+  "exerciseOverheadPress": "Overhead press",
+  "exercisePlank": "Plank",
+  "exerciseDeadBug": "Dead bug",
+  "exerciseCalfRaise": "Calf raise",
+  "exerciseStepUp": "Step-up",
+  "noteLowImpact": "Low impact on the joints",
+  "noteControlledRange": "Keep the range pain-free",
+  "bmiUnderweight": "underweight",
+  "bmiNormal": "normal",
+  "bmiOverweight": "overweight",
+  "bmiObese": "obese",
+  "homeGreeting": "Today",
+  "homeNextEyebrowToday": "Next session · Today",
+  "homeNextEyebrowTomorrow": "Next session · Tomorrow",
+  "homeNextEyebrowRest": "Rest day",
+  "homeRestTitle": "Recovery day",
+  "homeRestBody": "Recovery is part of the plan. See you at the next session.",
+  "homeSessionRpe": "Effort",
+  "homeStartCta": "Start session",
+  "homeViewCta": "View details",
+  "homeCompletedCta": "Completed",
+  "homeTomorrowToast": "Tomorrow's session isn't open yet",
+  "homeAlreadyLoggedToast": "You've already logged this session",
+  "homeStreakToast": "Current streak: {count} weeks",
+  "@homeStreakToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeWeekTitle": "This week",
+  "homeWeekPlanLink": "View plan",
+  "homeWeekOnTrack": "On track",
+  "homeWeekComplete": "Week complete",
+  "homeWeekBehind": "Behind",
+  "homeWeekSessions": "{done}/{total} sessions",
+  "@homeWeekSessions": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStreakLabel": "Streak",
+  "homeStreakUnit": "weeks running",
+  "homeStreakBest": "Best: {count} weeks",
+  "@homeStreakBest": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAdherenceLabel": "Adherence",
+  "homeAdherenceFoot": "Completed {done} of {total} planned sessions",
+  "@homeAdherenceFoot": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeProgressTitle": "Progress",
+  "homeProgressUpsellLink": "Upgrade to see details",
+  "homeProgressProLink": "Learn about Pro",
+  "homeProgressQuestion": "Based on the sessions you've logged",
+  "homeProgressWindow": "Last 4 weeks",
+  "homeVerdictProgressing": "Yes, you're progressing",
+  "homeVerdictEarly": "Early positive signal",
+  "homeVerdictInsufficient": "Log more sessions to assess this.",
+  "homeDomainStrength": "Strength",
+  "homeDomainEndurance": "Endurance",
+  "homeTrendRising": "Rising",
+  "homeTrendSteady": "Steady",
+  "homeTrendInsufficient": "Not enough data",
+  "homeConfidenceLabel": "Confidence",
+  "homeConfidenceLow": "Low",
+  "homeConfidenceMedium": "Medium",
+  "homeLockedTitle": "Not enough data yet",
+  "homeLockedReady": "Enough data to assess.",
+  "homeLockedCounting": "{current} of {target} sessions logged",
+  "@homeLockedCounting": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLockedPreviewStrength": "Strength will be tracked here.",
+  "homeLockedPreviewEndurance": "Endurance will be tracked here.",
+  "homeUnlockCta": "Unlock Progress",
+  "homeUnlockToast": "Log more sessions to unlock this",
+  "homeRecentTitle": "Recent",
+  "homeRecentEmpty": "No sessions logged yet.",
+  "homeRecentMeta": "{volume} kg · {exercises} exercises",
+  "@homeRecentMeta": {
+    "placeholders": {
+      "volume": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRecentToast": "Session details aren't in the demo yet",
+  "homeNavHome": "Home",
+  "homeNavPlan": "Plan",
+  "homeNavLog": "Log",
+  "homeNavProfile": "Profile",
+  "homeNavToast": "This section isn't in the demo yet",
+  "homeProfileToast": "Profile isn't in the demo yet",
+  "safetyInjurySubtitle": "Add areas to avoid or go easy on",
+  "dietOmnivoreSub": "Meat, fish, eggs or dairy",
+  "dietVegetarianSub": "May include eggs or dairy",
+  "dietVeganSub": "No animal products",
+  "dietPescatarianSub": "Includes fish and seafood",
+  "dietOtherSub": "Your own approach",
+  "contextBody": "Pick a schedule you can actually keep.",
+  "budgetNoneShort": "No",
+  "budgetMinimalShort": "A little",
+  "budgetInvestShort": "Happy to"
+}

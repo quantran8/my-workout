@@ -1,0 +1,41 @@
+name: mobile
+description: "AI Fitness Coach"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.3.2
+  riverpod_annotation: ^4.0.3
+  go_router: ^17.3.0
+  dio: ^5.10.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # 2.15.2 needs analyzer >=13.3; riverpod_generator 4.0.4 pins analyzer ^12.
+  build_runner: ^2.15.1
+  riverpod_generator: ^4.0.4
+  freezed: ^3.2.5
+  json_serializable: ^6.14.0
+
+  # custom_lint + riverpod_lint are intentionally omitted: custom_lint 0.8.x pins
+  # analyzer ^8, while json_serializable ^6.14 needs analyzer >=10. They are
+  # optional lint plugins, so codegen wins. Revisit once custom_lint bumps analyzer.
+
+flutter:
+  uses-material-design: true
+  generate: true
