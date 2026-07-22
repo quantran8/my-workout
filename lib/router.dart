@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'core/theme/tokens.dart';
 import 'features/onboarding/presentation/screens/account_gate_screen.dart';
 import 'features/onboarding/presentation/screens/basics_screen.dart';
 import 'features/onboarding/presentation/screens/context_schedule_screen.dart';
@@ -13,6 +11,8 @@ import 'features/onboarding/presentation/screens/welcome_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
 import 'features/plan/presentation/screens/loading_screen.dart';
 import 'features/plan/presentation/screens/plan_screen.dart';
+import 'features/practice/presentation/controller/practice_controller.dart';
+import 'features/practice/presentation/screens/practice_screen.dart';
 
 /// Route paths, in flow order.
 abstract final class Routes {
@@ -27,52 +27,44 @@ abstract final class Routes {
   static const generating = '/generating';
   static const plan = '/plan';
   static const home = '/home';
+  static const practice = '/practice';
 
-  /// The six steps that show the progress hairline, in order.
+  /// The six onboarding steps that show the progress hairline, in order.
   static const onboardingSteps = [story, basics, safety, context, diet, review];
 
-  /// Fill fraction for [path], or null on screens without the hairline.
-  ///
-  /// Steps are 1-based over six: the first step already shows 1/6 of progress,
-  /// and review fills the bar completely.
-  static double? progressFor(String path) {
-    final index = onboardingSteps.indexOf(path);
-    return index < 0 ? null : (index + 1) / onboardingSteps.length;
+  /// The fill value (0..1) for a step's progress hairline, mirroring the
+  /// prototype's steps 3–8. Returns null for routes outside the flow, which
+  /// [ScreenScaffold] reads as "hide the bar".
+  static double? progressFor(String route) {
+    final index = onboardingSteps.indexOf(route);
+    return index < 0 ? null : index / (onboardingSteps.length - 1);
   }
 }
 
+// Plain routes use go_router's default `MaterialPage`, so each platform gets
+// its own page transition (iOS slide, Android's platform default). Each screen
+// still plays its own `screenIn` entrance on top.
 GoRouter createRouter() => GoRouter(
-  initialLocation: Routes.account,
+  initialLocation: Routes.home,
   routes: [
-    _fade(Routes.account, (_) => const AccountGateScreen()),
-    _fade(Routes.welcome, (_) => const WelcomeScreen()),
-    // No shell: the progress hairline belongs under each screen's own header,
-    // so every step renders it through ScreenScaffold.progress instead.
-    _fade(Routes.story, (_) => const StoryGoalScreen()),
-    _fade(Routes.basics, (_) => const BasicsScreen()),
-    _fade(Routes.safety, (_) => const SafetyScreen()),
-    _fade(Routes.context, (_) => const ContextScheduleScreen()),
-    _fade(Routes.diet, (_) => const DietScreen()),
-    _fade(Routes.review, (_) => const RawReviewScreen()),
-    _fade(Routes.generating, (_) => const LoadingScreen()),
-    _fade(Routes.plan, (_) => const PlanScreen()),
-    _fade(Routes.home, (_) => const HomeScreen()),
+    GoRoute(path: Routes.account, builder: (_, _) => const AccountGateScreen()),
+    GoRoute(path: Routes.welcome, builder: (_, _) => const WelcomeScreen()),
+    GoRoute(path: Routes.story, builder: (_, _) => const StoryGoalScreen()),
+    GoRoute(path: Routes.basics, builder: (_, _) => const BasicsScreen()),
+    GoRoute(path: Routes.safety, builder: (_, _) => const SafetyScreen()),
+    GoRoute(path: Routes.context, builder: (_, _) => const ContextScheduleScreen()),
+    GoRoute(path: Routes.diet, builder: (_, _) => const DietScreen()),
+    GoRoute(path: Routes.review, builder: (_, _) => const RawReviewScreen()),
+    GoRoute(path: Routes.generating, builder: (_, _) => const LoadingScreen()),
+    GoRoute(path: Routes.plan, builder: (_, _) => const PlanScreen()),
+    GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
+    // `?mode=cardio` opens the cardio surface; anything else opens set mode.
+    GoRoute(
+      path: Routes.practice,
+      builder: (context, state) => PracticeScreen(
+        // initialMode: state.uri.queryParameters['mode'] == 'cardio' ? PracticeMode.cardio : PracticeMode.set,
+        initialMode: PracticeMode.cardio,
+      ),
+    ),
   ],
 );
-
-/// Material's default slide would fight the `screenIn` entrance each screen
-/// already plays, so transitions are a plain cross-fade on the same curve.
-GoRoute _fade(String path, Widget Function(BuildContext) builder) => GoRoute(
-  path: path,
-  pageBuilder: (context, state) => CustomTransitionPage(
-    key: state.pageKey,
-    child: builder(context),
-    transitionDuration: AppMotion.screenIn,
-    reverseTransitionDuration: AppMotion.screenIn,
-    transitionsBuilder: (context, animation, _, child) => FadeTransition(
-      opacity: CurvedAnimation(parent: animation, curve: AppMotion.enterCurve),
-      child: child,
-    ),
-  ),
-);
-

@@ -92,7 +92,7 @@ class HomeScreen extends ConsumerWidget {
                               : isTomorrow
                               ? _HeroState.tomorrow
                               : _HeroState.rest,
-                          onStart: () => _start(ref, t, isToday),
+                          onStart: () => _start(context, ref, t, isToday),
                         ),
                       ),
 
@@ -206,23 +206,24 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _start(WidgetRef ref, AppLocalizations t, bool isToday) {
+  void _start(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations t,
+    bool isToday,
+  ) {
     if (!isToday) {
       showAppToast(ref, t.homeTomorrowToast);
       return;
     }
 
-    final controller = ref.read(sessionLogControllerProvider.notifier);
-    if (!controller.hasPendingToday) {
+    if (!ref.read(sessionLogControllerProvider.notifier).hasPendingToday) {
       showAppToast(ref, t.homeAlreadyLoggedToast);
       return;
     }
 
-    controller.completeToday();
-    final streak = ref
-        .read(sessionLogControllerProvider)
-        .streakAsOf(ref.read(nowProvider));
-    showAppToast(ref, t.homeStreakToast(streak));
+    // Open the active-session screen; saving there logs the day and returns.
+    context.go(Routes.practice);
   }
 
   Widget _card(int index, Widget child) => ScreenEnter(

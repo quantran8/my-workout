@@ -1,0 +1,296 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/theme/tokens.dart';
+import '../../../../core/theme/typography.dart';
+import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/toast.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../controller/practice_controller.dart';
+
+/// The set workout's overview: a title, a three-up stat row and the illustrated
+/// exercise list, shown before the session starts. Header is a category label;
+/// the footer pairs an "adjust" button with the start CTA.
+class SetOverviewView extends ConsumerWidget {
+  const SetOverviewView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+
+    final exercises = [
+      (t.practiceOverviewEx1Name, t.practiceOverviewEx1Target, AppColors.lime),
+      (t.practiceOverviewEx2Name, t.practiceOverviewEx2Target, AppColors.cyan),
+      (t.practiceOverviewEx3Name, t.practiceOverviewEx3Target, AppColors.violet),
+      (t.practiceOverviewEx4Name, t.practiceOverviewEx4Target, AppColors.lime),
+      (t.practiceOverviewEx5Name, t.practiceOverviewEx5Target, AppColors.cyan),
+      (t.practiceOverviewEx6Name, t.practiceOverviewEx6Target, AppColors.violet),
+    ];
+
+    return ListView(
+      physics: const ClampingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 132),
+      children: [
+        Text(t.practiceOverviewTitle, style: AppText.title.copyWith(fontSize: 34, height: 1.06)),
+        const SizedBox(height: 28),
+        _statRow(t),
+        const SizedBox(height: 40),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              t.practiceOverviewListTitle,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 24 * -0.035,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2),
+              child: Text(
+                '(${exercises.length})',
+                style: const TextStyle(fontSize: 17, color: AppColors.muted),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        for (final (i, ex) in exercises.indexed)
+          _ExerciseRow(
+            name: ex.$1,
+            target: ex.$2,
+            accent: ex.$3,
+            divider: i > 0,
+          ),
+      ],
+    );
+  }
+
+  /// The set-overview header — a category label with an (inert) overflow slot.
+  static Widget header({
+    required WidgetRef ref,
+    required BuildContext context,
+    required VoidCallback onBack,
+  }) {
+    final t = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: SizedBox(
+        height: 44,
+        child: Row(
+          children: [
+            CircleBackButton(onTap: onBack),
+            Expanded(
+              child: Text(
+                t.practiceOverviewCategory.toUpperCase(),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 15 * -0.015,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 44,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () => showAppToast(ref, t.practiceOptionsToast),
+                  child: const SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Icon(Icons.more_horiz_rounded, size: 22, color: AppColors.muted),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The set-overview footer — an "adjust" button and the start CTA.
+  static Widget footer({required WidgetRef ref, required BuildContext context}) {
+    final t = AppLocalizations.of(context);
+
+    return Row(
+      children: [
+        SizedBox(
+          width: 76,
+          height: 58,
+          child: _AdjustButton(
+            label: t.practiceOverviewAdjust,
+            onTap: () => showAppToast(ref, t.practiceOverviewAdjustToast),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SizedBox(
+            height: 58,
+            child: PrimaryButton(
+              label: t.practiceOverviewStart,
+              onPressed: ref.read(practiceProvider.notifier).startSetWorkout,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _statRow(AppLocalizations t) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: _Stat(value: t.practiceOverviewStatLevel, caption: t.practiceOverviewStatLevelLabel),
+        ),
+        const _StatDivider(),
+        Expanded(
+          child: _Stat(value: t.practiceOverviewStatDuration, caption: t.practiceOverviewStatDurationLabel),
+        ),
+        const _StatDivider(),
+        Expanded(
+          child: _Stat(value: t.practiceOverviewStatFocus, caption: t.practiceOverviewStatFocusLabel),
+        ),
+      ],
+    ),
+  );
+}
+
+class _Stat extends StatelessWidget {
+  const _Stat({required this.value, required this.caption});
+
+  final String value;
+  final String caption;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(fontSize: 17, height: 1.3, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          Text(caption, style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatDivider extends StatelessWidget {
+  const _StatDivider();
+
+  @override
+  Widget build(BuildContext context) =>
+      const VerticalDivider(width: 1, thickness: 1, color: AppColors.line);
+}
+
+class _ExerciseRow extends StatelessWidget {
+  const _ExerciseRow({
+    required this.name,
+    required this.target,
+    required this.accent,
+    required this.divider,
+  });
+
+  final String name;
+  final String target;
+  final Color accent;
+  final bool divider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: divider
+          ? const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line)))
+          : null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 86,
+              height: 72,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Icon(Icons.accessibility_new_rounded, size: 34, color: accent),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(target, style: const TextStyle(fontSize: 15, color: AppColors.muted)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The narrow "adjust" secondary button in the footer — an icon over a label.
+class _AdjustButton extends StatelessWidget {
+  const _AdjustButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.button),
+            border: Border.all(color: AppColors.line),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.tune_rounded, size: 20, color: AppColors.textSoft),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textSoft,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
