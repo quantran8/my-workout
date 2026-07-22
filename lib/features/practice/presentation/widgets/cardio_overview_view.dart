@@ -60,7 +60,6 @@ class CardioOverviewView extends ConsumerWidget {
         : Icons.directions_run_rounded;
 
     return ListView(
-      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 132),
       children: [
         _CaseTabs(
@@ -162,15 +161,15 @@ class CardioOverviewView extends ConsumerWidget {
 
     return Row(
       children: [
-        SizedBox(
-          width: 76,
-          height: 58,
-          child: _AdjustButton(
-            label: t.practiceOverviewAdjust,
-            onTap: () => showAppToast(ref, t.practiceOverviewAdjustToast),
-          ),
-        ),
-        const SizedBox(width: 12),
+        // SizedBox(
+        //   width: 76,
+        //   height: 58,
+        //   child: _AdjustButton(
+        //     label: t.practiceOverviewAdjust,
+        //     onTap: () => showAppToast(ref, t.practiceOverviewAdjustToast),
+        //   ),
+        // ),
+        // const SizedBox(width: 12),
         Expanded(
           child: SizedBox(
             height: 58,

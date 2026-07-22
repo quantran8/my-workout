@@ -24,7 +24,6 @@ class CardioPracticeView extends ConsumerWidget {
     // ~310px control panel.
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 310),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight - 318),

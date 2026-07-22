@@ -110,20 +110,88 @@ class PracticeState {
 
   /// The looping set-mode exercises: reps → timed → reps → …
   static const exercises = [
-    Exercise(kind: ExerciseKind.reps, name: 'Squat', reps: 15, seconds: 0, progress: 0.38),
-    Exercise(kind: ExerciseKind.timed, name: 'Plank', reps: 0, seconds: 30, progress: 0.63),
+    Exercise(
+      kind: ExerciseKind.reps,
+      name: 'Squat',
+      reps: 15,
+      seconds: 0,
+      progress: 0.38,
+    ),
+    Exercise(
+      kind: ExerciseKind.timed,
+      name: 'Plank',
+      reps: 0,
+      seconds: 30,
+      progress: 0.63,
+    ),
   ];
 
   /// The structured interval run: warm-up, three fast/recovery cycles, cool-down.
   static const structuredSteps = [
-    CardioStep(title: 'warmup', phase: 'step:1:8', duration: 300, target: 'warmup', next: 'fast:3', flex: 5),
-    CardioStep(title: 'fast', phase: 'round:1:3', duration: 180, target: 'fast', next: 'recover:2', flex: 3),
-    CardioStep(title: 'recover', phase: 'round:1:3', duration: 120, target: 'recover', next: 'fast:3', flex: 2),
-    CardioStep(title: 'fast', phase: 'round:2:3', duration: 180, target: 'fast', next: 'recover:2', flex: 3),
-    CardioStep(title: 'recover', phase: 'round:2:3', duration: 120, target: 'recover', next: 'fast:3', flex: 2),
-    CardioStep(title: 'fast', phase: 'round:3:3', duration: 180, target: 'fast', next: 'recover:2', flex: 3),
-    CardioStep(title: 'recover', phase: 'round:3:3', duration: 120, target: 'recover', next: 'cooldown:10', flex: 2),
-    CardioStep(title: 'cooldown', phase: 'step:8:8', duration: 600, target: 'cooldown', next: 'finish', flex: 10),
+    CardioStep(
+      title: 'warmup',
+      phase: 'step:1:8',
+      duration: 300,
+      target: 'warmup',
+      next: 'fast:3',
+      flex: 5,
+    ),
+    CardioStep(
+      title: 'fast',
+      phase: 'round:1:3',
+      duration: 180,
+      target: 'fast',
+      next: 'recover:2',
+      flex: 3,
+    ),
+    CardioStep(
+      title: 'recover',
+      phase: 'round:1:3',
+      duration: 120,
+      target: 'recover',
+      next: 'fast:3',
+      flex: 2,
+    ),
+    CardioStep(
+      title: 'fast',
+      phase: 'round:2:3',
+      duration: 180,
+      target: 'fast',
+      next: 'recover:2',
+      flex: 3,
+    ),
+    CardioStep(
+      title: 'recover',
+      phase: 'round:2:3',
+      duration: 120,
+      target: 'recover',
+      next: 'fast:3',
+      flex: 2,
+    ),
+    CardioStep(
+      title: 'fast',
+      phase: 'round:3:3',
+      duration: 180,
+      target: 'fast',
+      next: 'recover:2',
+      flex: 3,
+    ),
+    CardioStep(
+      title: 'recover',
+      phase: 'round:3:3',
+      duration: 120,
+      target: 'recover',
+      next: 'cooldown:10',
+      flex: 2,
+    ),
+    CardioStep(
+      title: 'cooldown',
+      phase: 'step:8:8',
+      duration: 600,
+      target: 'cooldown',
+      next: 'finish',
+      flex: 10,
+    ),
   ];
 
   final PracticeMode mode;
@@ -263,6 +331,30 @@ class Practice extends _$Practice {
     }
   }
 
+  /// Move directly between exercises from the active-session footer.
+  void showPreviousExercise() => _showExercise(state.exerciseIndex - 1);
+
+  void showNextExercise() => _showExercise(state.exerciseIndex + 1);
+
+  void _showExercise(int index) {
+    _timedTimer?.cancel();
+    _restTimer?.cancel();
+    final count = PracticeState.exercises.length;
+    final wrappedIndex = index % count;
+    final exercise = PracticeState.exercises[wrappedIndex];
+
+    state = state.copyWith(
+      stage: PracticeStage.setActive,
+      exerciseIndex: wrappedIndex,
+      timedRunning: exercise.kind == ExerciseKind.timed,
+      timedSeconds: exercise.seconds > 0
+          ? exercise.seconds
+          : PracticeState._defaultTimed,
+    );
+
+    if (exercise.kind == ExerciseKind.timed) _startTimedTimer();
+  }
+
   void _startTimedTimer() {
     _timedTimer?.cancel();
     _timedTimer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -297,12 +389,15 @@ class Practice extends _$Practice {
   void skipRest() {
     _restTimer?.cancel();
     final nextIndex = state.exerciseIndex + 1;
-    final next = PracticeState.exercises[nextIndex % PracticeState.exercises.length];
+    final next =
+        PracticeState.exercises[nextIndex % PracticeState.exercises.length];
     state = state.copyWith(
       stage: PracticeStage.setActive,
       exerciseIndex: nextIndex,
       timedRunning: true,
-      timedSeconds: next.seconds > 0 ? next.seconds : PracticeState._defaultTimed,
+      timedSeconds: next.seconds > 0
+          ? next.seconds
+          : PracticeState._defaultTimed,
     );
     if (next.kind == ExerciseKind.timed) _startTimedTimer();
   }

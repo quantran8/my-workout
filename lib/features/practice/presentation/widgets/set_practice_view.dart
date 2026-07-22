@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../core/theme/tokens.dart';
 import '../../../../core/theme/typography.dart';
@@ -91,9 +92,12 @@ class SetPracticeView extends ConsumerWidget {
     );
   }
 
-  /// The set-mode footer: a single circular action — a check for reps, a
-  /// pause/resume for timed exercises, and a "skip rest" pill during rest.
-  static Widget footer({required WidgetRef ref, required BuildContext context}) {
+  /// The set-mode footer: previous/next navigation around the primary action.
+  /// During rest it collapses to the existing "skip rest" action.
+  static Widget footer({
+    required WidgetRef ref,
+    required BuildContext context,
+  }) {
     final t = AppLocalizations.of(context);
     final s = ref.watch(practiceProvider);
     final notifier = ref.read(practiceProvider.notifier);
@@ -125,20 +129,63 @@ class SetPracticeView extends ConsumerWidget {
     }
 
     final isReps = s.exercise.kind == ExerciseKind.reps;
-    return Center(
-      child: _RoundButton(
-        enabled: !s.painStopped,
-        filled: isReps,
-        onTap: isReps ? notifier.completeReps : notifier.toggleTimed,
-        semanticLabel: isReps ? t.practiceCompleteSet : t.practicePause,
-        child: Icon(
-          isReps
-              ? Icons.check_rounded
-              : s.timedRunning
-              ? Icons.pause_rounded
-              : Icons.play_arrow_rounded,
-          size: 32,
-          color: AppColors.onLime,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _ExerciseNavButton(
+          label: t.practiceExercisePrevious,
+          icon: Icons.arrow_back_rounded,
+          onTap: notifier.showPreviousExercise,
+        ),
+        _RoundButton(
+          enabled: !s.painStopped,
+          filled: isReps,
+          onTap: isReps ? notifier.completeReps : notifier.toggleTimed,
+          semanticLabel: isReps ? t.practiceCompleteSet : t.practicePause,
+          child: Icon(
+            isReps
+                ? Icons.check_rounded
+                : s.timedRunning
+                ? Icons.pause_rounded
+                : Icons.play_arrow_rounded,
+            size: 32,
+            color: AppColors.onLime,
+          ),
+        ),
+        _ExerciseNavButton(
+          label: t.practiceExerciseNext,
+          icon: Icons.arrow_forward_rounded,
+          onTap: notifier.showNextExercise,
+        ),
+      ],
+    );
+  }
+}
+
+class _ExerciseNavButton extends StatelessWidget {
+  const _ExerciseNavButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton.outlined(
+      onPressed: onTap,
+      tooltip: label,
+      icon: Icon(icon),
+      iconSize: 24,
+      constraints: const BoxConstraints.tightFor(width: 52, height: 52),
+      style: IconButton.styleFrom(
+        foregroundColor: AppColors.text,
+        side: const BorderSide(color: AppColors.line),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.button),
         ),
       ),
     );
@@ -161,7 +208,10 @@ class _ActiveBody extends ConsumerWidget {
           Expanded(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 330, maxHeight: 520),
+                constraints: const BoxConstraints(
+                  maxWidth: 330,
+                  maxHeight: 520,
+                ),
                 child: const SquatFigure(),
               ),
             ),
@@ -220,7 +270,10 @@ class _RestBody extends ConsumerWidget {
                   Text(
                     t.practiceRestBody,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14, color: AppColors.muted),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.muted,
+                    ),
                   ),
                 ],
               ),
@@ -307,33 +360,17 @@ class _ProgressTrack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 6,
-      child: Stack(
-        alignment: Alignment.centerLeft,
-        children: [
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadii.pill),
-              ),
-            ),
-          ),
-          LayoutBuilder(
-            builder: (context, constraints) => AnimatedContainer(
-              duration: AppMotion.progress,
-              curve: Curves.easeOut,
-              width: constraints.maxWidth * value.clamp(0, 1),
-              height: 6,
-              decoration: BoxDecoration(
-                color: AppColors.lime,
-                borderRadius: BorderRadius.circular(AppRadii.pill),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return LinearPercentIndicator(
+      padding: EdgeInsets.zero,
+      lineHeight: 6,
+      percent: value.clamp(0.0, 1.0),
+      animation: true,
+      animateFromLastPercent: true,
+      animationDuration: AppMotion.progress.inMilliseconds,
+      curve: Curves.easeOut,
+      backgroundColor: AppColors.surface,
+      progressColor: AppColors.lime,
+      barRadius: const Radius.circular(AppRadii.pill),
     );
   }
 }
@@ -373,9 +410,8 @@ class _GuideButton extends StatelessWidget {
   }
 }
 
-/// The header's trailing feedback affordance — the one entry into the feedback
-/// sheet (and, through it, pain-stop) now that the set footer is a single
-/// action button.
+/// The header's trailing feedback affordance — the entry into the feedback
+/// sheet and, through it, the pain-stop action.
 class _FeedbackButton extends StatelessWidget {
   const _FeedbackButton({required this.onTap});
 

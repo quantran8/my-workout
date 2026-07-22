@@ -63,7 +63,6 @@ class HomeScreen extends ConsumerWidget {
               Expanded(
                 child: ScreenEnter(
                   child: ListView(
-                    physics: const ClampingScrollPhysics(),
                     padding: EdgeInsets.fromLTRB(
                       AppSpacing.screenH,
                       8,

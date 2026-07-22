@@ -41,7 +41,6 @@ class ScreenScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget content = LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
           child: Padding(

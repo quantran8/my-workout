@@ -63,7 +63,7 @@ GoRouter createRouter() => GoRouter(
       path: Routes.practice,
       builder: (context, state) => PracticeScreen(
         // initialMode: state.uri.queryParameters['mode'] == 'cardio' ? PracticeMode.cardio : PracticeMode.set,
-        initialMode: PracticeMode.cardio,
+        initialMode: PracticeMode.set,
       ),
     ),
   ],

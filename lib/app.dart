@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/l10n/locale_controller.dart';
+import 'core/theme/app_scroll_behavior.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/toast.dart';
 import 'l10n/app_localizations.dart';
@@ -27,6 +28,7 @@ class _MachAppState extends ConsumerState<MachApp> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
+      scrollBehavior: const AppScrollBehavior(),
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

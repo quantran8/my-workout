@@ -50,27 +50,29 @@ class ToastHost extends ConsumerWidget {
     final message = ref.watch(toastProvider);
     final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
 
-    return Stack(
-      children: [
-        child,
-        Positioned(
-          left: 20,
-          right: 20,
-          bottom: 28 + bottomInset,
-          child: IgnorePointer(
-            child: AnimatedSlide(
-              duration: const Duration(milliseconds: 300),
-              curve: AppMotion.enterCurve,
-              offset: message == null ? const Offset(0, 0.6) : Offset.zero,
-              child: AnimatedOpacity(
+    return Scaffold(
+      body: Stack(
+        children: [
+          child,
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 28 + bottomInset,
+            child: IgnorePointer(
+              child: AnimatedSlide(
                 duration: const Duration(milliseconds: 300),
-                opacity: message == null ? 0 : 1,
-                child: _ToastPill(message: message),
+                curve: AppMotion.enterCurve,
+                offset: message == null ? const Offset(0, 0.6) : Offset.zero,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: message == null ? 0 : 1,
+                  child: _ToastPill(message: message),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controller/practice_controller.dart';
+import 'exercise_info_sheet.dart';
 
 /// The set workout's overview: a title, a three-up stat row and the illustrated
 /// exercise list, shown before the session starts. Header is a category label;
@@ -18,20 +19,52 @@ class SetOverviewView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
 
-    final exercises = [
-      (t.practiceOverviewEx1Name, t.practiceOverviewEx1Target, AppColors.lime),
-      (t.practiceOverviewEx2Name, t.practiceOverviewEx2Target, AppColors.cyan),
-      (t.practiceOverviewEx3Name, t.practiceOverviewEx3Target, AppColors.violet),
-      (t.practiceOverviewEx4Name, t.practiceOverviewEx4Target, AppColors.lime),
-      (t.practiceOverviewEx5Name, t.practiceOverviewEx5Target, AppColors.cyan),
-      (t.practiceOverviewEx6Name, t.practiceOverviewEx6Target, AppColors.violet),
+    final exercises = <ExerciseOverviewInfo>[
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx1Name,
+        target: t.practiceOverviewEx1Target,
+        description: t.practiceOverviewEx1Info,
+        accent: AppColors.lime,
+      ),
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx2Name,
+        target: t.practiceOverviewEx2Target,
+        description: t.practiceOverviewEx2Info,
+        accent: AppColors.cyan,
+      ),
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx3Name,
+        target: t.practiceOverviewEx3Target,
+        description: t.practiceOverviewEx3Info,
+        accent: AppColors.violet,
+      ),
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx4Name,
+        target: t.practiceOverviewEx4Target,
+        description: t.practiceOverviewEx4Info,
+        accent: AppColors.lime,
+      ),
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx5Name,
+        target: t.practiceOverviewEx5Target,
+        description: t.practiceOverviewEx5Info,
+        accent: AppColors.cyan,
+      ),
+      ExerciseOverviewInfo(
+        name: t.practiceOverviewEx6Name,
+        target: t.practiceOverviewEx6Target,
+        description: t.practiceOverviewEx6Info,
+        accent: AppColors.violet,
+      ),
     ];
 
     return ListView(
-      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 132),
       children: [
-        Text(t.practiceOverviewTitle, style: AppText.title.copyWith(fontSize: 34, height: 1.06)),
+        Text(
+          t.practiceOverviewTitle,
+          style: AppText.title.copyWith(fontSize: 34, height: 1.06),
+        ),
         const SizedBox(height: 28),
         _statRow(t),
         const SizedBox(height: 40),
@@ -59,10 +92,9 @@ class SetOverviewView extends ConsumerWidget {
         const SizedBox(height: 8),
         for (final (i, ex) in exercises.indexed)
           _ExerciseRow(
-            name: ex.$1,
-            target: ex.$2,
-            accent: ex.$3,
+            exercise: ex,
             divider: i > 0,
+            onPressed: () => showExerciseInfoSheet(context, ex),
           ),
       ],
     );
@@ -105,7 +137,11 @@ class SetOverviewView extends ConsumerWidget {
                   child: const SizedBox(
                     width: 44,
                     height: 44,
-                    child: Icon(Icons.more_horiz_rounded, size: 22, color: AppColors.muted),
+                    child: Icon(
+                      Icons.more_horiz_rounded,
+                      size: 22,
+                      color: AppColors.muted,
+                    ),
                   ),
                 ),
               ),
@@ -117,20 +153,23 @@ class SetOverviewView extends ConsumerWidget {
   }
 
   /// The set-overview footer — an "adjust" button and the start CTA.
-  static Widget footer({required WidgetRef ref, required BuildContext context}) {
+  static Widget footer({
+    required WidgetRef ref,
+    required BuildContext context,
+  }) {
     final t = AppLocalizations.of(context);
 
     return Row(
       children: [
-        SizedBox(
-          width: 76,
-          height: 58,
-          child: _AdjustButton(
-            label: t.practiceOverviewAdjust,
-            onTap: () => showAppToast(ref, t.practiceOverviewAdjustToast),
-          ),
-        ),
-        const SizedBox(width: 12),
+        // SizedBox(
+        //   width: 76,
+        //   height: 58,
+        //   child: _AdjustButton(
+        //     label: t.practiceOverviewAdjust,
+        //     onTap: () => showAppToast(ref, t.practiceOverviewAdjustToast),
+        //   ),
+        // ),
+        // const SizedBox(width: 12),
         Expanded(
           child: SizedBox(
             height: 58,
@@ -149,15 +188,24 @@ class SetOverviewView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: _Stat(value: t.practiceOverviewStatLevel, caption: t.practiceOverviewStatLevelLabel),
+          child: _Stat(
+            value: t.practiceOverviewStatLevel,
+            caption: t.practiceOverviewStatLevelLabel,
+          ),
         ),
         const _StatDivider(),
         Expanded(
-          child: _Stat(value: t.practiceOverviewStatDuration, caption: t.practiceOverviewStatDurationLabel),
+          child: _Stat(
+            value: t.practiceOverviewStatDuration,
+            caption: t.practiceOverviewStatDurationLabel,
+          ),
         ),
         const _StatDivider(),
         Expanded(
-          child: _Stat(value: t.practiceOverviewStatFocus, caption: t.practiceOverviewStatFocusLabel),
+          child: _Stat(
+            value: t.practiceOverviewStatFocus,
+            caption: t.practiceOverviewStatFocusLabel,
+          ),
         ),
       ],
     ),
@@ -179,10 +227,17 @@ class _Stat extends StatelessWidget {
         children: [
           Text(
             value,
-            style: const TextStyle(fontSize: 17, height: 1.3, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontSize: 17,
+              height: 1.3,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 8),
-          Text(caption, style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+          Text(
+            caption,
+            style: const TextStyle(fontSize: 12, color: AppColors.muted),
+          ),
         ],
       ),
     );
@@ -199,54 +254,82 @@ class _StatDivider extends StatelessWidget {
 
 class _ExerciseRow extends StatelessWidget {
   const _ExerciseRow({
-    required this.name,
-    required this.target,
-    required this.accent,
+    required this.exercise,
     required this.divider,
+    required this.onPressed,
   });
 
-  final String name;
-  final String target;
-  final Color accent;
+  final ExerciseOverviewInfo exercise;
   final bool divider;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: divider
-          ? const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line)))
-          : null,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Row(
-          children: [
-            Container(
-              width: 86,
-              height: 72,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Icon(Icons.accessibility_new_rounded, size: 34, color: accent),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+    return Semantics(
+      button: true,
+      label: exercise.name,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(AppRadii.card),
+          child: Container(
+            decoration: divider
+                ? const BoxDecoration(
+                    border: Border(top: BorderSide(color: AppColors.line)),
+                  )
+                : null,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 86,
+                  height: 72,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(18),
                   ),
-                  const SizedBox(height: 8),
-                  Text(target, style: const TextStyle(fontSize: 15, color: AppColors.muted)),
-                ],
-              ),
+                  child: Icon(
+                    Icons.accessibility_new_rounded,
+                    size: 34,
+                    color: exercise.accent,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        exercise.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        exercise.target,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: AppColors.muted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  size: 22,
+                  color: AppColors.muted2,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -277,7 +360,11 @@ class _AdjustButton extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.tune_rounded, size: 20, color: AppColors.textSoft),
+              const Icon(
+                Icons.tune_rounded,
+                size: 20,
+                color: AppColors.textSoft,
+              ),
               const SizedBox(height: 4),
               Text(
                 label,
