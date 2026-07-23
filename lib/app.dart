@@ -8,17 +8,17 @@ import 'core/widgets/toast.dart';
 import 'l10n/app_localizations.dart';
 import 'router.dart';
 
-class MachApp extends ConsumerStatefulWidget {
-  const MachApp({super.key});
+class FitnessApp extends ConsumerStatefulWidget {
+  const FitnessApp({super.key});
 
   @override
-  ConsumerState<MachApp> createState() => _MachAppState();
+  ConsumerState<FitnessApp> createState() => _FitnessAppState();
 }
 
-class _MachAppState extends ConsumerState<MachApp> {
-  // Built once: rebuilding the router on every locale change would reset the
-  // navigation stack.
-  late final _router = createRouter();
+class _FitnessAppState extends ConsumerState<FitnessApp> {
+  // Read, not watched: rebuilding the router on every locale change would
+  // reset the navigation stack.
+  late final _router = ref.read(routerProvider);
 
   @override
   Widget build(BuildContext context) {

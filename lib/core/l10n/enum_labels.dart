@@ -24,6 +24,33 @@ extension ExperienceLevelL10n on ExperienceLevel {
   };
 }
 
+extension RecentActivityLevelL10n on RecentActivityLevel {
+  String label(AppLocalizations t) => switch (this) {
+    RecentActivityLevel.veryLow => t.recentActivityVeryLow,
+    RecentActivityLevel.low => t.recentActivityLow,
+    RecentActivityLevel.moderate => t.recentActivityModerate,
+    RecentActivityLevel.high => t.recentActivityHigh,
+  };
+
+  /// Condensed label for the 4-across segmented control.
+  String shortLabel(AppLocalizations t) => switch (this) {
+    RecentActivityLevel.veryLow => t.recentActivityVeryLowShort,
+    RecentActivityLevel.low => t.recentActivityLowShort,
+    RecentActivityLevel.moderate => t.recentActivityModerateShort,
+    RecentActivityLevel.high => t.recentActivityHighShort,
+  };
+}
+
+extension DetrainingGapL10n on DetrainingGap {
+  String label(AppLocalizations t) => switch (this) {
+    DetrainingGap.none => t.detrainingNone,
+    DetrainingGap.underMonth => t.detrainingUnderMonth,
+    DetrainingGap.oneToThreeMonths => t.detrainingOneToThreeMonths,
+    DetrainingGap.threeToTwelveMonths => t.detrainingThreeToTwelveMonths,
+    DetrainingGap.overYear => t.detrainingOverYear,
+  };
+}
+
 extension InjuryAreaL10n on InjuryArea {
   String label(AppLocalizations t) => switch (this) {
     InjuryArea.knee => t.injuryAreaKnee,

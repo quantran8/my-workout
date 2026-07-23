@@ -8,8 +8,11 @@ import '../../../../core/widgets/input_card.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/screen_scaffold.dart';
 import '../../../../core/widgets/selection_controls.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
+import '../../data/profile_messages.dart';
+import '../../data/profile_submit_controller.dart';
 import '../../models/onboarding_data.dart';
 import '../controller/onboarding_controller.dart';
 import '../widgets/review_summary_card.dart';
@@ -19,12 +22,28 @@ import '../widgets/review_summary_card.dart';
 class RawReviewScreen extends ConsumerWidget {
   const RawReviewScreen({super.key});
 
+  /// Persists the profile, then moves on to generation. The plan is derived
+  /// from the stored profile server-side, so the save has to land first —
+  /// on failure the user stays here with every answer intact.
+  static Future<void> _submit(BuildContext context, WidgetRef ref) async {
+    final t = AppLocalizations.of(context);
+    try {
+      await ref.read(profileSubmitProvider.notifier).submit();
+      if (!context.mounted) return;
+      context.go(Routes.generating);
+    } catch (error) {
+      if (!context.mounted) return;
+      showAppToast(ref, profileErrorMessage(t, error));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final data = ref.watch(onboardingProvider);
     final notifier = ref.read(onboardingProvider.notifier);
     final c = data.constraint;
+    final saving = ref.watch(profileSubmitProvider).isLoading;
 
     return ScreenScaffold(
       progress: Routes.progressFor(Routes.review),
@@ -33,10 +52,10 @@ class RawReviewScreen extends ConsumerWidget {
         leading: CircleBackButton(onTap: () => context.go(Routes.diet)),
       ),
       footer: PrimaryButton(
-        label: t.reviewGenerateCta,
+        label: saving ? t.reviewSavingCta : t.reviewGenerateCta,
         variant: PrimaryButtonVariant.lime,
-        onPressed: data.confirmed
-            ? () => context.go(Routes.generating)
+        onPressed: data.confirmed && !saving
+            ? () => _submit(context, ref)
             : null,
       ),
       body: Column(
@@ -113,6 +132,14 @@ class RawReviewScreen extends ConsumerWidget {
               ReviewRow(
                 t.basicsExperienceLabel,
                 c.experienceLevel.label(t),
+              ),
+              ReviewRow(
+                t.reviewRecentActivityLabel,
+                c.recentActivityLevel.label(t),
+              ),
+              ReviewRow(
+                t.reviewDetrainingLabel,
+                c.detrainingGap.label(t),
               ),
             ],
           ),

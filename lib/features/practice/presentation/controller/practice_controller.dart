@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/practice_mapper.dart';
+import '../../data/practice_repository.dart';
+import '../../models/session_models.dart';
+
 part 'practice_controller.g.dart';
 
 /// The two top-level workout kinds the practice flow can enter.
@@ -35,7 +39,8 @@ enum CardioCase { continuous, structured }
 /// A set-mode exercise is either counted in reps or held for a duration.
 enum ExerciseKind { reps, timed }
 
-/// One exercise in the looping set flow. Hardcoded to match the prototype.
+/// One exercise in the set flow, projected from the backend's execution
+/// snapshot so the view layer never touches wire types.
 class Exercise {
   const Exercise({
     required this.kind,
@@ -43,7 +48,40 @@ class Exercise {
     required this.reps,
     required this.seconds,
     required this.progress,
+    this.executionItemId,
+    this.exerciseId,
+    this.prescriptionId,
+    this.movementPattern,
+    this.targetSets = 1,
+    this.targetWeightKg,
+    this.restSec = 30,
+    this.detail,
   });
+
+  /// Derives the runner's view of one execution item. [progress] is the
+  /// header bar's fill: position within the session, which the prototype
+  /// previously hardcoded per exercise.
+  factory Exercise.fromExecutionItem(
+    ExecutionItem item, {
+    required int index,
+    required int total,
+  }) {
+    final rx = item.effectiveRx;
+    return Exercise(
+      kind: rx.isTimed ? ExerciseKind.timed : ExerciseKind.reps,
+      name: item.displayName,
+      reps: rx.targetReps ?? 0,
+      seconds: rx.targetDurationSec ?? 0,
+      progress: total == 0 ? 0 : (index + 1) / total,
+      executionItemId: item.id,
+      exerciseId: item.exerciseId,
+      movementPattern: item.movementPattern ?? item.exercise?.movementPattern,
+      targetSets: rx.targetSets,
+      targetWeightKg: rx.targetWeightKg,
+      restSec: rx.restSec,
+      detail: item.exercise,
+    );
+  }
 
   final ExerciseKind kind;
   final String name;
@@ -56,6 +94,20 @@ class Exercise {
 
   /// Header progress-bar fill while this exercise is active, 0..1.
   final double progress;
+
+  /// Identifiers needed to log against this item. Null in the offline demo
+  /// state, where nothing is posted.
+  final String? executionItemId;
+  final String? exerciseId;
+  final String? prescriptionId;
+  final String? movementPattern;
+
+  final int targetSets;
+  final double? targetWeightKg;
+  final int restSec;
+
+  /// The library row — instructions and media for the guide sheet.
+  final ExerciseDetail? detail;
 }
 
 /// One step of the structured interval run. `round`/`roundTotal` label the
@@ -68,7 +120,33 @@ class CardioStep {
     required this.target,
     required this.next,
     required this.flex,
+    this.instruction,
   });
+
+  /// Projects a backend interval block. `title` stays a symbolic key so
+  /// `cardio_structured_view` can keep localizing it; `phase` keeps the
+  /// "step:n:total" form that view already parses.
+  factory CardioStep.fromBlock(
+    CardioBlock block, {
+    required int index,
+    required int total,
+  }) {
+    final title = switch (block.phase) {
+      BlockPhase.warmup => 'warmup',
+      BlockPhase.work => 'fast',
+      BlockPhase.recovery => 'recover',
+      BlockPhase.cooldown => 'cooldown',
+    };
+    return CardioStep(
+      title: title,
+      phase: 'step:${index + 1}:$total',
+      duration: block.durationSec ?? 0,
+      target: title,
+      next: index + 1 < total ? 'step:${index + 2}' : 'finish',
+      flex: block.flex,
+      instruction: block.instruction.isEmpty ? null : block.instruction,
+    );
+  }
 
   final String title;
   final String phase;
@@ -82,6 +160,9 @@ class CardioStep {
 
   /// Relative width in the header progress bar.
   final int flex;
+
+  /// The coach's cue for this step, when the backend supplied one.
+  final String? instruction;
 }
 
 /// Immutable snapshot of the active session, ported from the prototype's
@@ -103,13 +184,21 @@ class PracticeState {
     this.structuredIndex = 1,
     this.structuredSeconds = 138,
     this.structuredRunning = true,
+    this.sessionId,
+    this.programRevisionId,
+    this.loadedExercises,
+    this.loadedStructuredSteps,
+    this.setNumber = 1,
+    this.loading = false,
+    this.readiness,
   });
 
   static const _restDuration = 30;
   static const _defaultTimed = 30;
 
-  /// The looping set-mode exercises: reps → timed → reps → …
-  static const exercises = [
+  /// Fallback used before a session is loaded (and by the offline demo): the
+  /// looping set-mode exercises reps → timed → reps → …
+  static const demoExercises = [
     Exercise(
       kind: ExerciseKind.reps,
       name: 'Squat',
@@ -127,7 +216,7 @@ class PracticeState {
   ];
 
   /// The structured interval run: warm-up, three fast/recovery cycles, cool-down.
-  static const structuredSteps = [
+  static const demoStructuredSteps = [
     CardioStep(
       title: 'warmup',
       phase: 'step:1:8',
@@ -221,11 +310,50 @@ class PracticeState {
   final int structuredSeconds;
   final bool structuredRunning;
 
+  /// Set once the session shell exists server-side; null in the offline demo,
+  /// which is what every log call checks before posting.
+  final String? sessionId;
+  final String? programRevisionId;
+
+  /// The execution snapshot projected into runner form. Null until loaded, when
+  /// [exercises] falls back to [demoExercises].
+  final List<Exercise>? loadedExercises;
+
+  /// Interval steps from the session's structured cardio prescription. Null
+  /// until loaded, when [structuredSteps] falls back to the demo sequence.
+  final List<CardioStep>? loadedStructuredSteps;
+
+  /// Which set of the current exercise is being performed, 1-based.
+  final int setNumber;
+
+  final bool loading;
+
+  /// The readiness verdict, kept so the runner can surface *why* the session
+  /// was reduced.
+  final ReadinessResult? readiness;
+
   bool get resting => stage == PracticeStage.setRest;
+
+  /// The live exercise list: the loaded session when there is one, otherwise
+  /// the demo loop so the screens still render standalone.
+  List<Exercise> get exercises {
+    final loaded = loadedExercises;
+    return loaded == null || loaded.isEmpty ? demoExercises : loaded;
+  }
+
+  /// True once the session came from the backend rather than the demo constant.
+  bool get isLive => sessionId != null;
 
   Exercise get exercise => exercises[exerciseIndex % exercises.length];
   Exercise get nextExercise =>
       exercises[(exerciseIndex + 1) % exercises.length];
+
+  /// The live interval sequence: the session's own steps when loaded, the demo
+  /// sequence otherwise.
+  List<CardioStep> get structuredSteps {
+    final loaded = loadedStructuredSteps;
+    return loaded == null || loaded.isEmpty ? demoStructuredSteps : loaded;
+  }
 
   CardioStep get structuredStep =>
       structuredSteps[structuredIndex.clamp(0, structuredSteps.length - 1)];
@@ -244,6 +372,13 @@ class PracticeState {
     int? structuredIndex,
     int? structuredSeconds,
     bool? structuredRunning,
+    String? sessionId,
+    String? programRevisionId,
+    List<Exercise>? loadedExercises,
+    List<CardioStep>? loadedStructuredSteps,
+    int? setNumber,
+    bool? loading,
+    ReadinessResult? readiness,
   }) => PracticeState(
     mode: mode ?? this.mode,
     stage: stage ?? this.stage,
@@ -260,6 +395,13 @@ class PracticeState {
     structuredIndex: structuredIndex ?? this.structuredIndex,
     structuredSeconds: structuredSeconds ?? this.structuredSeconds,
     structuredRunning: structuredRunning ?? this.structuredRunning,
+    sessionId: sessionId ?? this.sessionId,
+    programRevisionId: programRevisionId ?? this.programRevisionId,
+    loadedExercises: loadedExercises ?? this.loadedExercises,
+    loadedStructuredSteps: loadedStructuredSteps ?? this.loadedStructuredSteps,
+    setNumber: setNumber ?? this.setNumber,
+    loading: loading ?? this.loading,
+    readiness: readiness ?? this.readiness,
   );
 }
 
@@ -295,6 +437,150 @@ class Practice extends _$Practice {
     );
   }
 
+  // --- Session lifecycle --------------------------------------------------
+
+  /// Creates the session shell and submits readiness, returning the verdict so
+  /// the caller can stop before training when it is `hold`.
+  ///
+  /// The execution snapshot is built separately by [loadExecution], because a
+  /// `hold` verdict means we never get that far.
+  Future<ReadinessResult> beginSession({
+    required String programRevisionId,
+    String? plannedSessionId,
+    required ReadinessAnswers readiness,
+    TrainingEnvironment environment = TrainingEnvironment.unknown,
+  }) async {
+    state = state.copyWith(loading: true);
+    try {
+      final repository = ref.read(practiceRepositoryProvider);
+      final sessionId = await repository.createSession(
+        programRevisionId: programRevisionId,
+        plannedSessionId: plannedSessionId,
+        environment: environment,
+      );
+      final verdict = await repository.submitReadiness(sessionId, readiness);
+      state = state.copyWith(
+        sessionId: sessionId,
+        programRevisionId: programRevisionId,
+        readiness: verdict,
+        loading: false,
+      );
+      return verdict;
+    } catch (_) {
+      state = state.copyWith(loading: false);
+      rethrow;
+    }
+  }
+
+  /// Fetches the execution snapshot and projects it into the runner's shape.
+  /// Held and skipped items are dropped — they are not performed.
+  Future<void> loadExecution() async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+
+    state = state.copyWith(loading: true);
+    try {
+      final snapshot = await ref
+          .read(practiceRepositoryProvider)
+          .buildExecution(sessionId);
+
+      final performed = snapshot.items.where((item) => item.isPerformed).toList()
+        ..sort((a, b) => a.order.compareTo(b.order));
+
+      // A structured cardio prescription carries interval blocks; the first one
+      // found drives the structured runner.
+      final structured = performed
+          .where((item) => item.isStructured)
+          .firstOrNull;
+
+      state = state.copyWith(
+        loadedExercises: [
+          for (final (index, item) in performed.indexed)
+            Exercise.fromExecutionItem(
+              item,
+              index: index,
+              total: performed.length,
+            ),
+        ],
+        loadedStructuredSteps: structured == null
+            ? null
+            : [
+                for (final (index, block) in structured.blocks.indexed)
+                  CardioStep.fromBlock(
+                    block,
+                    index: index,
+                    total: structured.blocks.length,
+                  ),
+              ],
+        exerciseIndex: 0,
+        setNumber: 1,
+        loading: false,
+      );
+    } catch (_) {
+      state = state.copyWith(loading: false);
+      rethrow;
+    }
+  }
+
+  /// Posts the set just finished. Silently no-ops offline so the demo flow and
+  /// the timers keep working without a backend.
+  Future<void> _logCurrentSet({int? reps, int? durationSec}) async {
+    final sessionId = state.sessionId;
+    final exercise = state.exercise;
+    final exerciseId = exercise.exerciseId;
+    if (sessionId == null || exerciseId == null) return;
+
+    await ref.read(practiceRepositoryProvider).logSets(sessionId, [
+      SetEntry(
+        exerciseId: exerciseId,
+        setNumber: state.setNumber,
+        executionItemId: exercise.executionItemId,
+        movementPattern: exercise.movementPattern,
+        actualReps: reps,
+        actualDurationSec: durationSec,
+        actualWeightKg: exercise.targetWeightKg,
+      ),
+    ]);
+  }
+
+  /// Sends one feedback event. `pain_stop` additionally halts the flow through
+  /// [painStop], which the caller invokes.
+  Future<void> sendFeedback(
+    String type, {
+    String? bodyArea,
+    int? severity,
+    String? notes,
+  }) async {
+    final sessionId = state.sessionId;
+    final exerciseId = state.exercise.exerciseId;
+    if (sessionId == null || exerciseId == null) return;
+
+    await ref
+        .read(practiceRepositoryProvider)
+        .recordFeedback(
+          sessionId,
+          exerciseId: exerciseId,
+          type: type,
+          executionItemId: state.exercise.executionItemId,
+          movementPattern: state.exercise.movementPattern,
+          bodyArea: bodyArea,
+          severity: severity,
+          notes: notes,
+        );
+  }
+
+  /// Ends the session server-side. [sessionRpe] is the 1–10 effort rating from
+  /// the finish sheet, which the prototype collected and discarded.
+  Future<void> completeSession({int? sessionRpe}) async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+
+    _cancelAll();
+    await ref
+        .read(practiceRepositoryProvider)
+        .complete(sessionId, sessionRpe: sessionRpe);
+  }
+
   // --- Set flow -----------------------------------------------------------
 
   /// "Bắt đầu tập" — leave the overview and start the first exercise.
@@ -313,9 +599,13 @@ class Practice extends _$Practice {
     state = state.copyWith(stage: PracticeStage.setOverview);
   }
 
-  /// The check button on a reps exercise: go straight to rest.
+  /// The check button on a reps exercise: log the set, then rest.
+  ///
+  /// The log is fire-and-forget so a slow network never stalls the rest timer;
+  /// a failed post is dropped rather than blocking the workout.
   void completeReps() {
     if (state.painStopped) return;
+    unawaited(_logCurrentSet(reps: state.exercise.reps).catchError((_) {}));
     _startRest();
   }
 
@@ -339,13 +629,15 @@ class Practice extends _$Practice {
   void _showExercise(int index) {
     _timedTimer?.cancel();
     _restTimer?.cancel();
-    final count = PracticeState.exercises.length;
+    final count = state.exercises.length;
     final wrappedIndex = index % count;
-    final exercise = PracticeState.exercises[wrappedIndex];
+    final exercise = state.exercises[wrappedIndex];
 
     state = state.copyWith(
       stage: PracticeStage.setActive,
       exerciseIndex: wrappedIndex,
+      // Moving to another exercise restarts its set counter.
+      setNumber: 1,
       timedRunning: exercise.kind == ExerciseKind.timed,
       timedSeconds: exercise.seconds > 0
           ? exercise.seconds
@@ -361,6 +653,12 @@ class Practice extends _$Practice {
       if (!state.timedRunning) return;
       final next = state.timedSeconds - 1;
       if (next <= 0) {
+        // A hold that ran to zero was completed for its full prescribed time.
+        unawaited(
+          _logCurrentSet(
+            durationSec: state.exercise.seconds,
+          ).catchError((_) {}),
+        );
         _startRest();
       } else {
         state = state.copyWith(timedSeconds: next);
@@ -371,9 +669,12 @@ class Practice extends _$Practice {
   void _startRest() {
     _timedTimer?.cancel();
     _restTimer?.cancel();
+    // The prescription owns the rest interval; the constant is only the
+    // fallback for the demo state.
+    final rest = state.exercise.restSec;
     state = state.copyWith(
       stage: PracticeStage.setRest,
-      restSeconds: PracticeState._restDuration,
+      restSeconds: rest > 0 ? rest : PracticeState._restDuration,
     );
     _restTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       final next = state.restSeconds - 1;
@@ -385,15 +686,23 @@ class Practice extends _$Practice {
     });
   }
 
-  /// End rest and advance to the next exercise in the loop.
+  /// End rest. Stays on the current exercise until its prescribed sets are
+  /// done, then advances — the prototype always advanced, which would log a
+  /// single set for a 3-set prescription.
   void skipRest() {
     _restTimer?.cancel();
-    final nextIndex = state.exerciseIndex + 1;
-    final next =
-        PracticeState.exercises[nextIndex % PracticeState.exercises.length];
+
+    final current = state.exercise;
+    final hasSetsLeft = state.setNumber < current.targetSets;
+    final nextIndex = hasSetsLeft
+        ? state.exerciseIndex
+        : state.exerciseIndex + 1;
+    final next = state.exercises[nextIndex % state.exercises.length];
+
     state = state.copyWith(
       stage: PracticeStage.setActive,
       exerciseIndex: nextIndex,
+      setNumber: hasSetsLeft ? state.setNumber + 1 : 1,
       timedRunning: true,
       timedSeconds: next.seconds > 0
           ? next.seconds
@@ -426,7 +735,7 @@ class Practice extends _$Practice {
       state = state.copyWith(
         stage: PracticeStage.cardioStructured,
         structuredIndex: 1,
-        structuredSeconds: PracticeState.structuredSteps[1].duration,
+        structuredSeconds: state.structuredSteps[1].duration,
         structuredRunning: true,
       );
       _startStructuredTimer();
@@ -493,10 +802,11 @@ class Practice extends _$Practice {
   /// Skip to the next step; the last step's skip ends the run's timer.
   void skipStructuredStep() {
     final nextIndex = state.structuredIndex + 1;
-    if (nextIndex >= PracticeState.structuredSteps.length) {
+    final steps = state.structuredSteps;
+    if (nextIndex >= steps.length) {
       _structuredTimer?.cancel();
       state = state.copyWith(
-        structuredIndex: PracticeState.structuredSteps.length - 1,
+        structuredIndex: steps.length - 1,
         structuredSeconds: 0,
         structuredRunning: false,
       );
@@ -504,7 +814,7 @@ class Practice extends _$Practice {
     }
     state = state.copyWith(
       structuredIndex: nextIndex,
-      structuredSeconds: PracticeState.structuredSteps[nextIndex].duration,
+      structuredSeconds: steps[nextIndex].duration,
       structuredRunning: true,
     );
     _startStructuredTimer();

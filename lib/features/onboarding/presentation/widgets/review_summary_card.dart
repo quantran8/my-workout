@@ -112,9 +112,13 @@ class _Row extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            row.label,
-            style: const TextStyle(fontSize: 13, color: AppColors.muted),
+          // Flexible: a long localized label ("Last consistent training")
+          // otherwise pushes the value column off the card.
+          Flexible(
+            child: Text(
+              row.label,
+              style: const TextStyle(fontSize: 13, color: AppColors.muted),
+            ),
           ),
           const SizedBox(width: 18),
           Expanded(

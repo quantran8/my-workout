@@ -4,10 +4,25 @@ import '../../../../core/theme/tokens.dart';
 import '../../../../core/theme/typography.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// The end-of-session summary with a 1–10 effort rating. Resolves to true when
-/// the user saves, false when they choose to keep training (or dismiss).
-Future<bool> showFinishSheet(BuildContext context, AppLocalizations t) async {
-  final saved = await showModalBottomSheet<bool>(
+/// What the user chose on the finish sheet. [sessionRpe] is the 1–10
+/// whole-session effort the backend stores as `sessionRpe` — distinct from a
+/// single set's `actualRpe`, and collectable only here.
+class FinishResult {
+  const FinishResult({required this.saved, this.sessionRpe});
+
+  /// The user kept training (or dismissed) — nothing is submitted.
+  const FinishResult.cancelled() : this(saved: false);
+
+  final bool saved;
+  final int? sessionRpe;
+}
+
+/// The end-of-session summary with a 1–10 effort rating.
+Future<FinishResult> showFinishSheet(
+  BuildContext context,
+  AppLocalizations t,
+) async {
+  final result = await showModalBottomSheet<FinishResult>(
     context: context,
     backgroundColor: Colors.transparent,
     barrierColor: Colors.black.withValues(alpha: 0.70),
@@ -15,7 +30,7 @@ Future<bool> showFinishSheet(BuildContext context, AppLocalizations t) async {
     isDismissible: false,
     builder: (context) => const _FinishSheet(),
   );
-  return saved ?? false;
+  return result ?? const FinishResult.cancelled();
 }
 
 class _FinishSheet extends StatefulWidget {
@@ -67,7 +82,9 @@ class _FinishSheetState extends State<_FinishSheet> {
             width: double.infinity,
             height: 54,
             child: FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
+              onPressed: () => Navigator.of(
+                context,
+              ).pop(FinishResult(saved: true, sessionRpe: _effort)),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.lime,
                 foregroundColor: AppColors.onLime,
@@ -86,7 +103,8 @@ class _FinishSheetState extends State<_FinishSheet> {
             width: double.infinity,
             height: 46,
             child: TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () =>
+                  Navigator.of(context).pop(const FinishResult.cancelled()),
               child: Text(
                 t.practiceContinueWorkout,
                 style: const TextStyle(

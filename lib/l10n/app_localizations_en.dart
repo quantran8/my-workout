@@ -1320,4 +1320,294 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get practiceCardioSkipStep => 'Skip current step';
+
+  @override
+  String get authLoginEyebrow => 'Welcome back';
+
+  @override
+  String get authLoginHeadline => 'Sign in\nto continue.';
+
+  @override
+  String get authLoginBody => 'Your plan and training history are waiting.';
+
+  @override
+  String get authRegisterEyebrow => 'Start your journey';
+
+  @override
+  String get authRegisterHeadline => 'Create a free\naccount.';
+
+  @override
+  String get authRegisterBody =>
+      'Your plan keeps learning from every session. An account gives your profile and history somewhere to live.';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authEmailHint => 'you@email.com';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authPasswordHint => 'At least 8 characters';
+
+  @override
+  String get authConfirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get authConfirmPasswordHint => 'Re-enter your password';
+
+  @override
+  String get authFullNameLabel => 'Display name';
+
+  @override
+  String get authFullNameHint => 'Your name (optional)';
+
+  @override
+  String get authLoginCta => 'Sign in';
+
+  @override
+  String get authRegisterCta => 'Create account';
+
+  @override
+  String get authToRegister => 'No account yet? Sign up';
+
+  @override
+  String get authToLogin => 'Already have an account? Sign in';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
+
+  @override
+  String get authLogoutCta => 'Sign out';
+
+  @override
+  String get authErrorInvalidEmail => 'Enter a valid email address';
+
+  @override
+  String get authErrorPasswordTooShort =>
+      'Password must be at least 8 characters';
+
+  @override
+  String get authErrorPasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get authErrorInvalidCredentials => 'Incorrect email or password';
+
+  @override
+  String get authErrorEmailTaken => 'That email is already registered';
+
+  @override
+  String get authErrorWeakPassword => 'That password is not strong enough';
+
+  @override
+  String get authErrorNetwork =>
+      'Could not reach the server. Check your connection and try again.';
+
+  @override
+  String get authErrorUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get authNeedsEmailConfirm =>
+      'Check your inbox to confirm your email, then sign in.';
+
+  @override
+  String get authRegisterSuccess => 'Account created';
+
+  @override
+  String get reviewSavingCta => 'Saving your profile…';
+
+  @override
+  String get profileSaveErrorNetwork =>
+      'Could not reach the server. Check your connection and try again.';
+
+  @override
+  String get profileSaveErrorUnauthorized =>
+      'Your session expired. Please sign in again.';
+
+  @override
+  String get profileSaveErrorUnknown =>
+      'Could not save your profile. Please try again.';
+
+  @override
+  String get basicsRecentActivityLabel => 'Recent activity level';
+
+  @override
+  String get basicsRecentActivityHelp =>
+      'How active have you been over the past 3 months? This is asked separately from experience — years of training followed by a long break still needs an easier restart.';
+
+  @override
+  String get recentActivityVeryLow => 'Barely active';
+
+  @override
+  String get recentActivityLow => 'Some walking, little training';
+
+  @override
+  String get recentActivityModerate => 'Training 1–2 times a week';
+
+  @override
+  String get recentActivityHigh => 'Training 3+ times a week';
+
+  @override
+  String get recentActivityVeryLowShort => 'Very low';
+
+  @override
+  String get recentActivityLowShort => 'Low';
+
+  @override
+  String get recentActivityModerateShort => 'Moderate';
+
+  @override
+  String get recentActivityHighShort => 'High';
+
+  @override
+  String get basicsDetrainingLabel => 'Last trained consistently';
+
+  @override
+  String get basicsDetrainingHelp =>
+      'After a break of 3 months or more, the program starts lighter to let your body re-adapt.';
+
+  @override
+  String get detrainingNone => 'Training consistently now';
+
+  @override
+  String get detrainingUnderMonth => 'Less than a month ago';
+
+  @override
+  String get detrainingOneToThreeMonths => '1–3 months ago';
+
+  @override
+  String get detrainingThreeToTwelveMonths => '3–12 months ago';
+
+  @override
+  String get detrainingOverYear => 'Over a year ago';
+
+  @override
+  String get reviewRecentActivityLabel => 'Recent activity';
+
+  @override
+  String get reviewDetrainingLabel => 'Last consistent training';
+
+  @override
+  String get readinessTitle => 'Before you train';
+
+  @override
+  String get readinessHeadline => 'How are you today?';
+
+  @override
+  String get readinessBody =>
+      'A few quick questions so the session fits how you feel. Skip and the program will reduce the load to stay safe.';
+
+  @override
+  String get readinessDiscomfortQuestion =>
+      'Anything sore or uncomfortable right now?';
+
+  @override
+  String get readinessAreaLabel => 'Affected area';
+
+  @override
+  String get readinessSeverityLabel => 'Severity';
+
+  @override
+  String get readinessAffectsMovement => 'Affects normal movement';
+
+  @override
+  String get readinessSorenessLabel => 'Soreness left from last session';
+
+  @override
+  String get readinessSorenessHigh => 'High';
+
+  @override
+  String get readinessEnergyLabel => 'Energy level';
+
+  @override
+  String get readinessEnergyLow => 'Low';
+
+  @override
+  String get readinessEnergyOk => 'Normal';
+
+  @override
+  String get readinessEnergyHigh => 'High';
+
+  @override
+  String get readinessExternalLoadsLabel => 'Other factors';
+
+  @override
+  String get readinessPoorSleep => 'Poor sleep';
+
+  @override
+  String get readinessHighStress => 'High stress';
+
+  @override
+  String get readinessIllness => 'Feeling ill';
+
+  @override
+  String get readinessContinue => 'Continue';
+
+  @override
+  String get readinessSkip => 'Skip';
+
+  @override
+  String get readinessHoldTitle => 'Better to rest today';
+
+  @override
+  String get readinessModifiedTitle => 'Session adjusted';
+
+  @override
+  String get painDetailEyebrow => 'Stopping for pain';
+
+  @override
+  String get painDetailTitle => 'Where does it hurt?';
+
+  @override
+  String get painDetailAreaLabel => 'Area';
+
+  @override
+  String get painDetailSeverityLabel => 'Pain level';
+
+  @override
+  String get painDetailSeverityHelp =>
+      '1 = slightly uncomfortable · 5 = severe';
+
+  @override
+  String get painDetailConfirm => 'Record and stop';
+
+  @override
+  String get painDetailSkip => 'Stop without details';
+
+  @override
+  String get bodyAreaHip => 'Hip';
+
+  @override
+  String get bodyAreaElbow => 'Elbow';
+
+  @override
+  String get bodyAreaNeck => 'Neck';
+
+  @override
+  String get bodyAreaUpperBack => 'Upper back';
+
+  @override
+  String get practiceSessionLoadError =>
+      'Could not load the session. Check your connection and try again.';
+
+  @override
+  String get unitSecondsShort => 's';
+
+  @override
+  String get unitMinutesShort => 'm';
+
+  @override
+  String get practiceOverviewStatExercisesLabel => 'Exercises';
+
+  @override
+  String get practiceOverviewStatSetsLabel => 'Total sets';
+
+  @override
+  String get practiceOverviewNoGuide =>
+      'No detailed guide for this exercise yet.';
 }

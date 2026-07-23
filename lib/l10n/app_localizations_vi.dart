@@ -1315,4 +1315,292 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get practiceCardioSkipStep => 'Bỏ qua bước hiện tại';
+
+  @override
+  String get authLoginEyebrow => 'Chào mừng trở lại';
+
+  @override
+  String get authLoginHeadline => 'Đăng nhập\nđể tiếp tục.';
+
+  @override
+  String get authLoginBody => 'Kế hoạch và lịch sử tập của bạn đang chờ sẵn.';
+
+  @override
+  String get authRegisterEyebrow => 'Bắt đầu hành trình';
+
+  @override
+  String get authRegisterHeadline => 'Tạo tài khoản\nmiễn phí.';
+
+  @override
+  String get authRegisterBody =>
+      'Kế hoạch sẽ tiếp tục học từ từng buổi tập. Cần một tài khoản để giữ hồ sơ và lịch sử của bạn.';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authEmailHint => 'ban@email.com';
+
+  @override
+  String get authPasswordLabel => 'Mật khẩu';
+
+  @override
+  String get authPasswordHint => 'Ít nhất 8 ký tự';
+
+  @override
+  String get authConfirmPasswordLabel => 'Nhập lại mật khẩu';
+
+  @override
+  String get authConfirmPasswordHint => 'Nhập lại mật khẩu';
+
+  @override
+  String get authFullNameLabel => 'Tên hiển thị';
+
+  @override
+  String get authFullNameHint => 'Tên của bạn (không bắt buộc)';
+
+  @override
+  String get authLoginCta => 'Đăng nhập';
+
+  @override
+  String get authRegisterCta => 'Tạo tài khoản';
+
+  @override
+  String get authToRegister => 'Chưa có tài khoản? Đăng ký';
+
+  @override
+  String get authToLogin => 'Đã có tài khoản? Đăng nhập';
+
+  @override
+  String get authShowPassword => 'Hiện mật khẩu';
+
+  @override
+  String get authHidePassword => 'Ẩn mật khẩu';
+
+  @override
+  String get authLogoutCta => 'Đăng xuất';
+
+  @override
+  String get authErrorInvalidEmail => 'Hãy nhập email hợp lệ';
+
+  @override
+  String get authErrorPasswordTooShort => 'Mật khẩu cần ít nhất 8 ký tự';
+
+  @override
+  String get authErrorPasswordMismatch => 'Mật khẩu nhập lại không khớp';
+
+  @override
+  String get authErrorInvalidCredentials => 'Email hoặc mật khẩu không đúng';
+
+  @override
+  String get authErrorEmailTaken => 'Email này đã được đăng ký';
+
+  @override
+  String get authErrorWeakPassword => 'Mật khẩu chưa đủ mạnh';
+
+  @override
+  String get authErrorNetwork =>
+      'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.';
+
+  @override
+  String get authErrorUnknown => 'Có lỗi xảy ra. Vui lòng thử lại.';
+
+  @override
+  String get authNeedsEmailConfirm =>
+      'Kiểm tra hộp thư để xác nhận email, rồi đăng nhập.';
+
+  @override
+  String get authRegisterSuccess => 'Tạo tài khoản thành công';
+
+  @override
+  String get reviewSavingCta => 'Đang lưu hồ sơ…';
+
+  @override
+  String get profileSaveErrorNetwork =>
+      'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.';
+
+  @override
+  String get profileSaveErrorUnauthorized =>
+      'Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.';
+
+  @override
+  String get profileSaveErrorUnknown =>
+      'Không lưu được hồ sơ. Vui lòng thử lại.';
+
+  @override
+  String get basicsRecentActivityLabel => 'Mức vận động gần đây';
+
+  @override
+  String get basicsRecentActivityHelp =>
+      '3 tháng qua bạn vận động nhiều hay ít? Câu này tách riêng với kinh nghiệm — tập lâu năm nhưng nghỉ dài vẫn cần khởi động lại từ từ.';
+
+  @override
+  String get recentActivityVeryLow => 'Gần như không vận động';
+
+  @override
+  String get recentActivityLow => 'Thỉnh thoảng đi lại, ít tập';
+
+  @override
+  String get recentActivityModerate => 'Tập đều 1–2 buổi/tuần';
+
+  @override
+  String get recentActivityHigh => 'Tập đều từ 3 buổi/tuần';
+
+  @override
+  String get recentActivityVeryLowShort => 'Rất ít';
+
+  @override
+  String get recentActivityLowShort => 'Ít';
+
+  @override
+  String get recentActivityModerateShort => 'Vừa';
+
+  @override
+  String get recentActivityHighShort => 'Nhiều';
+
+  @override
+  String get basicsDetrainingLabel => 'Lần cuối tập đều đặn';
+
+  @override
+  String get basicsDetrainingHelp =>
+      'Nghỉ từ 3 tháng trở lên, chương trình sẽ giảm tải trong giai đoạn đầu để cơ thể thích nghi lại.';
+
+  @override
+  String get detrainingNone => 'Đang tập đều';
+
+  @override
+  String get detrainingUnderMonth => 'Dưới 1 tháng trước';
+
+  @override
+  String get detrainingOneToThreeMonths => '1–3 tháng trước';
+
+  @override
+  String get detrainingThreeToTwelveMonths => '3–12 tháng trước';
+
+  @override
+  String get detrainingOverYear => 'Hơn 1 năm trước';
+
+  @override
+  String get reviewRecentActivityLabel => 'Vận động gần đây';
+
+  @override
+  String get reviewDetrainingLabel => 'Lần cuối tập đều';
+
+  @override
+  String get readinessTitle => 'Trước khi tập';
+
+  @override
+  String get readinessHeadline => 'Hôm nay bạn thế nào?';
+
+  @override
+  String get readinessBody =>
+      'Vài câu nhanh để điều chỉnh buổi tập cho vừa sức. Bỏ qua thì chương trình sẽ tự giảm tải cho an toàn.';
+
+  @override
+  String get readinessDiscomfortQuestion =>
+      'Có chỗ nào đang đau hoặc khó chịu không?';
+
+  @override
+  String get readinessAreaLabel => 'Vùng bị ảnh hưởng';
+
+  @override
+  String get readinessSeverityLabel => 'Mức độ';
+
+  @override
+  String get readinessAffectsMovement => 'Ảnh hưởng tới vận động bình thường';
+
+  @override
+  String get readinessSorenessLabel => 'Đau nhức còn lại từ buổi trước';
+
+  @override
+  String get readinessSorenessHigh => 'Nhiều';
+
+  @override
+  String get readinessEnergyLabel => 'Mức năng lượng';
+
+  @override
+  String get readinessEnergyLow => 'Thấp';
+
+  @override
+  String get readinessEnergyOk => 'Bình thường';
+
+  @override
+  String get readinessEnergyHigh => 'Cao';
+
+  @override
+  String get readinessExternalLoadsLabel => 'Yếu tố khác';
+
+  @override
+  String get readinessPoorSleep => 'Ngủ không đủ';
+
+  @override
+  String get readinessHighStress => 'Căng thẳng nhiều';
+
+  @override
+  String get readinessIllness => 'Đang ốm';
+
+  @override
+  String get readinessContinue => 'Tiếp tục';
+
+  @override
+  String get readinessSkip => 'Bỏ qua';
+
+  @override
+  String get readinessHoldTitle => 'Nên nghỉ hôm nay';
+
+  @override
+  String get readinessModifiedTitle => 'Buổi tập đã được điều chỉnh';
+
+  @override
+  String get painDetailEyebrow => 'Dừng vì đau';
+
+  @override
+  String get painDetailTitle => 'Đau ở đâu?';
+
+  @override
+  String get painDetailAreaLabel => 'Vùng đau';
+
+  @override
+  String get painDetailSeverityLabel => 'Mức độ đau';
+
+  @override
+  String get painDetailSeverityHelp => '1 = hơi khó chịu · 5 = đau nhiều';
+
+  @override
+  String get painDetailConfirm => 'Ghi nhận và dừng';
+
+  @override
+  String get painDetailSkip => 'Dừng, không ghi chi tiết';
+
+  @override
+  String get bodyAreaHip => 'Hông';
+
+  @override
+  String get bodyAreaElbow => 'Khuỷu tay';
+
+  @override
+  String get bodyAreaNeck => 'Cổ';
+
+  @override
+  String get bodyAreaUpperBack => 'Lưng trên';
+
+  @override
+  String get practiceSessionLoadError =>
+      'Không tải được buổi tập. Kiểm tra mạng và thử lại.';
+
+  @override
+  String get unitSecondsShort => 's';
+
+  @override
+  String get unitMinutesShort => 'ph';
+
+  @override
+  String get practiceOverviewStatExercisesLabel => 'Bài tập';
+
+  @override
+  String get practiceOverviewStatSetsLabel => 'Tổng set';
+
+  @override
+  String get practiceOverviewNoGuide =>
+      'Chưa có hướng dẫn chi tiết cho bài này.';
 }

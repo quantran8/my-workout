@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/theme/app_theme.dart';
 import 'package:mobile/core/theme/tokens.dart';
 import 'package:mobile/features/home/data/access_controller.dart';
@@ -10,11 +11,17 @@ import 'package:mobile/features/home/presentation/widgets/progress_card.dart';
 import 'package:mobile/features/plan/data/mock_plan_repository.dart';
 import 'package:mobile/features/plan/data/plan_providers.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/router.dart';
+
 
 /// Wednesday — a training day in the seeded plan, with one session still open.
 final _wednesday = DateTime(2026, 7, 22, 9, 41);
 
-Future<ProviderContainer> pumpHome(
+/// The container plus the router, so a test can navigate back after the
+/// screen pushes another route.
+typedef HomeHarness = ({ProviderContainer container, GoRouter router});
+
+Future<HomeHarness> pumpHome(
   WidgetTester tester, {
   DateTime? now,
 }) async {
@@ -30,21 +37,36 @@ Future<ProviderContainer> pumpHome(
   );
   addTearDown(container.dispose);
 
+  // HomeScreen navigates with `context.go`, which needs a GoRouter in scope —
+  // a bare MaterialApp home would throw on the first tap. The practice route
+  // is a stub: this test only asserts that starting a session logs it.
+  final router = GoRouter(
+    initialLocation: '/',
+    routes: [
+      GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
+      GoRoute(
+        path: Routes.practice,
+        builder: (_, _) => const Scaffold(body: SizedBox.shrink()),
+      ),
+    ],
+  );
+  addTearDown(router.dispose);
+
   await tester.pumpWidget(
     UncontrolledProviderScope(
       container: container,
-      child: MaterialApp(
+      child: MaterialApp.router(
         theme: buildAppTheme(),
         locale: const Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const HomeScreen(),
+        routerConfig: router,
       ),
     ),
   );
   await tester.pumpAndSettle();
 
-  return container;
+  return (container: container, router: router);
 }
 
 /// The Progress card sits below the fold, and [ListView] only builds what is
@@ -87,7 +109,7 @@ void main() {
   });
 
   testWidgets('paid tier reveals verdict and domain trends', (tester) async {
-    final container = await pumpHome(tester);
+    final (:container, router: _) = await pumpHome(tester);
 
     container.read(accessProvider.notifier).toggle();
     await tester.pumpAndSettle();
@@ -100,21 +122,38 @@ void main() {
     expect(find.text('Confidence'), findsOneWidget);
   });
 
-  testWidgets('starting a session logs it and updates the metrics', (
-    tester,
-  ) async {
-    final container = await pumpHome(tester);
-    final before = container.read(sessionLogControllerProvider);
-    expect(before.streakAsOf(_wednesday), 0);
+  testWidgets('starting a session opens the practice screen', (tester) async {
+    final (:container, :router) = await pumpHome(tester);
+    expect(
+      container.read(sessionLogControllerProvider.notifier).hasPendingToday,
+      isTrue,
+    );
 
     await tester.tap(find.text('Start session'));
+    await tester.pumpAndSettle();
+
+    // The CTA only navigates — the day is logged when the user saves on the
+    // practice screen, not on the way in.
+    expect(
+      router.routerDelegate.currentConfiguration.uri.path,
+      Routes.practice,
+    );
+  });
+
+  testWidgets('completing a session updates the metrics and the CTA', (
+    tester,
+  ) async {
+    final (:container, :router) = await pumpHome(tester);
+    expect(container.read(sessionLogControllerProvider).streakAsOf(_wednesday), 0);
+
+    // Stands in for saving on the practice screen, which is what home reacts to.
+    container.read(sessionLogControllerProvider.notifier).completeToday();
     await tester.pumpAndSettle();
 
     final after = container.read(sessionLogControllerProvider);
     expect(after.streakAsOf(_wednesday), 2);
     expect(after.adherenceAsOf(_wednesday), 1);
 
-    // The CTA settles into its completed state rather than staying tappable.
     expect(find.text('Start session'), findsNothing);
     expect(find.text('Completed'), findsOneWidget);
   });

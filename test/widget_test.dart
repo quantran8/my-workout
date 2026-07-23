@@ -7,10 +7,10 @@ import 'package:mobile/core/theme/tokens.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('app boots into the account gate with the dark theme', (
+  testWidgets('app boots into the login screen with the dark theme', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: MachApp()));
+    await tester.pumpWidget(const ProviderScope(child: FitnessApp()));
     await tester.pump();
 
     final theme = Theme.of(tester.element(find.byType(Scaffold).first));
@@ -21,22 +21,24 @@ void main() {
   testWidgets('locale defaults to the device and follows an override', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: MachApp()));
+    await tester.pumpWidget(const ProviderScope(child: FitnessApp()));
     await tester.pump();
 
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(MachApp)),
+      tester.element(find.byType(FitnessApp)),
     );
     // null => follow the device locale.
     expect(container.read(localeControllerProvider), isNull);
 
+    // Signed out, so the router lands on /login — that screen's CTA is what
+    // the locale switch is observed through.
     container.read(localeControllerProvider.notifier).set(const Locale('vi'));
-    await tester.pump();
-    expect(find.text('Tiếp tục với Apple'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Đăng nhập'), findsWidgets);
 
     container.read(localeControllerProvider.notifier).set(const Locale('en'));
-    await tester.pump();
-    expect(find.text('Continue with Apple'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Sign in'), findsWidgets);
   });
 
   test('every supported locale resolves its keys', () {

@@ -8,6 +8,9 @@ import 'package:mobile/features/plan/data/mock_plan_repository.dart';
 import 'package:mobile/features/plan/data/plan_providers.dart';
 import 'package:mobile/features/plan/data/plan_repository.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/router.dart';
+
+import '../support/auth_override.dart';
 
 /// Boots the app in a phone-sized viewport with a fast mock so the loading
 /// screen doesn't dominate test time.
@@ -24,18 +27,19 @@ Future<ProviderContainer> _boot(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        ...signedInOverrides,
         planRepositoryProvider.overrideWithValue(
           const MockPlanRepository(delay: Duration(milliseconds: 10))
               as PlanRepository,
         ),
       ],
-      child: const MachApp(),
+      child: const FitnessApp(),
     ),
   );
   await tester.pump();
 
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(MachApp)),
+    tester.element(find.byType(FitnessApp)),
   );
   container.read(localeControllerProvider.notifier).set(locale);
   await tester.pump();
@@ -60,9 +64,10 @@ void main() {
     final container = await _boot(tester);
     final t = lookupAppLocalizations(const Locale('vi'));
 
-    // 1 — account gate. The seeded email is empty, so type one.
-    await tester.enterText(find.byType(TextField).first, 'minh@example.com');
-    await _tapText(tester, t.accountEmailCta);
+    // Signed in (see signedInOverrides), so the router skips the account gate
+    // and lands on /home. Jump to where onboarding begins.
+    container.read(routerProvider).go(Routes.welcome);
+    await tester.pumpAndSettle();
     expect(find.text(t.welcomeCta), findsOneWidget);
 
     // 2 — welcome.
@@ -123,13 +128,21 @@ void main() {
     final container = await _boot(tester);
     final t = lookupAppLocalizations(const Locale('vi'));
 
-    await tester.enterText(find.byType(TextField).first, 'minh@example.com');
-    await _tapText(tester, t.accountEmailCta);
+    container.read(routerProvider).go(Routes.welcome);
+    await tester.pumpAndSettle();
     await _tapText(tester, t.welcomeCta);
     await _tapText(tester, t.commonContinue); // story
 
     // Change the age on the basics screen, then carry on to review.
-    final ageField = find.byType(TextField).first;
+    // Located via its labelled field rather than by index: the basics screen
+    // has several inputs and their tree order is presentational.
+    final ageField = find.descendant(
+      of: find.ancestor(
+        of: find.text(t.basicsAgeLabel),
+        matching: find.byType(Column),
+      ).first,
+      matching: find.byType(TextField),
+    ).first;
     await tester.enterText(ageField, '31');
     await tester.pump();
     expect(container.read(onboardingProvider).constraint.age, 31);
@@ -158,11 +171,12 @@ void main() {
     await tester.ensureVisible(editLink.first);
     await tester.pump();
     await tester.tap(editLink.first);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpAndSettle();
 
-    // We landed back on basics with the entered age intact.
-    expect(find.text(t.basicsSexLabel), findsOneWidget);
+    // We landed back on basics with the entered age intact. `findsWidgets`:
+    // the label also appears as a review row, and both can be mounted briefly
+    // during the route transition.
+    expect(find.text(t.basicsSexLabel), findsWidgets);
     expect(container.read(onboardingProvider).constraint.age, 31);
 
     // Returning forward keeps it.
@@ -181,8 +195,8 @@ void main() {
     final t = lookupAppLocalizations(const Locale('vi'));
 
     // Navigate to the context screen.
-    await tester.enterText(find.byType(TextField).first, 'a@b.co');
-    await _tapText(tester, t.accountEmailCta);
+    container.read(routerProvider).go(Routes.welcome);
+    await tester.pumpAndSettle();
     await _tapText(tester, t.welcomeCta);
     await _tapText(tester, t.commonContinue); // story
     await _tapText(tester, t.commonContinue); // basics

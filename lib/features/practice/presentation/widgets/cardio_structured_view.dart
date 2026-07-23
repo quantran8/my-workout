@@ -15,7 +15,12 @@ class _StepLabels {
   final String footer;
 }
 
-_StepLabels _labels(CardioStep step, int index, AppLocalizations t) {
+_StepLabels _labels(
+  CardioStep step,
+  int index,
+  int total,
+  AppLocalizations t,
+) {
   final title = switch (step.title) {
     'warmup' => t.practiceCardioStepWarmup,
     'fast' => t.practiceCardioStepFast,
@@ -30,9 +35,9 @@ _StepLabels _labels(CardioStep step, int index, AppLocalizations t) {
       : t.practiceCardioStepOf(int.parse(parts[1]), int.parse(parts[2]));
 
   final footer = parts.first == 'round'
-      ? '${t.practiceCardioStepOf(index + 1, PracticeState.structuredSteps.length)} · '
+      ? '${t.practiceCardioStepOf(index + 1, total)} · '
             '${t.practiceCardioRound(int.parse(parts[1]), int.parse(parts[2]))}'
-      : t.practiceCardioStepOf(index + 1, PracticeState.structuredSteps.length);
+      : t.practiceCardioStepOf(index + 1, total);
 
   return _StepLabels(title, round, footer);
 }
@@ -47,7 +52,12 @@ class CardioStructuredView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final s = ref.watch(practiceProvider);
-    final labels = _labels(s.structuredStep, s.structuredIndex, t);
+    final labels = _labels(
+      s.structuredStep,
+      s.structuredIndex,
+      s.structuredSteps.length,
+      t,
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 188),
@@ -106,6 +116,7 @@ class CardioStructuredView extends ConsumerWidget {
   }) {
     final t = AppLocalizations.of(context);
     final current = ref.watch(practiceProvider.select((s) => s.structuredIndex));
+    final steps = ref.watch(practiceProvider.select((s) => s.structuredSteps));
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
@@ -142,7 +153,7 @@ class CardioStructuredView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _StepBar(current: current),
+          _StepBar(current: current, steps: steps),
         ],
       ),
     );
@@ -159,7 +170,12 @@ class CardioStructuredView extends ConsumerWidget {
     final t = AppLocalizations.of(context);
     final s = ref.watch(practiceProvider);
     final inset = MediaQuery.viewPaddingOf(context).bottom;
-    final labels = _labels(s.structuredStep, s.structuredIndex, t);
+    final labels = _labels(
+      s.structuredStep,
+      s.structuredIndex,
+      s.structuredSteps.length,
+      t,
+    );
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, inset > 16 ? inset : 16),
@@ -225,9 +241,10 @@ class CardioStructuredView extends ConsumerWidget {
 /// Segmented progress bar: one segment per step, weighted by flex; steps up to
 /// the current index are lime, the current is white, the rest are dim.
 class _StepBar extends StatelessWidget {
-  const _StepBar({required this.current});
+  const _StepBar({required this.current, required this.steps});
 
   final int current;
+  final List<CardioStep> steps;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +252,7 @@ class _StepBar extends StatelessWidget {
       height: 6,
       child: Row(
         children: [
-          for (final (i, step) in PracticeState.structuredSteps.indexed) ...[
+          for (final (i, step) in steps.indexed) ...[
             if (i > 0) const SizedBox(width: 4),
             Expanded(
               flex: step.flex,

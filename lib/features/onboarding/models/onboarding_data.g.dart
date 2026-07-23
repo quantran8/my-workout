@@ -118,6 +118,15 @@ _Constraint _$ConstraintFromJson(Map<String, dynamic> json) => _Constraint(
   experienceLevel:
       $enumDecodeNullable(_$ExperienceLevelEnumMap, json['experienceLevel']) ??
       ExperienceLevel.beginner,
+  recentActivityLevel:
+      $enumDecodeNullable(
+        _$RecentActivityLevelEnumMap,
+        json['recentActivityLevel'],
+      ) ??
+      RecentActivityLevel.low,
+  detrainingGap:
+      $enumDecodeNullable(_$DetrainingGapEnumMap, json['detrainingGap']) ??
+      DetrainingGap.none,
   hasInjury: json['hasInjury'] as bool? ?? false,
   injuries:
       (json['injuries'] as List<dynamic>?)
@@ -159,6 +168,9 @@ Map<String, dynamic> _$ConstraintToJson(
   'heightCm': instance.heightCm,
   'weightKg': instance.weightKg,
   'experienceLevel': _$ExperienceLevelEnumMap[instance.experienceLevel]!,
+  'recentActivityLevel':
+      _$RecentActivityLevelEnumMap[instance.recentActivityLevel]!,
+  'detrainingGap': _$DetrainingGapEnumMap[instance.detrainingGap]!,
   'hasInjury': instance.hasInjury,
   'injuries': instance.injuries,
   'mobilityLimits': instance.mobilityLimits
@@ -181,6 +193,21 @@ const _$ExperienceLevelEnumMap = {
   ExperienceLevel.beginner: 'beginner',
   ExperienceLevel.intermediate: 'intermediate',
   ExperienceLevel.advanced: 'advanced',
+};
+
+const _$RecentActivityLevelEnumMap = {
+  RecentActivityLevel.veryLow: 'veryLow',
+  RecentActivityLevel.low: 'low',
+  RecentActivityLevel.moderate: 'moderate',
+  RecentActivityLevel.high: 'high',
+};
+
+const _$DetrainingGapEnumMap = {
+  DetrainingGap.none: 'none',
+  DetrainingGap.underMonth: 'underMonth',
+  DetrainingGap.oneToThreeMonths: 'oneToThreeMonths',
+  DetrainingGap.threeToTwelveMonths: 'threeToTwelveMonths',
+  DetrainingGap.overYear: 'overYear',
 };
 
 const _$MobilityLimitEnumMap = {

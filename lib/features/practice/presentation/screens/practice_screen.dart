@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +10,10 @@ import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
 import '../../../home/data/session_log_controller.dart';
+import '../../data/practice_mapper.dart';
 import '../controller/practice_controller.dart';
 import '../widgets/cardio_info_sheet.dart';
+import '../widgets/pain_detail_sheet.dart';
 import '../widgets/cardio_overview_view.dart';
 import '../widgets/cardio_practice_view.dart';
 import '../widgets/cardio_structured_view.dart';
@@ -165,10 +169,34 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
   ) async {
     final result = await showPracticeFeedbackSheet(context, t);
     if (result == null) return;
+    final notifier = ref.read(practiceProvider.notifier);
+
     if (result == PracticeFeedback.pain) {
-      ref.read(practiceProvider.notifier).painStop();
+      // Halt first — the session must stop whether or not the user goes on to
+      // describe the pain.
+      notifier.painStop();
+
+      final detail = context.mounted
+          ? await showPainDetailSheet(context)
+          : null;
+      unawaited(
+        notifier
+            .sendFeedback(
+              PracticeMapper.feedbackType(result),
+              bodyArea: detail == null
+                  ? null
+                  : PracticeMapper.bodyArea(detail.area),
+              severity: detail?.severity,
+            )
+            .catchError((_) {}),
+      );
       showAppToast(ref, t.practicePainToast);
     } else {
+      unawaited(
+        notifier
+            .sendFeedback(PracticeMapper.feedbackType(result))
+            .catchError((_) {}),
+      );
       showAppToast(ref, t.practiceFeedbackSaved(result.label(t)));
     }
   }
@@ -180,8 +208,14 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
   ) async {
     final notifier = ref.read(practiceProvider.notifier);
     notifier.pauseForFinish();
-    final saved = await showFinishSheet(context, t);
-    if (saved) {
+    final result = await showFinishSheet(context, t);
+    if (result.saved) {
+      // Carries the 1-10 effort rating, which the sheet previously discarded.
+      unawaited(
+        notifier
+            .completeSession(sessionRpe: result.sessionRpe)
+            .catchError((_) {}),
+      );
       // Log the day so home's streak and adherence advance.
       final log = ref.read(sessionLogControllerProvider.notifier);
       if (log.hasPendingToday) log.completeToday();

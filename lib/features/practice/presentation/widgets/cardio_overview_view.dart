@@ -22,9 +22,7 @@ class CardioOverviewView extends ConsumerWidget {
     final notifier = ref.read(practiceProvider.notifier);
     final continuous = selected == CardioCase.continuous;
 
-    final title = continuous
-        ? t.practiceCardioContinuousTitle
-        : t.practiceCardioStructuredTitle;
+    final title = continuous ? t.practiceCardioContinuousTitle : t.practiceCardioStructuredTitle;
 
     final stats = continuous
         ? [
@@ -51,13 +49,9 @@ class CardioOverviewView extends ConsumerWidget {
             (t.practiceCardioStepCooldown, t.practiceCardioStepCooldownMeta, AppColors.lime),
           ];
 
-    final listTitle = continuous
-        ? t.practiceCardioContinuousListTitle
-        : t.practiceCardioStructuredListTitle;
+    final listTitle = continuous ? t.practiceCardioContinuousListTitle : t.practiceCardioStructuredListTitle;
 
-    final listIcon = continuous
-        ? Icons.flag_rounded
-        : Icons.directions_run_rounded;
+    final listIcon = continuous ? Icons.flag_rounded : Icons.directions_run_rounded;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 132),
@@ -78,41 +72,24 @@ class CardioOverviewView extends ConsumerWidget {
           children: [
             Text(
               listTitle,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 24 * -0.035,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: 24 * -0.035),
             ),
             const SizedBox(width: 6),
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                '(${items.length})',
-                style: const TextStyle(fontSize: 17, color: AppColors.muted),
-              ),
+              child: Text('(${items.length})', style: const TextStyle(fontSize: 17, color: AppColors.muted)),
             ),
           ],
         ),
         const SizedBox(height: 8),
         for (final (i, item) in items.indexed)
-          _ListRow(
-            title: item.$1,
-            meta: item.$2,
-            accent: item.$3,
-            icon: listIcon,
-            divider: i > 0,
-          ),
+          _ListRow(title: item.$1, meta: item.$2, accent: item.$3, icon: listIcon, divider: i > 0),
       ],
     );
   }
 
   /// The cardio-overview header — a category label with an (inert) overflow.
-  static Widget header({
-    required WidgetRef ref,
-    required BuildContext context,
-    required VoidCallback onBack,
-  }) {
+  static Widget header({required WidgetRef ref, required BuildContext context, required VoidCallback onBack}) {
     final t = AppLocalizations.of(context);
 
     return Padding(
@@ -128,11 +105,7 @@ class CardioOverviewView extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 15 * -0.015,
-                ),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, letterSpacing: 15 * -0.015),
               ),
             ),
             SizedBox(
@@ -196,9 +169,10 @@ class _StatRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final (i, stat) in stats.indexed) ...[
-            if (i > 0)
-              const VerticalDivider(width: 1, thickness: 1, color: AppColors.line),
-            Expanded(child: _Stat(value: stat.$1, caption: stat.$2)),
+            if (i > 0) const VerticalDivider(width: 1, thickness: 1, color: AppColors.line),
+            Expanded(
+              child: _Stat(value: stat.$1, caption: stat.$2),
+            ),
           ],
         ],
       ),
@@ -219,10 +193,7 @@ class _Stat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            value,
-            style: const TextStyle(fontSize: 17, height: 1.3, fontWeight: FontWeight.w700),
-          ),
+          Text(value, style: const TextStyle(fontSize: 17, height: 1.3, fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
           Text(caption, style: const TextStyle(fontSize: 12, color: AppColors.muted)),
         ],
@@ -250,7 +221,9 @@ class _ListRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: divider
-          ? const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line)))
+          ? const BoxDecoration(
+              border: Border(top: BorderSide(color: AppColors.line)),
+            )
           : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -260,10 +233,7 @@ class _ListRow extends StatelessWidget {
               width: 86,
               height: 72,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(18),
-              ),
+              decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(18)),
               child: Icon(icon, size: 32, color: accent),
             ),
             const SizedBox(width: 16),
@@ -295,46 +265,46 @@ class _ListRow extends StatelessWidget {
 }
 
 /// The narrow "adjust" secondary button in the footer — an icon over a label.
-class _AdjustButton extends StatelessWidget {
-  const _AdjustButton({required this.label, required this.onTap});
+// class _AdjustButton extends StatelessWidget {
+//   const _AdjustButton({required this.label, required this.onTap});
 
-  final String label;
-  final VoidCallback onTap;
+//   final String label;
+//   final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: label,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadii.button),
-            border: Border.all(color: AppColors.line),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.tune_rounded, size: 20, color: AppColors.textSoft),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textSoft,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Semantics(
+//       button: true,
+//       label: label,
+//       child: GestureDetector(
+//         onTap: onTap,
+//         child: Container(
+//           alignment: Alignment.center,
+//           decoration: BoxDecoration(
+//             color: AppColors.surface,
+//             borderRadius: BorderRadius.circular(AppRadii.button),
+//             border: Border.all(color: AppColors.line),
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               const Icon(Icons.tune_rounded, size: 20, color: AppColors.textSoft),
+//               const SizedBox(height: 4),
+//               Text(
+//                 label,
+//                 style: const TextStyle(
+//                   fontSize: 9,
+//                   fontWeight: FontWeight.w700,
+//                   color: AppColors.textSoft,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _CaseTabs extends StatelessWidget {
   const _CaseTabs({
@@ -353,10 +323,7 @@ class _CaseTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
           Expanded(child: _tab(continuousLabel, CardioCase.continuous)),
@@ -381,11 +348,7 @@ class _CaseTabs extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: active ? Colors.black : AppColors.muted,
-          ),
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: active ? Colors.black : AppColors.muted),
         ),
       ),
     );

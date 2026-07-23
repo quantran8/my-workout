@@ -59,7 +59,7 @@ final class OnboardingProvider
   }
 }
 
-String _$onboardingHash() => r'8d3e5d1227ecf19a8523e01d7c55fb87e0cacaae';
+String _$onboardingHash() => r'75ff3c96d334ca5849b31e7ad62c7dea99bc1218';
 
 /// Single source of truth for everything gathered across the 8 onboarding
 /// steps. Held above the router so navigating back to a step — including the

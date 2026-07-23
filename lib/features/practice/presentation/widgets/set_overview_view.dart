@@ -15,97 +15,60 @@ import 'exercise_info_sheet.dart';
 class SetOverviewView extends ConsumerWidget {
   const SetOverviewView({super.key});
 
+  /// Row accents cycle so adjacent exercises stay visually distinct.
+  static const _accents = [AppColors.lime, AppColors.cyan, AppColors.violet];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
+    final state = ref.watch(practiceProvider);
 
-    final exercises = <ExerciseOverviewInfo>[
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx1Name,
-        target: t.practiceOverviewEx1Target,
-        description: t.practiceOverviewEx1Info,
-        accent: AppColors.lime,
-      ),
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx2Name,
-        target: t.practiceOverviewEx2Target,
-        description: t.practiceOverviewEx2Info,
-        accent: AppColors.cyan,
-      ),
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx3Name,
-        target: t.practiceOverviewEx3Target,
-        description: t.practiceOverviewEx3Info,
-        accent: AppColors.violet,
-      ),
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx4Name,
-        target: t.practiceOverviewEx4Target,
-        description: t.practiceOverviewEx4Info,
-        accent: AppColors.lime,
-      ),
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx5Name,
-        target: t.practiceOverviewEx5Target,
-        description: t.practiceOverviewEx5Info,
-        accent: AppColors.cyan,
-      ),
-      ExerciseOverviewInfo(
-        name: t.practiceOverviewEx6Name,
-        target: t.practiceOverviewEx6Target,
-        description: t.practiceOverviewEx6Info,
-        accent: AppColors.violet,
-      ),
-    ];
+    // Live session when one is loaded; the localized demo list otherwise, so
+    // this screen still renders standalone.
+    final exercises = state.isLive
+        ? [
+            for (final (i, exercise) in state.exercises.indexed)
+              ExerciseOverviewInfo(
+                name: exercise.name,
+                target: _targetLine(exercise, t),
+                description:
+                    exercise.detail?.instructions.join('\n\n') ??
+                    t.practiceOverviewNoGuide,
+                accent: _accents[i % _accents.length],
+              ),
+          ]
+        : _demoExercises(t);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 132),
       children: [
-        Text(
-          t.practiceOverviewTitle,
-          style: AppText.title.copyWith(fontSize: 34, height: 1.06),
-        ),
+        Text(t.practiceOverviewTitle, style: AppText.title.copyWith(fontSize: 34, height: 1.06)),
         const SizedBox(height: 28),
-        _statRow(t),
+        _statRow(t, ref),
         const SizedBox(height: 40),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               t.practiceOverviewListTitle,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 24 * -0.035,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: 24 * -0.035),
             ),
             const SizedBox(width: 6),
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                '(${exercises.length})',
-                style: const TextStyle(fontSize: 17, color: AppColors.muted),
-              ),
+              child: Text('(${exercises.length})', style: const TextStyle(fontSize: 17, color: AppColors.muted)),
             ),
           ],
         ),
         const SizedBox(height: 8),
         for (final (i, ex) in exercises.indexed)
-          _ExerciseRow(
-            exercise: ex,
-            divider: i > 0,
-            onPressed: () => showExerciseInfoSheet(context, ex),
-          ),
+          _ExerciseRow(exercise: ex, divider: i > 0, onPressed: () => showExerciseInfoSheet(context, ex)),
       ],
     );
   }
 
   /// The set-overview header — a category label with an (inert) overflow slot.
-  static Widget header({
-    required WidgetRef ref,
-    required BuildContext context,
-    required VoidCallback onBack,
-  }) {
+  static Widget header({required WidgetRef ref, required BuildContext context, required VoidCallback onBack}) {
     final t = AppLocalizations.of(context);
 
     return Padding(
@@ -121,11 +84,7 @@ class SetOverviewView extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 15 * -0.015,
-                ),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, letterSpacing: 15 * -0.015),
               ),
             ),
             SizedBox(
@@ -137,11 +96,7 @@ class SetOverviewView extends ConsumerWidget {
                   child: const SizedBox(
                     width: 44,
                     height: 44,
-                    child: Icon(
-                      Icons.more_horiz_rounded,
-                      size: 22,
-                      color: AppColors.muted,
-                    ),
+                    child: Icon(Icons.more_horiz_rounded, size: 22, color: AppColors.muted),
                   ),
                 ),
               ),
@@ -153,10 +108,7 @@ class SetOverviewView extends ConsumerWidget {
   }
 
   /// The set-overview footer — an "adjust" button and the start CTA.
-  static Widget footer({
-    required WidgetRef ref,
-    required BuildContext context,
-  }) {
+  static Widget footer({required WidgetRef ref, required BuildContext context}) {
     final t = AppLocalizations.of(context);
 
     return Row(
@@ -183,29 +135,120 @@ class SetOverviewView extends ConsumerWidget {
     );
   }
 
-  Widget _statRow(AppLocalizations t) => IntrinsicHeight(
+  /// "3×12" for a counted movement, "3×30s" for a hold — the prescription as
+  /// the user will actually perform it, after readiness modifications.
+  static String _targetLine(Exercise exercise, AppLocalizations t) {
+    final sets = exercise.targetSets;
+    if (exercise.kind == ExerciseKind.timed) {
+      return '$sets × ${exercise.seconds}${t.unitSecondsShort}';
+    }
+    return '$sets × ${exercise.reps}';
+  }
+
+  /// The prototype's six hardcoded rows, kept for the standalone demo.
+  static List<ExerciseOverviewInfo> _demoExercises(AppLocalizations t) => [
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx1Name,
+      target: t.practiceOverviewEx1Target,
+      description: t.practiceOverviewEx1Info,
+      accent: AppColors.lime,
+    ),
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx2Name,
+      target: t.practiceOverviewEx2Target,
+      description: t.practiceOverviewEx2Info,
+      accent: AppColors.cyan,
+    ),
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx3Name,
+      target: t.practiceOverviewEx3Target,
+      description: t.practiceOverviewEx3Info,
+      accent: AppColors.violet,
+    ),
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx4Name,
+      target: t.practiceOverviewEx4Target,
+      description: t.practiceOverviewEx4Info,
+      accent: AppColors.lime,
+    ),
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx5Name,
+      target: t.practiceOverviewEx5Target,
+      description: t.practiceOverviewEx5Info,
+      accent: AppColors.cyan,
+    ),
+    ExerciseOverviewInfo(
+      name: t.practiceOverviewEx6Name,
+      target: t.practiceOverviewEx6Target,
+      description: t.practiceOverviewEx6Info,
+      accent: AppColors.violet,
+    ),
+  ];
+
+  Widget _statRow(AppLocalizations t, WidgetRef ref) {
+    final state = ref.watch(practiceProvider);
+    if (!state.isLive) return _demoStatRow(t);
+
+    // Total prescribed work: sets across every exercise, and the summed rest
+    // plus hold time as a rough duration.
+    final totalSets = state.exercises.fold<int>(
+      0,
+      (sum, exercise) => sum + exercise.targetSets,
+    );
+    final minutes = state.exercises.fold<int>(
+      0,
+      (sum, exercise) =>
+          sum +
+          exercise.targetSets *
+              (exercise.restSec +
+                  (exercise.kind == ExerciseKind.timed
+                      ? exercise.seconds
+                      : 45)),
+    );
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _Stat(
+              value: '${state.exercises.length}',
+              caption: t.practiceOverviewStatExercisesLabel,
+            ),
+          ),
+          const _StatDivider(),
+          Expanded(
+            child: _Stat(
+              value: '$totalSets',
+              caption: t.practiceOverviewStatSetsLabel,
+            ),
+          ),
+          const _StatDivider(),
+          Expanded(
+            child: _Stat(
+              value: '~${(minutes / 60).round()}${t.unitMinutesShort}',
+              caption: t.practiceOverviewStatDurationLabel,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _demoStatRow(AppLocalizations t) => IntrinsicHeight(
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: _Stat(
-            value: t.practiceOverviewStatLevel,
-            caption: t.practiceOverviewStatLevelLabel,
-          ),
+          child: _Stat(value: t.practiceOverviewStatLevel, caption: t.practiceOverviewStatLevelLabel),
         ),
         const _StatDivider(),
         Expanded(
-          child: _Stat(
-            value: t.practiceOverviewStatDuration,
-            caption: t.practiceOverviewStatDurationLabel,
-          ),
+          child: _Stat(value: t.practiceOverviewStatDuration, caption: t.practiceOverviewStatDurationLabel),
         ),
         const _StatDivider(),
         Expanded(
-          child: _Stat(
-            value: t.practiceOverviewStatFocus,
-            caption: t.practiceOverviewStatFocusLabel,
-          ),
+          child: _Stat(value: t.practiceOverviewStatFocus, caption: t.practiceOverviewStatFocusLabel),
         ),
       ],
     ),
@@ -225,19 +268,9 @@ class _Stat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 17,
-              height: 1.3,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          Text(value, style: const TextStyle(fontSize: 17, height: 1.3, fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
-          Text(
-            caption,
-            style: const TextStyle(fontSize: 12, color: AppColors.muted),
-          ),
+          Text(caption, style: const TextStyle(fontSize: 12, color: AppColors.muted)),
         ],
       ),
     );
@@ -248,16 +281,11 @@ class _StatDivider extends StatelessWidget {
   const _StatDivider();
 
   @override
-  Widget build(BuildContext context) =>
-      const VerticalDivider(width: 1, thickness: 1, color: AppColors.line);
+  Widget build(BuildContext context) => const VerticalDivider(width: 1, thickness: 1, color: AppColors.line);
 }
 
 class _ExerciseRow extends StatelessWidget {
-  const _ExerciseRow({
-    required this.exercise,
-    required this.divider,
-    required this.onPressed,
-  });
+  const _ExerciseRow({required this.exercise, required this.divider, required this.onPressed});
 
   final ExerciseOverviewInfo exercise;
   final bool divider;
@@ -286,15 +314,8 @@ class _ExerciseRow extends StatelessWidget {
                   width: 86,
                   height: 72,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Icon(
-                    Icons.accessibility_new_rounded,
-                    size: 34,
-                    color: exercise.accent,
-                  ),
+                  decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(18)),
+                  child: Icon(Icons.accessibility_new_rounded, size: 34, color: exercise.accent),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -305,28 +326,15 @@ class _ExerciseRow extends StatelessWidget {
                         exercise.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        exercise.target,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: AppColors.muted,
-                        ),
-                      ),
+                      Text(exercise.target, style: const TextStyle(fontSize: 15, color: AppColors.muted)),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  size: 22,
-                  color: AppColors.muted2,
-                ),
+                const Icon(Icons.chevron_right_rounded, size: 22, color: AppColors.muted2),
               ],
             ),
           ),
@@ -337,47 +345,47 @@ class _ExerciseRow extends StatelessWidget {
 }
 
 /// The narrow "adjust" secondary button in the footer — an icon over a label.
-class _AdjustButton extends StatelessWidget {
-  const _AdjustButton({required this.label, required this.onTap});
+// class _AdjustButton extends StatelessWidget {
+//   const _AdjustButton({required this.label, required this.onTap});
 
-  final String label;
-  final VoidCallback onTap;
+//   final String label;
+//   final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: label,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadii.button),
-            border: Border.all(color: AppColors.line),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.tune_rounded,
-                size: 20,
-                color: AppColors.textSoft,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textSoft,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Semantics(
+//       button: true,
+//       label: label,
+//       child: GestureDetector(
+//         onTap: onTap,
+//         child: Container(
+//           alignment: Alignment.center,
+//           decoration: BoxDecoration(
+//             color: AppColors.surface,
+//             borderRadius: BorderRadius.circular(AppRadii.button),
+//             border: Border.all(color: AppColors.line),
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               const Icon(
+//                 Icons.tune_rounded,
+//                 size: 20,
+//                 color: AppColors.textSoft,
+//               ),
+//               const SizedBox(height: 4),
+//               Text(
+//                 label,
+//                 style: const TextStyle(
+//                   fontSize: 9,
+//                   fontWeight: FontWeight.w700,
+//                   color: AppColors.textSoft,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

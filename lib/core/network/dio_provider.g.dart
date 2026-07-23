@@ -8,19 +8,19 @@ part of 'dio_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Shared HTTP client. Unused while the plan repository is mocked; here so the
-/// swap to a live backend needs no new wiring.
+/// Shared HTTP client, pointed at the backend and carrying the bearer token
+/// for authenticated routes.
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
 
-/// Shared HTTP client. Unused while the plan repository is mocked; here so the
-/// swap to a live backend needs no new wiring.
+/// Shared HTTP client, pointed at the backend and carrying the bearer token
+/// for authenticated routes.
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
-  /// Shared HTTP client. Unused while the plan repository is mocked; here so the
-  /// swap to a live backend needs no new wiring.
+  /// Shared HTTP client, pointed at the backend and carrying the bearer token
+  /// for authenticated routes.
   DioProvider._()
     : super(
         from: null,
@@ -54,4 +54,4 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'290af6a99e1657e0e9b5e91fa8b71bea6e969d5f';
+String _$dioHash() => r'bae9f6cfa3ea87dd6515d4b2945058073fe7ed1a';

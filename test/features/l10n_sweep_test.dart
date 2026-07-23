@@ -7,6 +7,9 @@ import 'package:mobile/features/plan/data/mock_plan_repository.dart';
 import 'package:mobile/features/plan/data/plan_providers.dart';
 import 'package:mobile/features/plan/data/plan_repository.dart';
 import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/router.dart';
+
+import '../support/auth_override.dart';
 
 /// Walks every screen in both locales at both target widths.
 ///
@@ -30,18 +33,19 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              ...signedInOverrides,
               planRepositoryProvider.overrideWithValue(
                 const MockPlanRepository(delay: Duration(milliseconds: 10))
                     as PlanRepository,
               ),
             ],
-            child: const MachApp(),
+            child: const FitnessApp(),
           ),
         );
         await tester.pump();
 
         final container = ProviderScope.containerOf(
-          tester.element(find.byType(MachApp)),
+          tester.element(find.byType(FitnessApp)),
         );
         container.read(localeControllerProvider.notifier).set(locale);
         await tester.pump();
@@ -57,10 +61,10 @@ void main() {
           await tester.pump(const Duration(milliseconds: 400));
         }
 
-        // 1 account gate
-        await tester.enterText(find.byType(TextField).first, 'a@b.co');
-        await tester.pump();
-        await tapText(t.accountEmailCta);
+        // Signed in (see signedInOverrides), so the router lands on /home and
+        // the account gate is skipped. Jump to where onboarding begins.
+        container.read(routerProvider).go(Routes.welcome);
+        await tester.pumpAndSettle();
 
         // 2 welcome
         await tapText(t.welcomeCta);

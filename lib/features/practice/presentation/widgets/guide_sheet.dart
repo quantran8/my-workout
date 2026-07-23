@@ -31,7 +31,12 @@ class _GuideSheet extends StatelessWidget {
     final inset = MediaQuery.viewPaddingOf(context).bottom;
     final timed = exercise.kind == ExerciseKind.timed;
 
-    final steps = timed
+    // The library's own cues when the exercise came from the backend; the
+    // prototype's hardcoded copy is the fallback for the demo state.
+    final instructions = exercise.detail?.instructions ?? const <String>[];
+    final steps = instructions.isNotEmpty
+        ? instructions
+        : timed
         ? [t.practiceGuidePlank1, t.practiceGuidePlank2, t.practiceGuidePlank3]
         : [t.practiceGuideSquat1, t.practiceGuideSquat2, t.practiceGuideSquat3];
 

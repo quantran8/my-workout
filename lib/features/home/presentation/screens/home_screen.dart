@@ -10,6 +10,7 @@ import '../../../../core/widgets/screen_enter.dart';
 import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
+import '../../../auth/presentation/widgets/account_sheet.dart';
 import '../../../plan/data/plan_providers.dart';
 import '../../../plan/models/plan_text.dart';
 import '../../../plan/models/workout_plan.dart';
@@ -75,7 +76,7 @@ class HomeScreen extends ConsumerWidget {
                       _Greeting(
                         date: DateFormat.yMMMMEEEEd(locale).format(now),
                         title: t.homeGreeting,
-                        onProfile: () => showAppToast(ref, t.homeProfileToast),
+                        onProfile: () => AccountSheet.show(context),
                       ),
                       const SizedBox(height: 24),
 
@@ -310,13 +311,19 @@ class _SectionHead extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 20 * -0.025,
-            color: AppColors.text,
+        // Both labels are localized and neither can shrink on its own, so a
+        // long Vietnamese title plus its action overflows a 390px row.
+        Flexible(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 20 * -0.025,
+              color: AppColors.text,
+            ),
           ),
         ),
         if (actionLabel case final label?)
@@ -326,6 +333,8 @@ class _SectionHead extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               child: Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

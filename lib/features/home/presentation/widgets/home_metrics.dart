@@ -26,6 +26,8 @@ class HomeMetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // The inner Stack needs a bounded height, so this stays fixed; the
+      // caption below is clamped instead of allowed to wrap unbounded.
       height: 132,
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
@@ -39,7 +41,12 @@ class HomeMetricTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppText.bodySm),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppText.bodySm,
+                ),
                 const SizedBox(height: 10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -61,12 +68,18 @@ class HomeMetricTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      unit,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.muted,
+                    // Flexible too: a long localized unit ("buổi liên tiếp")
+                    // otherwise pushes the row past the tile.
+                    Flexible(
+                      child: Text(
+                        unit,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.muted,
+                        ),
                       ),
                     ),
                   ],

@@ -76,6 +76,8 @@ sealed class Constraint with _$Constraint {
     @Default(172) double heightCm,
     @Default(49) double weightKg,
     @Default(ExperienceLevel.beginner) ExperienceLevel experienceLevel,
+    @Default(RecentActivityLevel.low) RecentActivityLevel recentActivityLevel,
+    @Default(DetrainingGap.none) DetrainingGap detrainingGap,
     @Default(false) bool hasInjury,
     @Default(<Injury>[]) List<Injury> injuries,
     @Default(<MobilityLimit>{}) Set<MobilityLimit> mobilityLimits,
@@ -99,6 +101,33 @@ sealed class Constraint with _$Constraint {
   /// Only injuries still causing symptoms constrain programming.
   Iterable<Injury> get activeInjuries =>
       hasInjury ? injuries.where((i) => i.active) : const [];
+
+  /// Weeks since the user last trained consistently, derived from
+  /// [detrainingGap]. The backend compares this against a 12-week threshold, so
+  /// each band maps to its lower bound — the conservative end, which is what a
+  /// safety check should round towards.
+  ///
+  /// Null while still training, which the backend reads as "no detraining".
+  int? get detrainingDurationWeeks => switch (detrainingGap) {
+    DetrainingGap.none => null,
+    DetrainingGap.underMonth => 2,
+    DetrainingGap.oneToThreeMonths => 6,
+    // The first band that crosses the backend's LONG_DETRAINING_WEEKS = 12.
+    DetrainingGap.threeToTwelveMonths => 13,
+    DetrainingGap.overYear => 52,
+  };
+
+  /// Approximate ISO date of the last consistent training block, derived from
+  /// the same band. Requires [now] rather than reading the clock, so the
+  /// serialized profile stays deterministic under test.
+  String? lastConsistentTrainingAt(DateTime now) {
+    final weeks = detrainingDurationWeeks;
+    if (weeks == null) return null;
+    final date = now.subtract(Duration(days: weeks * 7));
+    return '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+  }
 }
 
 /// Goals as stated by the user. `problems`, `inferredNeeds` and `goalPriority`

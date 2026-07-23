@@ -51,6 +51,12 @@ class Onboarding extends _$Onboarding {
   void setExperience(ExperienceLevel value) =>
       _constraint((c) => c.copyWith(experienceLevel: value));
 
+  void setRecentActivity(RecentActivityLevel value) =>
+      _constraint((c) => c.copyWith(recentActivityLevel: value));
+
+  void setDetrainingGap(DetrainingGap value) =>
+      _constraint((c) => c.copyWith(detrainingGap: value));
+
   /// Turning injuries off clears the rows outright. Freezed's `copyWith` can't
   /// reset a field to empty implicitly, so this is an explicit mutator rather
   /// than a `copyWith` at the call site.

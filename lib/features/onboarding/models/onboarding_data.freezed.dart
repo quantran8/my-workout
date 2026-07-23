@@ -1342,7 +1342,7 @@ as List<String>,
 /// @nodoc
 mixin _$Constraint {
 
- Sex get sex; int get age; double get heightCm; double get weightKg; ExperienceLevel get experienceLevel; bool get hasInjury; List<Injury> get injuries; Set<MobilityLimit> get mobilityLimits; Set<Equipment> get equipment; TrainingSpace get space; BudgetWillingness get budgetWillingness; Schedule get schedule; Diet get diet;
+ Sex get sex; int get age; double get heightCm; double get weightKg; ExperienceLevel get experienceLevel; RecentActivityLevel get recentActivityLevel; DetrainingGap get detrainingGap; bool get hasInjury; List<Injury> get injuries; Set<MobilityLimit> get mobilityLimits; Set<Equipment> get equipment; TrainingSpace get space; BudgetWillingness get budgetWillingness; Schedule get schedule; Diet get diet;
 /// Create a copy of Constraint
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1355,16 +1355,16 @@ $ConstraintCopyWith<Constraint> get copyWith => _$ConstraintCopyWithImpl<Constra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Constraint&&(identical(other.sex, sex) || other.sex == sex)&&(identical(other.age, age) || other.age == age)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.weightKg, weightKg) || other.weightKg == weightKg)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.hasInjury, hasInjury) || other.hasInjury == hasInjury)&&const DeepCollectionEquality().equals(other.injuries, injuries)&&const DeepCollectionEquality().equals(other.mobilityLimits, mobilityLimits)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&(identical(other.space, space) || other.space == space)&&(identical(other.budgetWillingness, budgetWillingness) || other.budgetWillingness == budgetWillingness)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.diet, diet) || other.diet == diet));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Constraint&&(identical(other.sex, sex) || other.sex == sex)&&(identical(other.age, age) || other.age == age)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.weightKg, weightKg) || other.weightKg == weightKg)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.recentActivityLevel, recentActivityLevel) || other.recentActivityLevel == recentActivityLevel)&&(identical(other.detrainingGap, detrainingGap) || other.detrainingGap == detrainingGap)&&(identical(other.hasInjury, hasInjury) || other.hasInjury == hasInjury)&&const DeepCollectionEquality().equals(other.injuries, injuries)&&const DeepCollectionEquality().equals(other.mobilityLimits, mobilityLimits)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&(identical(other.space, space) || other.space == space)&&(identical(other.budgetWillingness, budgetWillingness) || other.budgetWillingness == budgetWillingness)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.diet, diet) || other.diet == diet));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sex,age,heightCm,weightKg,experienceLevel,hasInjury,const DeepCollectionEquality().hash(injuries),const DeepCollectionEquality().hash(mobilityLimits),const DeepCollectionEquality().hash(equipment),space,budgetWillingness,schedule,diet);
+int get hashCode => Object.hash(runtimeType,sex,age,heightCm,weightKg,experienceLevel,recentActivityLevel,detrainingGap,hasInjury,const DeepCollectionEquality().hash(injuries),const DeepCollectionEquality().hash(mobilityLimits),const DeepCollectionEquality().hash(equipment),space,budgetWillingness,schedule,diet);
 
 @override
 String toString() {
-  return 'Constraint(sex: $sex, age: $age, heightCm: $heightCm, weightKg: $weightKg, experienceLevel: $experienceLevel, hasInjury: $hasInjury, injuries: $injuries, mobilityLimits: $mobilityLimits, equipment: $equipment, space: $space, budgetWillingness: $budgetWillingness, schedule: $schedule, diet: $diet)';
+  return 'Constraint(sex: $sex, age: $age, heightCm: $heightCm, weightKg: $weightKg, experienceLevel: $experienceLevel, recentActivityLevel: $recentActivityLevel, detrainingGap: $detrainingGap, hasInjury: $hasInjury, injuries: $injuries, mobilityLimits: $mobilityLimits, equipment: $equipment, space: $space, budgetWillingness: $budgetWillingness, schedule: $schedule, diet: $diet)';
 }
 
 
@@ -1375,7 +1375,7 @@ abstract mixin class $ConstraintCopyWith<$Res>  {
   factory $ConstraintCopyWith(Constraint value, $Res Function(Constraint) _then) = _$ConstraintCopyWithImpl;
 @useResult
 $Res call({
- Sex sex, int age, double heightCm, double weightKg, ExperienceLevel experienceLevel, bool hasInjury, List<Injury> injuries, Set<MobilityLimit> mobilityLimits, Set<Equipment> equipment, TrainingSpace space, BudgetWillingness budgetWillingness, Schedule schedule, Diet diet
+ Sex sex, int age, double heightCm, double weightKg, ExperienceLevel experienceLevel, RecentActivityLevel recentActivityLevel, DetrainingGap detrainingGap, bool hasInjury, List<Injury> injuries, Set<MobilityLimit> mobilityLimits, Set<Equipment> equipment, TrainingSpace space, BudgetWillingness budgetWillingness, Schedule schedule, Diet diet
 });
 
 
@@ -1392,14 +1392,16 @@ class _$ConstraintCopyWithImpl<$Res>
 
 /// Create a copy of Constraint
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? sex = null,Object? age = null,Object? heightCm = null,Object? weightKg = null,Object? experienceLevel = null,Object? hasInjury = null,Object? injuries = null,Object? mobilityLimits = null,Object? equipment = null,Object? space = null,Object? budgetWillingness = null,Object? schedule = null,Object? diet = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? sex = null,Object? age = null,Object? heightCm = null,Object? weightKg = null,Object? experienceLevel = null,Object? recentActivityLevel = null,Object? detrainingGap = null,Object? hasInjury = null,Object? injuries = null,Object? mobilityLimits = null,Object? equipment = null,Object? space = null,Object? budgetWillingness = null,Object? schedule = null,Object? diet = null,}) {
   return _then(_self.copyWith(
 sex: null == sex ? _self.sex : sex // ignore: cast_nullable_to_non_nullable
 as Sex,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
 as int,heightCm: null == heightCm ? _self.heightCm : heightCm // ignore: cast_nullable_to_non_nullable
 as double,weightKg: null == weightKg ? _self.weightKg : weightKg // ignore: cast_nullable_to_non_nullable
 as double,experienceLevel: null == experienceLevel ? _self.experienceLevel : experienceLevel // ignore: cast_nullable_to_non_nullable
-as ExperienceLevel,hasInjury: null == hasInjury ? _self.hasInjury : hasInjury // ignore: cast_nullable_to_non_nullable
+as ExperienceLevel,recentActivityLevel: null == recentActivityLevel ? _self.recentActivityLevel : recentActivityLevel // ignore: cast_nullable_to_non_nullable
+as RecentActivityLevel,detrainingGap: null == detrainingGap ? _self.detrainingGap : detrainingGap // ignore: cast_nullable_to_non_nullable
+as DetrainingGap,hasInjury: null == hasInjury ? _self.hasInjury : hasInjury // ignore: cast_nullable_to_non_nullable
 as bool,injuries: null == injuries ? _self.injuries : injuries // ignore: cast_nullable_to_non_nullable
 as List<Injury>,mobilityLimits: null == mobilityLimits ? _self.mobilityLimits : mobilityLimits // ignore: cast_nullable_to_non_nullable
 as Set<MobilityLimit>,equipment: null == equipment ? _self.equipment : equipment // ignore: cast_nullable_to_non_nullable
@@ -1507,10 +1509,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  RecentActivityLevel recentActivityLevel,  DetrainingGap detrainingGap,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Constraint() when $default != null:
-return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);case _:
+return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.recentActivityLevel,_that.detrainingGap,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);case _:
   return orElse();
 
 }
@@ -1528,10 +1530,10 @@ return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experien
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  RecentActivityLevel recentActivityLevel,  DetrainingGap detrainingGap,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)  $default,) {final _that = this;
 switch (_that) {
 case _Constraint():
-return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);}
+return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.recentActivityLevel,_that.detrainingGap,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1545,10 +1547,10 @@ return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experien
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Sex sex,  int age,  double heightCm,  double weightKg,  ExperienceLevel experienceLevel,  RecentActivityLevel recentActivityLevel,  DetrainingGap detrainingGap,  bool hasInjury,  List<Injury> injuries,  Set<MobilityLimit> mobilityLimits,  Set<Equipment> equipment,  TrainingSpace space,  BudgetWillingness budgetWillingness,  Schedule schedule,  Diet diet)?  $default,) {final _that = this;
 switch (_that) {
 case _Constraint() when $default != null:
-return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);case _:
+return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experienceLevel,_that.recentActivityLevel,_that.detrainingGap,_that.hasInjury,_that.injuries,_that.mobilityLimits,_that.equipment,_that.space,_that.budgetWillingness,_that.schedule,_that.diet);case _:
   return null;
 
 }
@@ -1560,7 +1562,7 @@ return $default(_that.sex,_that.age,_that.heightCm,_that.weightKg,_that.experien
 @JsonSerializable()
 
 class _Constraint extends Constraint {
-  const _Constraint({this.sex = Sex.male, this.age = 26, this.heightCm = 172, this.weightKg = 49, this.experienceLevel = ExperienceLevel.beginner, this.hasInjury = false, final  List<Injury> injuries = const <Injury>[], final  Set<MobilityLimit> mobilityLimits = const <MobilityLimit>{}, final  Set<Equipment> equipment = const <Equipment>{}, this.space = TrainingSpace.home, this.budgetWillingness = BudgetWillingness.none, this.schedule = const Schedule(), this.diet = const Diet()}): _injuries = injuries,_mobilityLimits = mobilityLimits,_equipment = equipment,super._();
+  const _Constraint({this.sex = Sex.male, this.age = 26, this.heightCm = 172, this.weightKg = 49, this.experienceLevel = ExperienceLevel.beginner, this.recentActivityLevel = RecentActivityLevel.low, this.detrainingGap = DetrainingGap.none, this.hasInjury = false, final  List<Injury> injuries = const <Injury>[], final  Set<MobilityLimit> mobilityLimits = const <MobilityLimit>{}, final  Set<Equipment> equipment = const <Equipment>{}, this.space = TrainingSpace.home, this.budgetWillingness = BudgetWillingness.none, this.schedule = const Schedule(), this.diet = const Diet()}): _injuries = injuries,_mobilityLimits = mobilityLimits,_equipment = equipment,super._();
   factory _Constraint.fromJson(Map<String, dynamic> json) => _$ConstraintFromJson(json);
 
 @override@JsonKey() final  Sex sex;
@@ -1568,6 +1570,8 @@ class _Constraint extends Constraint {
 @override@JsonKey() final  double heightCm;
 @override@JsonKey() final  double weightKg;
 @override@JsonKey() final  ExperienceLevel experienceLevel;
+@override@JsonKey() final  RecentActivityLevel recentActivityLevel;
+@override@JsonKey() final  DetrainingGap detrainingGap;
 @override@JsonKey() final  bool hasInjury;
  final  List<Injury> _injuries;
 @override@JsonKey() List<Injury> get injuries {
@@ -1608,16 +1612,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Constraint&&(identical(other.sex, sex) || other.sex == sex)&&(identical(other.age, age) || other.age == age)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.weightKg, weightKg) || other.weightKg == weightKg)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.hasInjury, hasInjury) || other.hasInjury == hasInjury)&&const DeepCollectionEquality().equals(other._injuries, _injuries)&&const DeepCollectionEquality().equals(other._mobilityLimits, _mobilityLimits)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&(identical(other.space, space) || other.space == space)&&(identical(other.budgetWillingness, budgetWillingness) || other.budgetWillingness == budgetWillingness)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.diet, diet) || other.diet == diet));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Constraint&&(identical(other.sex, sex) || other.sex == sex)&&(identical(other.age, age) || other.age == age)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.weightKg, weightKg) || other.weightKg == weightKg)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.recentActivityLevel, recentActivityLevel) || other.recentActivityLevel == recentActivityLevel)&&(identical(other.detrainingGap, detrainingGap) || other.detrainingGap == detrainingGap)&&(identical(other.hasInjury, hasInjury) || other.hasInjury == hasInjury)&&const DeepCollectionEquality().equals(other._injuries, _injuries)&&const DeepCollectionEquality().equals(other._mobilityLimits, _mobilityLimits)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&(identical(other.space, space) || other.space == space)&&(identical(other.budgetWillingness, budgetWillingness) || other.budgetWillingness == budgetWillingness)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.diet, diet) || other.diet == diet));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sex,age,heightCm,weightKg,experienceLevel,hasInjury,const DeepCollectionEquality().hash(_injuries),const DeepCollectionEquality().hash(_mobilityLimits),const DeepCollectionEquality().hash(_equipment),space,budgetWillingness,schedule,diet);
+int get hashCode => Object.hash(runtimeType,sex,age,heightCm,weightKg,experienceLevel,recentActivityLevel,detrainingGap,hasInjury,const DeepCollectionEquality().hash(_injuries),const DeepCollectionEquality().hash(_mobilityLimits),const DeepCollectionEquality().hash(_equipment),space,budgetWillingness,schedule,diet);
 
 @override
 String toString() {
-  return 'Constraint(sex: $sex, age: $age, heightCm: $heightCm, weightKg: $weightKg, experienceLevel: $experienceLevel, hasInjury: $hasInjury, injuries: $injuries, mobilityLimits: $mobilityLimits, equipment: $equipment, space: $space, budgetWillingness: $budgetWillingness, schedule: $schedule, diet: $diet)';
+  return 'Constraint(sex: $sex, age: $age, heightCm: $heightCm, weightKg: $weightKg, experienceLevel: $experienceLevel, recentActivityLevel: $recentActivityLevel, detrainingGap: $detrainingGap, hasInjury: $hasInjury, injuries: $injuries, mobilityLimits: $mobilityLimits, equipment: $equipment, space: $space, budgetWillingness: $budgetWillingness, schedule: $schedule, diet: $diet)';
 }
 
 
@@ -1628,7 +1632,7 @@ abstract mixin class _$ConstraintCopyWith<$Res> implements $ConstraintCopyWith<$
   factory _$ConstraintCopyWith(_Constraint value, $Res Function(_Constraint) _then) = __$ConstraintCopyWithImpl;
 @override @useResult
 $Res call({
- Sex sex, int age, double heightCm, double weightKg, ExperienceLevel experienceLevel, bool hasInjury, List<Injury> injuries, Set<MobilityLimit> mobilityLimits, Set<Equipment> equipment, TrainingSpace space, BudgetWillingness budgetWillingness, Schedule schedule, Diet diet
+ Sex sex, int age, double heightCm, double weightKg, ExperienceLevel experienceLevel, RecentActivityLevel recentActivityLevel, DetrainingGap detrainingGap, bool hasInjury, List<Injury> injuries, Set<MobilityLimit> mobilityLimits, Set<Equipment> equipment, TrainingSpace space, BudgetWillingness budgetWillingness, Schedule schedule, Diet diet
 });
 
 
@@ -1645,14 +1649,16 @@ class __$ConstraintCopyWithImpl<$Res>
 
 /// Create a copy of Constraint
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? sex = null,Object? age = null,Object? heightCm = null,Object? weightKg = null,Object? experienceLevel = null,Object? hasInjury = null,Object? injuries = null,Object? mobilityLimits = null,Object? equipment = null,Object? space = null,Object? budgetWillingness = null,Object? schedule = null,Object? diet = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? sex = null,Object? age = null,Object? heightCm = null,Object? weightKg = null,Object? experienceLevel = null,Object? recentActivityLevel = null,Object? detrainingGap = null,Object? hasInjury = null,Object? injuries = null,Object? mobilityLimits = null,Object? equipment = null,Object? space = null,Object? budgetWillingness = null,Object? schedule = null,Object? diet = null,}) {
   return _then(_Constraint(
 sex: null == sex ? _self.sex : sex // ignore: cast_nullable_to_non_nullable
 as Sex,age: null == age ? _self.age : age // ignore: cast_nullable_to_non_nullable
 as int,heightCm: null == heightCm ? _self.heightCm : heightCm // ignore: cast_nullable_to_non_nullable
 as double,weightKg: null == weightKg ? _self.weightKg : weightKg // ignore: cast_nullable_to_non_nullable
 as double,experienceLevel: null == experienceLevel ? _self.experienceLevel : experienceLevel // ignore: cast_nullable_to_non_nullable
-as ExperienceLevel,hasInjury: null == hasInjury ? _self.hasInjury : hasInjury // ignore: cast_nullable_to_non_nullable
+as ExperienceLevel,recentActivityLevel: null == recentActivityLevel ? _self.recentActivityLevel : recentActivityLevel // ignore: cast_nullable_to_non_nullable
+as RecentActivityLevel,detrainingGap: null == detrainingGap ? _self.detrainingGap : detrainingGap // ignore: cast_nullable_to_non_nullable
+as DetrainingGap,hasInjury: null == hasInjury ? _self.hasInjury : hasInjury // ignore: cast_nullable_to_non_nullable
 as bool,injuries: null == injuries ? _self._injuries : injuries // ignore: cast_nullable_to_non_nullable
 as List<Injury>,mobilityLimits: null == mobilityLimits ? _self._mobilityLimits : mobilityLimits // ignore: cast_nullable_to_non_nullable
 as Set<MobilityLimit>,equipment: null == equipment ? _self._equipment : equipment // ignore: cast_nullable_to_non_nullable

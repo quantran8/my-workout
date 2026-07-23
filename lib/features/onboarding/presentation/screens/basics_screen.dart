@@ -7,6 +7,7 @@ import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/input_card.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/screen_scaffold.dart';
+import '../../../../core/theme/typography.dart';
 import '../../../../core/widgets/selection_controls.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
@@ -106,6 +107,40 @@ class _BasicsScreenState extends ConsumerState<BasicsScreen> {
           ),
           const SizedBox(height: 16),
 
+          // §1.2 — deliberately its own question rather than folded into
+          // experience: the backend caps volume for someone who is skilled but
+          // has not trained recently.
+          LabeledField(
+            label: t.basicsRecentActivityLabel,
+            child: SegmentedControl<RecentActivityLevel>(
+              value: c.recentActivityLevel,
+              onChanged: notifier.setRecentActivity,
+              options: [
+                for (final level in RecentActivityLevel.values)
+                  SelectOption(value: level, label: level.shortLabel(t)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          _HelpText(t.basicsRecentActivityHelp),
+          const SizedBox(height: 16),
+
+          LabeledField(
+            label: t.basicsDetrainingLabel,
+            child: AppDropdown<DetrainingGap>(
+              value: c.detrainingGap,
+              title: t.basicsDetrainingLabel,
+              onChanged: notifier.setDetrainingGap,
+              options: [
+                for (final gap in DetrainingGap.values)
+                  SelectOption(value: gap, label: gap.label(t)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          _HelpText(t.basicsDetrainingHelp),
+          const SizedBox(height: 16),
+
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -138,4 +173,15 @@ class _BasicsScreenState extends ConsumerState<BasicsScreen> {
       ),
     );
   }
+}
+
+/// Explanatory line under a field, for the two questions whose purpose is not
+/// self-evident from the label alone.
+class _HelpText extends StatelessWidget {
+  const _HelpText(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(text, style: AppText.hint);
 }

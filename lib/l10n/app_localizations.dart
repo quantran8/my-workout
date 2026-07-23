@@ -2533,6 +2533,558 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bỏ qua bước hiện tại'**
   String get practiceCardioSkipStep;
+
+  /// No description provided for @authLoginEyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào mừng trở lại'**
+  String get authLoginEyebrow;
+
+  /// No description provided for @authLoginHeadline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập\nđể tiếp tục.'**
+  String get authLoginHeadline;
+
+  /// No description provided for @authLoginBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kế hoạch và lịch sử tập của bạn đang chờ sẵn.'**
+  String get authLoginBody;
+
+  /// No description provided for @authRegisterEyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu hành trình'**
+  String get authRegisterEyebrow;
+
+  /// No description provided for @authRegisterHeadline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo tài khoản\nmiễn phí.'**
+  String get authRegisterHeadline;
+
+  /// No description provided for @authRegisterBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kế hoạch sẽ tiếp tục học từ từng buổi tập. Cần một tài khoản để giữ hồ sơ và lịch sử của bạn.'**
+  String get authRegisterBody;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// No description provided for @authEmailHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'ban@email.com'**
+  String get authEmailHint;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authPasswordHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít nhất 8 ký tự'**
+  String get authPasswordHint;
+
+  /// No description provided for @authConfirmPasswordLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lại mật khẩu'**
+  String get authConfirmPasswordLabel;
+
+  /// No description provided for @authConfirmPasswordHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lại mật khẩu'**
+  String get authConfirmPasswordHint;
+
+  /// No description provided for @authFullNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên hiển thị'**
+  String get authFullNameLabel;
+
+  /// No description provided for @authFullNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên của bạn (không bắt buộc)'**
+  String get authFullNameHint;
+
+  /// No description provided for @authLoginCta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập'**
+  String get authLoginCta;
+
+  /// No description provided for @authRegisterCta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo tài khoản'**
+  String get authRegisterCta;
+
+  /// No description provided for @authToRegister.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có tài khoản? Đăng ký'**
+  String get authToRegister;
+
+  /// No description provided for @authToLogin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có tài khoản? Đăng nhập'**
+  String get authToLogin;
+
+  /// No description provided for @authShowPassword.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện mật khẩu'**
+  String get authShowPassword;
+
+  /// No description provided for @authHidePassword.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn mật khẩu'**
+  String get authHidePassword;
+
+  /// No description provided for @authLogoutCta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng xuất'**
+  String get authLogoutCta;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy nhập email hợp lệ'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorPasswordTooShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu cần ít nhất 8 ký tự'**
+  String get authErrorPasswordTooShort;
+
+  /// No description provided for @authErrorPasswordMismatch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu nhập lại không khớp'**
+  String get authErrorPasswordMismatch;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email hoặc mật khẩu không đúng'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorEmailTaken.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email này đã được đăng ký'**
+  String get authErrorEmailTaken;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu chưa đủ mạnh'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có lỗi xảy ra. Vui lòng thử lại.'**
+  String get authErrorUnknown;
+
+  /// No description provided for @authNeedsEmailConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra hộp thư để xác nhận email, rồi đăng nhập.'**
+  String get authNeedsEmailConfirm;
+
+  /// No description provided for @authRegisterSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo tài khoản thành công'**
+  String get authRegisterSuccess;
+
+  /// No description provided for @reviewSavingCta.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang lưu hồ sơ…'**
+  String get reviewSavingCta;
+
+  /// No description provided for @profileSaveErrorNetwork.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.'**
+  String get profileSaveErrorNetwork;
+
+  /// No description provided for @profileSaveErrorUnauthorized.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.'**
+  String get profileSaveErrorUnauthorized;
+
+  /// No description provided for @profileSaveErrorUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không lưu được hồ sơ. Vui lòng thử lại.'**
+  String get profileSaveErrorUnknown;
+
+  /// No description provided for @basicsRecentActivityLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức vận động gần đây'**
+  String get basicsRecentActivityLabel;
+
+  /// No description provided for @basicsRecentActivityHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'3 tháng qua bạn vận động nhiều hay ít? Câu này tách riêng với kinh nghiệm — tập lâu năm nhưng nghỉ dài vẫn cần khởi động lại từ từ.'**
+  String get basicsRecentActivityHelp;
+
+  /// No description provided for @recentActivityVeryLow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần như không vận động'**
+  String get recentActivityVeryLow;
+
+  /// No description provided for @recentActivityLow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thỉnh thoảng đi lại, ít tập'**
+  String get recentActivityLow;
+
+  /// No description provided for @recentActivityModerate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tập đều 1–2 buổi/tuần'**
+  String get recentActivityModerate;
+
+  /// No description provided for @recentActivityHigh.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tập đều từ 3 buổi/tuần'**
+  String get recentActivityHigh;
+
+  /// No description provided for @recentActivityVeryLowShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Rất ít'**
+  String get recentActivityVeryLowShort;
+
+  /// No description provided for @recentActivityLowShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít'**
+  String get recentActivityLowShort;
+
+  /// No description provided for @recentActivityModerateShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa'**
+  String get recentActivityModerateShort;
+
+  /// No description provided for @recentActivityHighShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhiều'**
+  String get recentActivityHighShort;
+
+  /// No description provided for @basicsDetrainingLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần cuối tập đều đặn'**
+  String get basicsDetrainingLabel;
+
+  /// No description provided for @basicsDetrainingHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghỉ từ 3 tháng trở lên, chương trình sẽ giảm tải trong giai đoạn đầu để cơ thể thích nghi lại.'**
+  String get basicsDetrainingHelp;
+
+  /// No description provided for @detrainingNone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tập đều'**
+  String get detrainingNone;
+
+  /// No description provided for @detrainingUnderMonth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới 1 tháng trước'**
+  String get detrainingUnderMonth;
+
+  /// No description provided for @detrainingOneToThreeMonths.
+  ///
+  /// In vi, this message translates to:
+  /// **'1–3 tháng trước'**
+  String get detrainingOneToThreeMonths;
+
+  /// No description provided for @detrainingThreeToTwelveMonths.
+  ///
+  /// In vi, this message translates to:
+  /// **'3–12 tháng trước'**
+  String get detrainingThreeToTwelveMonths;
+
+  /// No description provided for @detrainingOverYear.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hơn 1 năm trước'**
+  String get detrainingOverYear;
+
+  /// No description provided for @reviewRecentActivityLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vận động gần đây'**
+  String get reviewRecentActivityLabel;
+
+  /// No description provided for @reviewDetrainingLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lần cuối tập đều'**
+  String get reviewDetrainingLabel;
+
+  /// No description provided for @readinessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trước khi tập'**
+  String get readinessTitle;
+
+  /// No description provided for @readinessHeadline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay bạn thế nào?'**
+  String get readinessHeadline;
+
+  /// No description provided for @readinessBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vài câu nhanh để điều chỉnh buổi tập cho vừa sức. Bỏ qua thì chương trình sẽ tự giảm tải cho an toàn.'**
+  String get readinessBody;
+
+  /// No description provided for @readinessDiscomfortQuestion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có chỗ nào đang đau hoặc khó chịu không?'**
+  String get readinessDiscomfortQuestion;
+
+  /// No description provided for @readinessAreaLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vùng bị ảnh hưởng'**
+  String get readinessAreaLabel;
+
+  /// No description provided for @readinessSeverityLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức độ'**
+  String get readinessSeverityLabel;
+
+  /// No description provided for @readinessAffectsMovement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh hưởng tới vận động bình thường'**
+  String get readinessAffectsMovement;
+
+  /// No description provided for @readinessSorenessLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đau nhức còn lại từ buổi trước'**
+  String get readinessSorenessLabel;
+
+  /// No description provided for @readinessSorenessHigh.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhiều'**
+  String get readinessSorenessHigh;
+
+  /// No description provided for @readinessEnergyLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức năng lượng'**
+  String get readinessEnergyLabel;
+
+  /// No description provided for @readinessEnergyLow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thấp'**
+  String get readinessEnergyLow;
+
+  /// No description provided for @readinessEnergyOk.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình thường'**
+  String get readinessEnergyOk;
+
+  /// No description provided for @readinessEnergyHigh.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao'**
+  String get readinessEnergyHigh;
+
+  /// No description provided for @readinessExternalLoadsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yếu tố khác'**
+  String get readinessExternalLoadsLabel;
+
+  /// No description provided for @readinessPoorSleep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngủ không đủ'**
+  String get readinessPoorSleep;
+
+  /// No description provided for @readinessHighStress.
+  ///
+  /// In vi, this message translates to:
+  /// **'Căng thẳng nhiều'**
+  String get readinessHighStress;
+
+  /// No description provided for @readinessIllness.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ốm'**
+  String get readinessIllness;
+
+  /// No description provided for @readinessContinue.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get readinessContinue;
+
+  /// No description provided for @readinessSkip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ qua'**
+  String get readinessSkip;
+
+  /// No description provided for @readinessHoldTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nên nghỉ hôm nay'**
+  String get readinessHoldTitle;
+
+  /// No description provided for @readinessModifiedTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Buổi tập đã được điều chỉnh'**
+  String get readinessModifiedTitle;
+
+  /// No description provided for @painDetailEyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng vì đau'**
+  String get painDetailEyebrow;
+
+  /// No description provided for @painDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đau ở đâu?'**
+  String get painDetailTitle;
+
+  /// No description provided for @painDetailAreaLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vùng đau'**
+  String get painDetailAreaLabel;
+
+  /// No description provided for @painDetailSeverityLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mức độ đau'**
+  String get painDetailSeverityLabel;
+
+  /// No description provided for @painDetailSeverityHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 = hơi khó chịu · 5 = đau nhiều'**
+  String get painDetailSeverityHelp;
+
+  /// No description provided for @painDetailConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận và dừng'**
+  String get painDetailConfirm;
+
+  /// No description provided for @painDetailSkip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng, không ghi chi tiết'**
+  String get painDetailSkip;
+
+  /// No description provided for @bodyAreaHip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hông'**
+  String get bodyAreaHip;
+
+  /// No description provided for @bodyAreaElbow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khuỷu tay'**
+  String get bodyAreaElbow;
+
+  /// No description provided for @bodyAreaNeck.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cổ'**
+  String get bodyAreaNeck;
+
+  /// No description provided for @bodyAreaUpperBack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưng trên'**
+  String get bodyAreaUpperBack;
+
+  /// No description provided for @practiceSessionLoadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tải được buổi tập. Kiểm tra mạng và thử lại.'**
+  String get practiceSessionLoadError;
+
+  /// No description provided for @unitSecondsShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'s'**
+  String get unitSecondsShort;
+
+  /// No description provided for @unitMinutesShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'ph'**
+  String get unitMinutesShort;
+
+  /// No description provided for @practiceOverviewStatExercisesLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài tập'**
+  String get practiceOverviewStatExercisesLabel;
+
+  /// No description provided for @practiceOverviewStatSetsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng set'**
+  String get practiceOverviewStatSetsLabel;
+
+  /// No description provided for @practiceOverviewNoGuide.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có hướng dẫn chi tiết cho bài này.'**
+  String get practiceOverviewNoGuide;
 }
 
 class _AppLocalizationsDelegate

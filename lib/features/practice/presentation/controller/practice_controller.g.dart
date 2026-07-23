@@ -50,7 +50,7 @@ final class PracticeProvider
   }
 }
 
-String _$practiceHash() => r'96ad473a79a7f54c3d9812a46226c20dba3b8818';
+String _$practiceHash() => r'20ecb80fdb67471520d1b6ffc7ae71f01f42deed';
 
 /// Drives the whole practice flow: the set overview → exercise loop → rest, and
 /// the cardio overview → continuous / structured runners. Every timer lives
