@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../presentation/controller/onboarding_controller.dart';
 import 'profile_repository.dart';
 
@@ -25,6 +26,7 @@ class ProfileSubmit extends _$ProfileSubmit {
       state = AsyncValue.data(saved);
       return saved;
     } catch (error, stack) {
+      AppLogger.apiError('profile.save', error, stack);
       state = AsyncValue.error(error, stack);
       rethrow;
     }

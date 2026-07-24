@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../../../core/network/dio_provider.dart';
 import '../models/onboarding_data.dart';
 import 'profile_mapper.dart';
@@ -62,8 +63,11 @@ class ProfileRepository {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/profile');
       return SavedProfile.fromJson(response.data!);
-    } on DioException catch (error) {
+    } on DioException catch (error, stack) {
+      // 404 = onboarding not done yet, a real answer. Anything else is a genuine
+      // failure: log then rethrow.
       if (error.response?.statusCode == 404) return null;
+      AppLogger.apiError('profile.fetch', error, stack);
       rethrow;
     }
   }

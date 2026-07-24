@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/data/auth_controller.dart';
+import '../logging/app_logger.dart';
 
 /// Attaches the bearer token to every request and transparently retries once
 /// after a 401 with a refreshed token.
@@ -65,7 +66,8 @@ class AuthInterceptor extends Interceptor {
       final retry = Dio(BaseOptions(baseUrl: options.baseUrl));
       final response = await retry.fetch<dynamic>(options);
       handler.resolve(response);
-    } on DioException catch (error) {
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('auth-retry ${options.method} ${options.path}', error, stack);
       handler.next(error);
     }
   }

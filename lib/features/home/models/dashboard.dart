@@ -25,6 +25,10 @@ sealed class Dashboard with _$Dashboard {
     required double adherence,
     required int due,
     required int done,
+    // Whole-program "X of M sessions": completed planned days out of the plan's
+    // total (durationWeeks × training-days/week). Distinct from [due]/[adherence]
+    // (a reach-based window). Peer: backend DASHBOARD-7 / PROGRAM-14.
+    required ProgramProgress programProgress,
     required AccessTier accessTier,
     required DashboardNextSession? nextSession,
     required DashboardRecentSession? recent,
@@ -46,6 +50,9 @@ sealed class Dashboard with _$Dashboard {
       adherence: (json['adherence'] as num?)?.toDouble() ?? 1,
       due: (json['due'] as num?)?.toInt() ?? 0,
       done: (json['done'] as num?)?.toInt() ?? 0,
+      programProgress: ProgramProgress.fromJson(
+        (json['programProgress'] as Map<String, dynamic>?) ?? const {},
+      ),
       accessTier: _tierFromWire(json['accessTier'] as String?),
       nextSession: json['nextSession'] == null
           ? null
@@ -73,6 +80,22 @@ LoggedDay _dayFromJson(Map<String, dynamic> json) => LoggedDay(
 /// safe default (`free`) so a stray value never unlocks paid surfaces.
 AccessTier _tierFromWire(String? wire) =>
     wire == 'paid' ? AccessTier.paid : AccessTier.free;
+
+/// Whole-program progress: how many planned sessions are done out of the plan's
+/// total. `total` is 0 when there is no active program (or a legacy program with
+/// no training days) — callers hide the indicator rather than showing "X of 0".
+@freezed
+sealed class ProgramProgress with _$ProgramProgress {
+  const factory ProgramProgress({
+    required int completed,
+    required int total,
+  }) = _ProgramProgress;
+
+  factory ProgramProgress.fromJson(Map<String, dynamic> json) => ProgramProgress(
+    completed: (json['completed'] as num?)?.toInt() ?? 0,
+    total: (json['total'] as num?)?.toInt() ?? 0,
+  );
+}
 
 /// The hero card's "do this next" session. Null once every planned day is done.
 @freezed

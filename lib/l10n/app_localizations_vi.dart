@@ -704,6 +704,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get homeNextEyebrowRest => 'Ngày nghỉ';
 
   @override
+  String get homeNextEyebrowRestStartable => 'Ngày nghỉ · Tập trước nếu muốn';
+
+  @override
   String get homeRestTitle => 'Ngày hồi phục';
 
   @override

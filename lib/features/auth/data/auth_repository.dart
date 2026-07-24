@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../models/auth_session.dart';
 import 'auth_exception.dart';
 
@@ -52,8 +53,9 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await _dio.post<Map<String, dynamic>>('/auth/logout');
-    } on DioException {
-      // Ignored on purpose — see doc comment.
+    } on DioException catch (error, stack) {
+      // Ignored on purpose (see doc comment) — but logged, never silent.
+      AppLogger.apiError('auth.logout', error, stack);
     }
   }
 
@@ -61,7 +63,8 @@ class AuthRepository {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/auth/me');
       return AuthUser.fromJson(response.data!);
-    } on DioException catch (error) {
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('auth.me', error, stack);
       throw AuthException.fromDio(error);
     }
   }
@@ -73,7 +76,8 @@ class AuthRepository {
     try {
       final response = await _dio.post<Map<String, dynamic>>(path, data: body);
       return response.data!;
-    } on DioException catch (error) {
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('POST $path', error, stack);
       throw AuthException.fromDio(error);
     }
   }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../../onboarding/models/computed_rules.dart';
 import '../../onboarding/models/onboarding_data.dart';
 import '../models/program_response.dart';
@@ -35,12 +36,17 @@ class ApiPlanRepository implements PlanRepository {
     // `content-type: application/json`, and the backend's body parser rejects an
     // empty body under that header ("Body cannot be empty…"). The endpoint reads
     // no fields — the profile is fetched server-side — so `{}` is correct.
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/program/generate',
-      data: const <String, dynamic>{},
-    );
-    final program = ProgramResponse.fromJson(response.data!);
-    return mapProgramToPlan(program, data, rules);
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/program/generate',
+        data: const <String, dynamic>{},
+      );
+      final program = ProgramResponse.fromJson(response.data!);
+      return mapProgramToPlan(program, data, rules);
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('program.generate', error, stack);
+      rethrow;
+    }
   }
 
   /// Reads the active program the generate step already produced, without
@@ -50,9 +56,14 @@ class ApiPlanRepository implements PlanRepository {
     OnboardingData data,
     ComputedRules rules,
   ) async {
-    final response = await _dio.get<Map<String, dynamic>>('/program/active');
-    final program = ProgramResponse.fromJson(response.data!);
-    return mapProgramToPlan(program, data, rules);
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/program/active');
+      final program = ProgramResponse.fromJson(response.data!);
+      return mapProgramToPlan(program, data, rules);
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('program.active', error, stack);
+      rethrow;
+    }
   }
 
   @override
@@ -60,11 +71,13 @@ class ApiPlanRepository implements PlanRepository {
     try {
       await _dio.get<Map<String, dynamic>>('/program/active');
       return true;
-    } on DioException catch (e) {
+    } on DioException catch (e, stack) {
       // 404 = "not generated yet" (API-6 semantics), a real answer, not a
-      // failure. Anything else (offline, 401) rethrows so the router does not
-      // silently treat a transient error as "no plan" and loop into generation.
+      // failure. Anything else (offline, 401) is a genuine error: log it, then
+      // rethrow so the router does not silently treat a transient error as "no
+      // plan" and loop into generation.
       if (e.response?.statusCode == 404) return false;
+      AppLogger.apiError('program.hasActivePlan', e, stack);
       rethrow;
     }
   }

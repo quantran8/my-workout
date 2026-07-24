@@ -41,10 +41,15 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
   @override
   void initState() {
     super.initState();
-    // Land on the launch mode's overview after the provider is built.
-    Future.microtask(
-      () => ref.read(practiceProvider.notifier).enterMode(widget.initialMode),
-    );
+    // When a real session was loaded (readiness_route ran loadExecution before
+    // navigating here), its mode is already derived from the exercises — respect
+    // it. Only the offline/demo path, which has no loaded session, falls back to
+    // the route's [initialMode]. See PRACTICE mode fix.
+    Future.microtask(() {
+      final notifier = ref.read(practiceProvider.notifier);
+      final loaded = ref.read(practiceProvider).loadedExercises != null;
+      if (!loaded) notifier.enterMode(widget.initialMode);
+    });
   }
 
   @override

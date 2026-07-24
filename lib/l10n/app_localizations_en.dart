@@ -709,6 +709,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNextEyebrowRest => 'Rest day';
 
   @override
+  String get homeNextEyebrowRestStartable => 'Rest day · Train ahead';
+
+  @override
   String get homeRestTitle => 'Recovery day';
 
   @override

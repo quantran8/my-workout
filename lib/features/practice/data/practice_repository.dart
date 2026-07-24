@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../../../core/network/dio_provider.dart';
 import '../models/session_models.dart';
 import 'practice_mapper.dart';
@@ -66,6 +67,17 @@ class PracticeRepository {
 
   final Dio _dio;
 
+  /// Runs a Dio request and logs any failure at the network boundary (house
+  /// rule: no API call fails silently) before rethrowing so callers still react.
+  Future<T> _call<T>(String operation, Future<T> Function() request) async {
+    try {
+      return await request();
+    } on DioException catch (error, stack) {
+      AppLogger.apiError(operation, error, stack);
+      rethrow;
+    }
+  }
+
   /// `POST /session/create` — the session shell, before any sets exist.
   Future<String> createSession({
     required String programRevisionId,
@@ -73,15 +85,18 @@ class PracticeRepository {
     TrainingEnvironment environment = TrainingEnvironment.unknown,
     DistanceSource distanceSource = DistanceSource.none,
   }) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/session/create',
-      data: {
-        'programRevisionId': programRevisionId,
-        if (plannedSessionId != null) 'plannedSessionId': plannedSessionId,
-        'environment': PracticeMapper.environment(environment),
-        'distanceSource': PracticeMapper.distanceSource(distanceSource),
-        'dataSource': 'manual',
-      },
+    final response = await _call(
+      'session.create',
+      () => _dio.post<Map<String, dynamic>>(
+        '/session/create',
+        data: {
+          'programRevisionId': programRevisionId,
+          if (plannedSessionId != null) 'plannedSessionId': plannedSessionId,
+          'environment': PracticeMapper.environment(environment),
+          'distanceSource': PracticeMapper.distanceSource(distanceSource),
+          'dataSource': 'manual',
+        },
+      ),
     );
     return response.data!['sessionId'] as String;
   }
@@ -92,9 +107,12 @@ class PracticeRepository {
     String sessionId,
     ReadinessAnswers answers,
   ) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/session/$sessionId/readiness',
-      data: answers.toJson(),
+    final response = await _call(
+      'session.readiness',
+      () => _dio.post<Map<String, dynamic>>(
+        '/session/$sessionId/readiness',
+        data: answers.toJson(),
+      ),
     );
     return ReadinessResult.fromJson(response.data!);
   }
@@ -102,17 +120,20 @@ class PracticeRepository {
   /// `POST /session/:id/execution` — the immutable snapshot of what to perform,
   /// with each exercise hydrated. Idempotent: re-calling returns the same items.
   Future<ExecutionSnapshot> buildExecution(String sessionId) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/session/$sessionId/execution',
+    final response = await _call(
+      'session.execution',
+      () => _dio.post<Map<String, dynamic>>('/session/$sessionId/execution'),
     );
     return ExecutionSnapshot.fromJson(response.data!);
   }
 
-  Future<void> logSets(String sessionId, List<SetEntry> sets) =>
-      _dio.post<Map<String, dynamic>>(
-        '/session/$sessionId/sets',
-        data: {'sets': [for (final set in sets) set.toJson()]},
-      );
+  Future<void> logSets(String sessionId, List<SetEntry> sets) => _call(
+    'session.logSets',
+    () => _dio.post<Map<String, dynamic>>(
+      '/session/$sessionId/sets',
+      data: {'sets': [for (final set in sets) set.toJson()]},
+    ),
+  );
 
   /// `POST /session/:id/feedback` — one feedback event, including `pain_stop`,
   /// which the backend turns into a follow-up and a tolerance signal.
@@ -126,17 +147,20 @@ class PracticeRepository {
     int? severity,
     String? notes,
   }) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/session/$sessionId/feedback',
-      data: {
-        'exerciseId': exerciseId,
-        'type': type,
-        if (executionItemId != null) 'executionItemId': executionItemId,
-        if (movementPattern != null) 'movementPattern': movementPattern,
-        if (bodyArea != null) 'bodyArea': bodyArea,
-        if (severity != null) 'severity': severity,
-        if (notes != null && notes.isNotEmpty) 'notes': notes,
-      },
+    final response = await _call(
+      'session.feedback',
+      () => _dio.post<Map<String, dynamic>>(
+        '/session/$sessionId/feedback',
+        data: {
+          'exerciseId': exerciseId,
+          'type': type,
+          if (executionItemId != null) 'executionItemId': executionItemId,
+          if (movementPattern != null) 'movementPattern': movementPattern,
+          if (bodyArea != null) 'bodyArea': bodyArea,
+          if (severity != null) 'severity': severity,
+          if (notes != null && notes.isNotEmpty) 'notes': notes,
+        },
+      ),
     );
     return response.data ?? const {};
   }
@@ -152,14 +176,17 @@ class PracticeRepository {
     EnergyLevel? energyAfter,
     String? notes,
   }) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/session/$sessionId/complete',
-      data: {
-        if (sessionRpe != null) 'sessionRpe': sessionRpe,
-        if (energyAfter != null)
-          'energyAfter': PracticeMapper.energyAfter(energyAfter),
-        if (notes != null && notes.isNotEmpty) 'notes': notes,
-      },
+    final response = await _call(
+      'session.complete',
+      () => _dio.post<Map<String, dynamic>>(
+        '/session/$sessionId/complete',
+        data: {
+          if (sessionRpe != null) 'sessionRpe': sessionRpe,
+          if (energyAfter != null)
+            'energyAfter': PracticeMapper.energyAfter(energyAfter),
+          if (notes != null && notes.isNotEmpty) 'notes': notes,
+        },
+      ),
     );
     return response.data ?? const {};
   }
@@ -167,9 +194,12 @@ class PracticeRepository {
   /// `GET /exercises?ids=` — batch read; only PT-reviewed movements.
   Future<List<ExerciseDetail>> exercisesByIds(List<String> ids) async {
     if (ids.isEmpty) return const [];
-    final response = await _dio.get<List<dynamic>>(
-      '/exercises',
-      queryParameters: {'ids': ids.join(',')},
+    final response = await _call(
+      'exercises.byIds',
+      () => _dio.get<List<dynamic>>(
+        '/exercises',
+        queryParameters: {'ids': ids.join(',')},
+      ),
     );
     return [
       for (final row in response.data ?? const [])

@@ -260,6 +260,7 @@
   "homeNextEyebrowToday": "Next session · Today",
   "homeNextEyebrowTomorrow": "Next session · Tomorrow",
   "homeNextEyebrowRest": "Rest day",
+  "homeNextEyebrowRestStartable": "Rest day · Train ahead",
   "homeRestTitle": "Recovery day",
   "homeRestBody": "Recovery is part of the plan. See you at the next session.",
   "homeSessionRpe": "Effort",

@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/theme/app_theme.dart';
 import 'package:mobile/core/theme/tokens.dart';
 import 'package:mobile/features/home/data/access_controller.dart';
+import 'package:mobile/features/home/data/current_providers.dart';
 import 'package:mobile/features/home/data/dashboard_providers.dart';
 import 'package:mobile/features/home/data/session_log_controller.dart';
+import 'package:mobile/features/home/models/current.dart';
 import 'package:mobile/features/home/models/dashboard.dart';
 import 'package:mobile/features/home/models/session_log.dart';
 import 'package:mobile/features/home/presentation/screens/home_screen.dart';
@@ -32,6 +34,7 @@ Dashboard _serverDashboard() => Dashboard(
   adherence: 0.5,
   due: 8,
   done: 4,
+  programProgress: const ProgramProgress(completed: 4, total: 36),
   accessTier: AccessTier.free,
   nextSession: null,
   recent: DashboardRecentSession(
@@ -45,9 +48,12 @@ Dashboard _serverDashboard() => Dashboard(
 
 /// [dashboard] is what `dashboardProvider` resolves to — pass a fixed [Dashboard]
 /// to assert Home renders the server payload, or null to exercise the fallback.
+/// [current] is what `currentProvider` resolves to (the hero's actionable session
+/// source, GET /program/current); null exercises the dashboard/seed fallback.
 Future<ProviderContainer> pumpHome(
   WidgetTester tester, {
   required Dashboard? dashboard,
+  Current? current,
 }) async {
   final container = ProviderContainer(
     overrides: [
@@ -56,6 +62,7 @@ Future<ProviderContainer> pumpHome(
         const MockPlanRepository(delay: Duration.zero),
       ),
       dashboardProvider.overrideWith((ref) async => dashboard),
+      currentProvider.overrideWith((ref) async => current),
     ],
   );
   addTearDown(container.dispose);
@@ -94,6 +101,10 @@ void main() {
   ) async {
     await pumpHome(tester, dashboard: _serverDashboard());
 
+    // Whole-program progress bar reads programProgress off the server payload.
+    // Asserted before the drag below scrolls the week section out of view.
+    expect(find.text('4/36 sessions'), findsOneWidget);
+
     // The stat tiles sit below the fold in the test viewport; ListView only
     // builds what is visible. Drag the Streak tile into view (and stop there, so
     // the tiles stay built) before asserting on their values.
@@ -123,5 +134,68 @@ void main() {
 
     // No throw, Home still renders its week section from the local seed.
     expect(find.text('This week'), findsOneWidget);
+  });
+
+  testWidgets(
+    'a training day with no logs shows the session + Start, not recovery',
+    (tester) async {
+      // The regression: an empty session log (nobody has logged yet) used to make
+      // the hero read "Recovery day". With /program/current saying it is a
+      // training day, the hero must show the session and an enabled Start CTA.
+      await pumpHome(
+        tester,
+        dashboard: _serverDashboard(),
+        current: const Current(
+          status: CurrentStatus.training,
+          date: '2026-07-22',
+          weekNumber: 1,
+          dayNumber: 2,
+          programRevisionId: 'rev-1',
+          session: SessionSummary(
+            plannedSessionId: 'ps-today',
+            programRevisionId: 'rev-1',
+            name: 'Push Day A',
+            exercises: 5,
+          ),
+          nextSession: null,
+          completed: 0,
+          total: 7,
+        ),
+      );
+
+      expect(find.text('Push Day A'), findsOneWidget);
+      expect(find.text('Recovery day'), findsNothing);
+      // The Start CTA is present and enabled.
+      final cta = tester.widget<FilledButton>(find.byType(FilledButton).first);
+      expect(cta.onPressed, isNotNull);
+    },
+  );
+
+  testWidgets('a rest day still offers the next session to train ahead', (
+    tester,
+  ) async {
+    await pumpHome(
+      tester,
+      dashboard: _serverDashboard(),
+      current: const Current(
+        status: CurrentStatus.rest,
+        date: '2026-07-22',
+        programRevisionId: 'rev-1',
+        session: null,
+        nextSession: SessionSummary(
+          plannedSessionId: 'ps-next',
+          programRevisionId: 'rev-1',
+          name: 'Pull Day B',
+          exercises: 4,
+        ),
+        completed: 2,
+        total: 7,
+      ),
+    );
+
+    // Rest day, but the next session is offered with an enabled Start.
+    expect(find.text('Pull Day B'), findsOneWidget);
+    final cta = tester.widget<FilledButton>(find.byType(FilledButton).first);
+    expect(cta.onPressed, isNotNull);
   });
 }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/logging/app_logger.dart';
 import '../../../core/network/dio_provider.dart';
 import '../models/dashboard.dart';
 
@@ -17,8 +18,13 @@ class DashboardRepository {
   final Dio _dio;
 
   Future<Dashboard> fetch() async {
-    final response = await _dio.get<Map<String, dynamic>>('/dashboard');
-    return Dashboard.fromJson(response.data!);
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/dashboard');
+      return Dashboard.fromJson(response.data!);
+    } on DioException catch (error, stack) {
+      AppLogger.apiError('dashboard.fetch', error, stack);
+      rethrow;
+    }
   }
 }
 

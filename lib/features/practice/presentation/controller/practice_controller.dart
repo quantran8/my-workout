@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/logging/app_logger.dart';
 import '../../data/practice_mapper.dart';
 import '../../data/practice_repository.dart';
 import '../../models/session_models.dart';
@@ -480,7 +481,8 @@ class Practice extends _$Practice {
         loading: false,
       );
       return verdict;
-    } catch (_) {
+    } catch (error, stack) {
+      AppLogger.apiError('practice.submitReadiness', error, stack);
       state = state.copyWith(loading: false);
       rethrow;
     }
@@ -507,7 +509,21 @@ class Practice extends _$Practice {
           .where((item) => item.isStructured)
           .firstOrNull;
 
+      // Derive the runner mode from the session itself, not the route: a session
+      // is cardio when it has interval blocks or any cardio exercise. Otherwise
+      // it is a set session. (PRACTICE-mode fix — the route used to hardcode set.)
+      final isCardio =
+          structured != null ||
+          performed.any(
+            (item) => item.exercise?.exerciseType == ExerciseType.cardio,
+          );
+      final mode = isCardio ? PracticeMode.cardio : PracticeMode.set;
+
       state = state.copyWith(
+        mode: mode,
+        stage: mode == PracticeMode.cardio
+            ? PracticeStage.cardioOverview
+            : PracticeStage.setOverview,
         loadedExercises: [
           for (final (index, item) in performed.indexed)
             Exercise.fromExecutionItem(
@@ -530,7 +546,8 @@ class Practice extends _$Practice {
         setNumber: 1,
         loading: false,
       );
-    } catch (_) {
+    } catch (error, stack) {
+      AppLogger.apiError('practice.loadExecution', error, stack);
       state = state.copyWith(loading: false);
       rethrow;
     }

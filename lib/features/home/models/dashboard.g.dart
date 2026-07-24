@@ -6,6 +6,15 @@ part of 'dashboard.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_ProgramProgress _$ProgramProgressFromJson(Map<String, dynamic> json) =>
+    _ProgramProgress(
+      completed: (json['completed'] as num).toInt(),
+      total: (json['total'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$ProgramProgressToJson(_ProgramProgress instance) =>
+    <String, dynamic>{'completed': instance.completed, 'total': instance.total};
+
 _DashboardNextSession _$DashboardNextSessionFromJson(
   Map<String, dynamic> json,
 ) => _DashboardNextSession(

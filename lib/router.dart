@@ -124,12 +124,16 @@ GoRouter createRouter(Ref ref) => GoRouter(
     GoRoute(path: Routes.home, builder: (_, _) => const HomeScreen()),
     GoRoute(path: Routes.profile, builder: (_, _) => const ProfileScreen()),
     GoRoute(path: Routes.readiness, builder: (_, _) => const ReadinessRoute()),
-    // `?mode=cardio` opens the cardio surface; anything else opens set mode.
+    // A real session derives its own mode from the loaded exercises (set vs
+    // cardio) in `loadExecution`; this `initialMode` only seeds the offline/demo
+    // path, which has no loaded session. `?mode=cardio` forces the cardio surface
+    // there.
     GoRoute(
       path: Routes.practice,
       builder: (context, state) => PracticeScreen(
-        // initialMode: state.uri.queryParameters['mode'] == 'cardio' ? PracticeMode.cardio : PracticeMode.set,
-        initialMode: PracticeMode.set,
+        initialMode: state.uri.queryParameters['mode'] == 'cardio'
+            ? PracticeMode.cardio
+            : PracticeMode.set,
       ),
     ),
   ],

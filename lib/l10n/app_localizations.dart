@@ -1388,6 +1388,12 @@ abstract class AppLocalizations {
   /// **'Ngày nghỉ'**
   String get homeNextEyebrowRest;
 
+  /// No description provided for @homeNextEyebrowRestStartable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày nghỉ · Tập trước nếu muốn'**
+  String get homeNextEyebrowRestStartable;
+
   /// No description provided for @homeRestTitle.
   ///
   /// In vi, this message translates to:

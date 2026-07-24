@@ -15,8 +15,10 @@ import '../../../plan/models/plan_text.dart';
 import '../../../plan/models/workout_plan.dart';
 import '../../../practice/data/session_launch.dart';
 import '../../data/access_controller.dart';
+import '../../data/current_providers.dart';
 import '../../data/dashboard_providers.dart';
 import '../../data/session_log_controller.dart';
+import '../../models/current.dart';
 import '../../models/dashboard.dart';
 import '../../models/progress_report.dart';
 import '../../models/session_log.dart';
@@ -37,8 +39,11 @@ class HomeScreen extends ConsumerWidget {
     // back to the local session log so it renders immediately rather than
     // blocking. Once resolved, the backend's computed metrics take over.
     final dashboard = ref.watch(dashboardProvider).value;
-    final SessionLog log =
-        dashboard?.sessionLog ?? ref.watch(sessionLogControllerProvider);
+    // The current actionable session (`GET /program/current`): today's session
+    // when it is a training day, plus the next unlogged one so a rest day is
+    // still startable. Null while in flight / signed out — the hero falls back.
+    final current = ref.watch(currentProvider).value;
+    final SessionLog log = dashboard?.sessionLog ?? ref.watch(sessionLogControllerProvider);
     final access = dashboard?.accessTier ?? ref.watch(accessProvider);
     // Null while the plan is still generating — every consumer below already
     // falls back, so home renders rather than blocking on it.
@@ -55,11 +60,67 @@ class HomeScreen extends ConsumerWidget {
     final adherence = dashboard?.adherence ?? log.adherenceAsOf(now);
     final report = ProgressReport.from(log.baselineSessions);
 
-    // The next unfinished training day, which drives the hero card. Null once
-    // every scheduled session is logged.
-    final next = log.days.where((d) => !d.completed).firstOrNull;
-    final isToday = next?.day == today;
-    final isTomorrow = next?.day == today.add(const Duration(days: 1));
+    // The hero card's state + the session it offers to start. Source priority:
+    //  1. `current` (GET /program/current) — authoritative. Its `status` says
+    //     whether today is a training day; `actionable` is today's session when
+    //     training, else the next unlogged one so a rest day is still startable
+    //     (user-centric: the CTA never dead-ends). `program_complete`/`no_program`
+    //     with no actionable session → allDone.
+    //  2. `dashboard.nextSession` — if `current` is still resolving but the
+    //     dashboard is in, use its next planned day (equivalent to actionable).
+    //  3. local seed — offline/first-frame day-by-day derivation.
+    // NOTE: `sessionLog.days` holds only *completed* days, so deriving "next"
+    // from it made a fresh program (no logs yet) read as "recovery day" — the bug
+    // this replaces.
+    final _HeroState heroState;
+    final SessionSummary? heroSession;
+    if (current != null) {
+      heroSession = current.actionable == null
+          ? null
+          : SessionSummary(
+              plannedSessionId: current.actionable!.plannedSessionId,
+              programRevisionId: current.actionable!.programRevisionId,
+              name: current.actionable!.name,
+              exercises: current.actionable!.exercises,
+            );
+      heroState = switch (current.status) {
+        CurrentStatus.training => _HeroState.today,
+        // Rest / before-start / unknown but a next session exists → offer it.
+        CurrentStatus.rest ||
+        CurrentStatus.beforeStart ||
+        CurrentStatus.unknown => heroSession != null ? _HeroState.restStartable : _HeroState.allDone,
+        CurrentStatus.programComplete || CurrentStatus.noProgram => _HeroState.allDone,
+      };
+    } else if (dashboard?.nextSession case final next?) {
+      heroSession = SessionSummary(
+        plannedSessionId: next.plannedSessionId,
+        programRevisionId: next.programRevisionId,
+        name: next.name,
+        exercises: next.exercises,
+      );
+      heroState = _HeroState.today;
+    } else if (dashboard != null) {
+      // Dashboard in, no next session → everything logged.
+      heroSession = null;
+      heroState = _HeroState.allDone;
+    } else {
+      // Offline / first frame: fall back to the local seed's day derivation.
+      final seedNext = log.days.where((d) => !d.completed).firstOrNull?.day;
+      heroState = seedNext == null
+          ? _HeroState.allDone
+          : seedNext == today
+          ? _HeroState.today
+          : seedNext == today.add(const Duration(days: 1))
+          ? _HeroState.tomorrow
+          : _HeroState.rest;
+      // A seed "today" is startable but has no server ids — an empty-revision
+      // summary makes _start route to the standalone runner (Routes.practice).
+      heroSession = heroState == _HeroState.today
+          ? const SessionSummary(plannedSessionId: '', programRevisionId: '', name: '', exercises: 0)
+          : null;
+    }
+    // The CTA is actionable whenever there is a session to start.
+    final canStart = heroSession != null && (heroState == _HeroState.today || heroState == _HeroState.restStartable);
 
     final session = plan?.sessions.firstOrNull;
 
@@ -92,14 +153,9 @@ class HomeScreen extends ConsumerWidget {
                         _HeroCard(
                           t: t,
                           session: session,
-                          state: next == null
-                              ? _HeroState.allDone
-                              : isToday
-                              ? _HeroState.today
-                              : isTomorrow
-                              ? _HeroState.tomorrow
-                              : _HeroState.rest,
-                          onStart: () => _start(context, ref, t, isToday),
+                          heroSession: heroSession,
+                          state: heroState,
+                          onStart: canStart ? () => _start(context, ref, heroSession!) : null,
                         ),
                       ),
 
@@ -109,6 +165,16 @@ class HomeScreen extends ConsumerWidget {
                         actionLabel: t.homeWeekPlanLink,
                         onAction: () => context.go(Routes.plan),
                       ),
+                      // Whole-program "X of M sessions" from the server; hidden when
+                      // there is no active program yet (total 0).
+                      if (dashboard?.programProgress case final p? when p.total > 0) ...[
+                        const SizedBox(height: 8),
+                        _ProgramProgressBar(
+                          completed: p.completed,
+                          total: p.total,
+                          label: t.homeWeekSessions(p.completed, p.total),
+                        ),
+                      ],
                       const SizedBox(height: 12),
                       _card(1, WeekStrip(log: log, now: now, t: t)),
 
@@ -199,29 +265,23 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _start(BuildContext context, WidgetRef ref, AppLocalizations t, bool isToday) {
-    if (!isToday) {
-      showAppToast(ref, t.homeTomorrowToast);
-      return;
-    }
-
-    if (!ref.read(sessionLogControllerProvider.notifier).hasPendingToday) {
-      showAppToast(ref, t.homeAlreadyLoggedToast);
-      return;
-    }
-
-    // Start the real session for the day the backend says is next. Without it
-    // (dashboard still loading, or no plan) fall back to the standalone runner.
-    final next = ref.read(dashboardProvider).value?.nextSession;
-    if (next == null) {
+  /// Start the session the hero is showing. The caller only wires this up when
+  /// there IS an actionable session (`canStart`), so [heroSession] is real: it is
+  /// today's session on a training day, or the next unlogged one on a rest day
+  /// (the user chose to train ahead). Without a `programRevisionId` (should not
+  /// happen for a server session) fall back to the standalone runner.
+  void _start(BuildContext context, WidgetRef ref, SessionSummary heroSession) {
+    if (heroSession.programRevisionId.isEmpty) {
       context.go(Routes.practice);
       return;
     }
-    ref.read(pendingSessionProvider.notifier).set(
+    ref
+        .read(pendingSessionProvider.notifier)
+        .set(
           SessionLaunch(
-            programRevisionId: next.programRevisionId,
-            plannedSessionId: next.plannedSessionId,
-            name: next.name,
+            programRevisionId: heroSession.programRevisionId,
+            plannedSessionId: heroSession.plannedSessionId,
+            name: heroSession.name,
           ),
         );
     // Readiness gate first (SESSION-1); it begins the session and hands off to
@@ -336,29 +396,92 @@ class _SectionHead extends StatelessWidget {
   }
 }
 
-enum _HeroState { today, tomorrow, rest, allDone }
+/// A thin "X of M sessions" bar for whole-program progress, under the week head.
+/// Only shown when the program has a known total (see [Dashboard.programProgress]).
+class _ProgramProgressBar extends StatelessWidget {
+  const _ProgramProgressBar({required this.completed, required this.total, required this.label});
+
+  final int completed;
+  final int total;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final fraction = total <= 0 ? 0.0 : (completed / total).clamp(0.0, 1.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.muted),
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LinearProgressIndicator(
+            value: fraction,
+            minHeight: 6,
+            backgroundColor: AppColors.line,
+            valueColor: const AlwaysStoppedAnimation(AppColors.lime),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// today: today IS a training day, start it. restStartable: today is rest/before
+// start but the next session can be trained ahead (user-centric). tomorrow/rest:
+// local-seed fallback states. allDone: nothing to start (program complete / all
+// logged).
+enum _HeroState { today, restStartable, tomorrow, rest, allDone }
 
 /// The one thing to do next, or an explicit rest day. Never empty — a blank
 /// hero would read as a broken plan rather than a scheduled recovery.
 class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.t, required this.session, required this.state, required this.onStart});
+  const _HeroCard({
+    required this.t,
+    required this.session,
+    required this.heroSession,
+    required this.state,
+    required this.onStart,
+  });
 
   final AppLocalizations t;
   final PlanSession? session;
+  // The server's actionable session (name/exercises). Authoritative for the
+  // hero's label and meta when present; the plan `session` is the fallback that
+  // may still be resolving. See HOME-6.
+  final SessionSummary? heroSession;
   final _HeroState state;
-  final VoidCallback onStart;
+  // Null when there is nothing to start (allDone / seed fallback with no CTA).
+  final VoidCallback? onStart;
 
   @override
   Widget build(BuildContext context) {
+    // "resting" here means a passive card with a disabled CTA. A rest day where
+    // the user CAN train ahead (restStartable) is NOT passive — it shows the
+    // session and an enabled Start.
     final resting = state == _HeroState.rest || state == _HeroState.allDone;
 
     final eyebrow = switch (state) {
       _HeroState.today => t.homeNextEyebrowToday,
+      _HeroState.restStartable => t.homeNextEyebrowRestStartable,
       _HeroState.tomorrow => t.homeNextEyebrowTomorrow,
       _HeroState.rest || _HeroState.allDone => t.homeNextEyebrowRest,
     };
 
-    final title = resting ? t.homeRestTitle : session?.name.resolve(t) ?? t.homeRestTitle;
+    // Server name wins; fall back to the plan's session name, then the rest
+    // label. An empty heroSession name (the seed-fallback sentinel) is treated as
+    // "no name" so it falls through to the plan session.
+    final serverName = heroSession?.name;
+    final title = resting
+        ? t.homeRestTitle
+        : (serverName != null && serverName.isNotEmpty)
+        ? serverName
+        : session?.name.resolve(t) ?? t.homeRestTitle;
+    final durationMin = session?.duration ?? 45;
+    final exerciseCount = (heroSession?.exercises ?? 0) > 0 ? heroSession!.exercises : session?.exercises.length;
 
     return Container(
       constraints: const BoxConstraints(minHeight: 222),
@@ -430,16 +553,13 @@ class _HeroCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          '${session?.duration ?? '45'} ${t.unitMinutes}',
+                          '$durationMin ${t.unitMinutes}',
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.muted),
                         ),
                       ],
                     ),
-                    if (session case final session?)
-                      Text(
-                        t.planSessionExercises(session.exercises.length),
-                        style: TextStyle(fontSize: 12, color: AppColors.muted),
-                      ),
+                    if (exerciseCount case final count?)
+                      Text(t.planSessionExercises(count), style: TextStyle(fontSize: 12, color: AppColors.muted)),
                     Text(t.homeSessionRpe, style: TextStyle(fontSize: 12, color: AppColors.muted)),
                   ],
                 ),
@@ -457,7 +577,7 @@ class _HeroCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.button)),
                   ),
                   child: Text(switch (state) {
-                    _HeroState.today => t.homeStartCta,
+                    _HeroState.today || _HeroState.restStartable => t.homeStartCta,
                     _HeroState.tomorrow => t.homeViewCta,
                     _HeroState.rest || _HeroState.allDone => t.homeCompletedCta,
                   }, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
@@ -552,11 +672,7 @@ class _RecentRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      !hasRecent
-                          ? t.homeRecentEmpty
-                          : recent?.name ??
-                                session?.name.resolve(t) ??
-                                t.homeRecentTitle,
+                      !hasRecent ? t.homeRecentEmpty : recent?.name ?? session?.name.resolve(t) ?? t.homeRecentTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),

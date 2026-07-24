@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Dashboard {
 
- SessionLog get sessionLog; int get streak; double get adherence; int get due; int get done; AccessTier get accessTier; DashboardNextSession? get nextSession; DashboardRecentSession? get recent;
+ SessionLog get sessionLog; int get streak; double get adherence; int get due; int get done; ProgramProgress get programProgress; AccessTier get accessTier; DashboardNextSession? get nextSession; DashboardRecentSession? get recent;
 /// Create a copy of Dashboard
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DashboardCopyWith<Dashboard> get copyWith => _$DashboardCopyWithImpl<Dashboard>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Dashboard&&(identical(other.sessionLog, sessionLog) || other.sessionLog == sessionLog)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.adherence, adherence) || other.adherence == adherence)&&(identical(other.due, due) || other.due == due)&&(identical(other.done, done) || other.done == done)&&(identical(other.accessTier, accessTier) || other.accessTier == accessTier)&&(identical(other.nextSession, nextSession) || other.nextSession == nextSession)&&(identical(other.recent, recent) || other.recent == recent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Dashboard&&(identical(other.sessionLog, sessionLog) || other.sessionLog == sessionLog)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.adherence, adherence) || other.adherence == adherence)&&(identical(other.due, due) || other.due == due)&&(identical(other.done, done) || other.done == done)&&(identical(other.programProgress, programProgress) || other.programProgress == programProgress)&&(identical(other.accessTier, accessTier) || other.accessTier == accessTier)&&(identical(other.nextSession, nextSession) || other.nextSession == nextSession)&&(identical(other.recent, recent) || other.recent == recent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionLog,streak,adherence,due,done,accessTier,nextSession,recent);
+int get hashCode => Object.hash(runtimeType,sessionLog,streak,adherence,due,done,programProgress,accessTier,nextSession,recent);
 
 @override
 String toString() {
-  return 'Dashboard(sessionLog: $sessionLog, streak: $streak, adherence: $adherence, due: $due, done: $done, accessTier: $accessTier, nextSession: $nextSession, recent: $recent)';
+  return 'Dashboard(sessionLog: $sessionLog, streak: $streak, adherence: $adherence, due: $due, done: $done, programProgress: $programProgress, accessTier: $accessTier, nextSession: $nextSession, recent: $recent)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $DashboardCopyWith<$Res>  {
   factory $DashboardCopyWith(Dashboard value, $Res Function(Dashboard) _then) = _$DashboardCopyWithImpl;
 @useResult
 $Res call({
- SessionLog sessionLog, int streak, double adherence, int due, int done, AccessTier accessTier, DashboardNextSession? nextSession, DashboardRecentSession? recent
+ SessionLog sessionLog, int streak, double adherence, int due, int done, ProgramProgress programProgress, AccessTier accessTier, DashboardNextSession? nextSession, DashboardRecentSession? recent
 });
 
 
-$SessionLogCopyWith<$Res> get sessionLog;$DashboardNextSessionCopyWith<$Res>? get nextSession;$DashboardRecentSessionCopyWith<$Res>? get recent;
+$SessionLogCopyWith<$Res> get sessionLog;$ProgramProgressCopyWith<$Res> get programProgress;$DashboardNextSessionCopyWith<$Res>? get nextSession;$DashboardRecentSessionCopyWith<$Res>? get recent;
 
 }
 /// @nodoc
@@ -62,14 +62,15 @@ class _$DashboardCopyWithImpl<$Res>
 
 /// Create a copy of Dashboard
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? sessionLog = null,Object? streak = null,Object? adherence = null,Object? due = null,Object? done = null,Object? accessTier = null,Object? nextSession = freezed,Object? recent = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? sessionLog = null,Object? streak = null,Object? adherence = null,Object? due = null,Object? done = null,Object? programProgress = null,Object? accessTier = null,Object? nextSession = freezed,Object? recent = freezed,}) {
   return _then(_self.copyWith(
 sessionLog: null == sessionLog ? _self.sessionLog : sessionLog // ignore: cast_nullable_to_non_nullable
 as SessionLog,streak: null == streak ? _self.streak : streak // ignore: cast_nullable_to_non_nullable
 as int,adherence: null == adherence ? _self.adherence : adherence // ignore: cast_nullable_to_non_nullable
 as double,due: null == due ? _self.due : due // ignore: cast_nullable_to_non_nullable
 as int,done: null == done ? _self.done : done // ignore: cast_nullable_to_non_nullable
-as int,accessTier: null == accessTier ? _self.accessTier : accessTier // ignore: cast_nullable_to_non_nullable
+as int,programProgress: null == programProgress ? _self.programProgress : programProgress // ignore: cast_nullable_to_non_nullable
+as ProgramProgress,accessTier: null == accessTier ? _self.accessTier : accessTier // ignore: cast_nullable_to_non_nullable
 as AccessTier,nextSession: freezed == nextSession ? _self.nextSession : nextSession // ignore: cast_nullable_to_non_nullable
 as DashboardNextSession?,recent: freezed == recent ? _self.recent : recent // ignore: cast_nullable_to_non_nullable
 as DashboardRecentSession?,
@@ -83,6 +84,15 @@ $SessionLogCopyWith<$Res> get sessionLog {
   
   return $SessionLogCopyWith<$Res>(_self.sessionLog, (value) {
     return _then(_self.copyWith(sessionLog: value));
+  });
+}/// Create a copy of Dashboard
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProgramProgressCopyWith<$Res> get programProgress {
+  
+  return $ProgramProgressCopyWith<$Res>(_self.programProgress, (value) {
+    return _then(_self.copyWith(programProgress: value));
   });
 }/// Create a copy of Dashboard
 /// with the given fields replaced by the non-null parameter values.
@@ -187,10 +197,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  ProgramProgress programProgress,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Dashboard() when $default != null:
-return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.accessTier,_that.nextSession,_that.recent);case _:
+return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.programProgress,_that.accessTier,_that.nextSession,_that.recent);case _:
   return orElse();
 
 }
@@ -208,10 +218,10 @@ return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.do
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  ProgramProgress programProgress,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)  $default,) {final _that = this;
 switch (_that) {
 case _Dashboard():
-return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.accessTier,_that.nextSession,_that.recent);}
+return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.programProgress,_that.accessTier,_that.nextSession,_that.recent);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -225,10 +235,10 @@ return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.do
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SessionLog sessionLog,  int streak,  double adherence,  int due,  int done,  ProgramProgress programProgress,  AccessTier accessTier,  DashboardNextSession? nextSession,  DashboardRecentSession? recent)?  $default,) {final _that = this;
 switch (_that) {
 case _Dashboard() when $default != null:
-return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.accessTier,_that.nextSession,_that.recent);case _:
+return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.done,_that.programProgress,_that.accessTier,_that.nextSession,_that.recent);case _:
   return null;
 
 }
@@ -240,7 +250,7 @@ return $default(_that.sessionLog,_that.streak,_that.adherence,_that.due,_that.do
 
 
 class _Dashboard extends Dashboard {
-  const _Dashboard({required this.sessionLog, required this.streak, required this.adherence, required this.due, required this.done, required this.accessTier, required this.nextSession, required this.recent}): super._();
+  const _Dashboard({required this.sessionLog, required this.streak, required this.adherence, required this.due, required this.done, required this.programProgress, required this.accessTier, required this.nextSession, required this.recent}): super._();
   
 
 @override final  SessionLog sessionLog;
@@ -248,6 +258,7 @@ class _Dashboard extends Dashboard {
 @override final  double adherence;
 @override final  int due;
 @override final  int done;
+@override final  ProgramProgress programProgress;
 @override final  AccessTier accessTier;
 @override final  DashboardNextSession? nextSession;
 @override final  DashboardRecentSession? recent;
@@ -262,16 +273,16 @@ _$DashboardCopyWith<_Dashboard> get copyWith => __$DashboardCopyWithImpl<_Dashbo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Dashboard&&(identical(other.sessionLog, sessionLog) || other.sessionLog == sessionLog)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.adherence, adherence) || other.adherence == adherence)&&(identical(other.due, due) || other.due == due)&&(identical(other.done, done) || other.done == done)&&(identical(other.accessTier, accessTier) || other.accessTier == accessTier)&&(identical(other.nextSession, nextSession) || other.nextSession == nextSession)&&(identical(other.recent, recent) || other.recent == recent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Dashboard&&(identical(other.sessionLog, sessionLog) || other.sessionLog == sessionLog)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.adherence, adherence) || other.adherence == adherence)&&(identical(other.due, due) || other.due == due)&&(identical(other.done, done) || other.done == done)&&(identical(other.programProgress, programProgress) || other.programProgress == programProgress)&&(identical(other.accessTier, accessTier) || other.accessTier == accessTier)&&(identical(other.nextSession, nextSession) || other.nextSession == nextSession)&&(identical(other.recent, recent) || other.recent == recent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionLog,streak,adherence,due,done,accessTier,nextSession,recent);
+int get hashCode => Object.hash(runtimeType,sessionLog,streak,adherence,due,done,programProgress,accessTier,nextSession,recent);
 
 @override
 String toString() {
-  return 'Dashboard(sessionLog: $sessionLog, streak: $streak, adherence: $adherence, due: $due, done: $done, accessTier: $accessTier, nextSession: $nextSession, recent: $recent)';
+  return 'Dashboard(sessionLog: $sessionLog, streak: $streak, adherence: $adherence, due: $due, done: $done, programProgress: $programProgress, accessTier: $accessTier, nextSession: $nextSession, recent: $recent)';
 }
 
 
@@ -282,11 +293,11 @@ abstract mixin class _$DashboardCopyWith<$Res> implements $DashboardCopyWith<$Re
   factory _$DashboardCopyWith(_Dashboard value, $Res Function(_Dashboard) _then) = __$DashboardCopyWithImpl;
 @override @useResult
 $Res call({
- SessionLog sessionLog, int streak, double adherence, int due, int done, AccessTier accessTier, DashboardNextSession? nextSession, DashboardRecentSession? recent
+ SessionLog sessionLog, int streak, double adherence, int due, int done, ProgramProgress programProgress, AccessTier accessTier, DashboardNextSession? nextSession, DashboardRecentSession? recent
 });
 
 
-@override $SessionLogCopyWith<$Res> get sessionLog;@override $DashboardNextSessionCopyWith<$Res>? get nextSession;@override $DashboardRecentSessionCopyWith<$Res>? get recent;
+@override $SessionLogCopyWith<$Res> get sessionLog;@override $ProgramProgressCopyWith<$Res> get programProgress;@override $DashboardNextSessionCopyWith<$Res>? get nextSession;@override $DashboardRecentSessionCopyWith<$Res>? get recent;
 
 }
 /// @nodoc
@@ -299,14 +310,15 @@ class __$DashboardCopyWithImpl<$Res>
 
 /// Create a copy of Dashboard
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? sessionLog = null,Object? streak = null,Object? adherence = null,Object? due = null,Object? done = null,Object? accessTier = null,Object? nextSession = freezed,Object? recent = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? sessionLog = null,Object? streak = null,Object? adherence = null,Object? due = null,Object? done = null,Object? programProgress = null,Object? accessTier = null,Object? nextSession = freezed,Object? recent = freezed,}) {
   return _then(_Dashboard(
 sessionLog: null == sessionLog ? _self.sessionLog : sessionLog // ignore: cast_nullable_to_non_nullable
 as SessionLog,streak: null == streak ? _self.streak : streak // ignore: cast_nullable_to_non_nullable
 as int,adherence: null == adherence ? _self.adherence : adherence // ignore: cast_nullable_to_non_nullable
 as double,due: null == due ? _self.due : due // ignore: cast_nullable_to_non_nullable
 as int,done: null == done ? _self.done : done // ignore: cast_nullable_to_non_nullable
-as int,accessTier: null == accessTier ? _self.accessTier : accessTier // ignore: cast_nullable_to_non_nullable
+as int,programProgress: null == programProgress ? _self.programProgress : programProgress // ignore: cast_nullable_to_non_nullable
+as ProgramProgress,accessTier: null == accessTier ? _self.accessTier : accessTier // ignore: cast_nullable_to_non_nullable
 as AccessTier,nextSession: freezed == nextSession ? _self.nextSession : nextSession // ignore: cast_nullable_to_non_nullable
 as DashboardNextSession?,recent: freezed == recent ? _self.recent : recent // ignore: cast_nullable_to_non_nullable
 as DashboardRecentSession?,
@@ -321,6 +333,15 @@ $SessionLogCopyWith<$Res> get sessionLog {
   
   return $SessionLogCopyWith<$Res>(_self.sessionLog, (value) {
     return _then(_self.copyWith(sessionLog: value));
+  });
+}/// Create a copy of Dashboard
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProgramProgressCopyWith<$Res> get programProgress {
+  
+  return $ProgramProgressCopyWith<$Res>(_self.programProgress, (value) {
+    return _then(_self.copyWith(programProgress: value));
   });
 }/// Create a copy of Dashboard
 /// with the given fields replaced by the non-null parameter values.
@@ -347,6 +368,266 @@ $DashboardRecentSessionCopyWith<$Res>? get recent {
     return _then(_self.copyWith(recent: value));
   });
 }
+}
+
+
+/// @nodoc
+mixin _$ProgramProgress {
+
+ int get completed; int get total;
+/// Create a copy of ProgramProgress
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProgramProgressCopyWith<ProgramProgress> get copyWith => _$ProgramProgressCopyWithImpl<ProgramProgress>(this as ProgramProgress, _$identity);
+
+  /// Serializes this ProgramProgress to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgramProgress&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.total, total) || other.total == total));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,completed,total);
+
+@override
+String toString() {
+  return 'ProgramProgress(completed: $completed, total: $total)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProgramProgressCopyWith<$Res>  {
+  factory $ProgramProgressCopyWith(ProgramProgress value, $Res Function(ProgramProgress) _then) = _$ProgramProgressCopyWithImpl;
+@useResult
+$Res call({
+ int completed, int total
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProgramProgressCopyWithImpl<$Res>
+    implements $ProgramProgressCopyWith<$Res> {
+  _$ProgramProgressCopyWithImpl(this._self, this._then);
+
+  final ProgramProgress _self;
+  final $Res Function(ProgramProgress) _then;
+
+/// Create a copy of ProgramProgress
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? completed = null,Object? total = null,}) {
+  return _then(_self.copyWith(
+completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as int,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProgramProgress].
+extension ProgramProgressPatterns on ProgramProgress {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProgramProgress value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProgramProgress() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProgramProgress value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProgramProgress():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProgramProgress value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProgramProgress() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int completed,  int total)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProgramProgress() when $default != null:
+return $default(_that.completed,_that.total);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int completed,  int total)  $default,) {final _that = this;
+switch (_that) {
+case _ProgramProgress():
+return $default(_that.completed,_that.total);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int completed,  int total)?  $default,) {final _that = this;
+switch (_that) {
+case _ProgramProgress() when $default != null:
+return $default(_that.completed,_that.total);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ProgramProgress implements ProgramProgress {
+  const _ProgramProgress({required this.completed, required this.total});
+  factory _ProgramProgress.fromJson(Map<String, dynamic> json) => _$ProgramProgressFromJson(json);
+
+@override final  int completed;
+@override final  int total;
+
+/// Create a copy of ProgramProgress
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProgramProgressCopyWith<_ProgramProgress> get copyWith => __$ProgramProgressCopyWithImpl<_ProgramProgress>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProgramProgressToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProgramProgress&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.total, total) || other.total == total));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,completed,total);
+
+@override
+String toString() {
+  return 'ProgramProgress(completed: $completed, total: $total)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProgramProgressCopyWith<$Res> implements $ProgramProgressCopyWith<$Res> {
+  factory _$ProgramProgressCopyWith(_ProgramProgress value, $Res Function(_ProgramProgress) _then) = __$ProgramProgressCopyWithImpl;
+@override @useResult
+$Res call({
+ int completed, int total
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProgramProgressCopyWithImpl<$Res>
+    implements _$ProgramProgressCopyWith<$Res> {
+  __$ProgramProgressCopyWithImpl(this._self, this._then);
+
+  final _ProgramProgress _self;
+  final $Res Function(_ProgramProgress) _then;
+
+/// Create a copy of ProgramProgress
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? completed = null,Object? total = null,}) {
+  return _then(_ProgramProgress(
+completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as int,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
 }
 
 
