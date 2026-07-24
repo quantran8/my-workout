@@ -5,7 +5,7 @@
 | **unit** | `lib/features/onboarding` |
 | **kind** | `feature` |
 | **status** | `live` |
-| **last_updated** | `2026-07-23` |
+| **last_updated** | `2026-07-24` |
 
 **Source paths**
 
@@ -30,10 +30,13 @@ Collects the user's constraints and goals across 8 steps, then persists them as 
 /welcome → story → basics → safety → context → diet → review
                                                         │
   review: tick the confirm box (CTA inert until then)
-    → PUT /profile   ← the plan is derived server-side from the stored profile,
+    → PUT /profile   ← the program is derived server-side from the stored profile,
     │                  so the save must land before generation starts
-    ↳ failure: stay on review, toast, every answer intact
-    → /generating → /plan
+    ↳ save failure: stay on review, toast, every answer intact
+    → kick off POST /program/generate (not awaited here)
+    → /generating   ← awaits generation, shows stage checks (PLAN-4)
+    │   ↳ generation failure: back to review with a toast
+    → /plan          ← reads GET /program/active (PLAN-2)
 ```
 
 The six steps between `story` and `review` show a progress hairline; `Routes.progressFor` drives it.
@@ -98,9 +101,9 @@ The six steps between `story` and `review` show a progress hairline; `Routes.pro
 ### `ONB-7` — the profile must be saved before plan generation starts
 
 - **Trigger** — the review screen's CTA, enabled only once the confirm box is ticked.
-- **Effect** — awaits `PUT /profile`; navigates to `/generating` only on success. The button shows a saving label and is disabled while in flight.
-- **Edge cases** — on failure the user stays on review with every answer intact and sees a localized message; a 400 shows the backend's own validation text, which is more specific than anything the client could guess.
-- **Code** — [`raw_review_screen.dart:28`](../../../../lib/features/onboarding/presentation/screens/raw_review_screen.dart#L28) — `_submit`
+- **Effect** — awaits `PUT /profile`, then `reset()`s any prior attempt, kicks off generation, and navigates to `/generating`. Only the profile save is awaited before navigating: generation (`POST /program/generate`) is fire-and-forget. The loading screen **also** calls `ensureStarted()` (`PLAN-3`), so whichever runs first wins and the other is a no-op — this is what makes a reload straight onto `/generating` still generate. The button shows a saving label and is disabled while the save is in flight.
+- **Edge cases** — a **save** failure keeps the user on review with every answer intact and a localized message (a 400 shows the backend's own validation text). A **generation** failure surfaces on the loading screen, which routes back to review — see `PLAN-4`. The server generates from the *stored* profile, so the save must land first; sending the answers in the generate request is not the contract.
+- **Code** — [`raw_review_screen.dart`](../../../../lib/features/onboarding/presentation/screens/raw_review_screen.dart) — `_submit`
 
 ### `ONB-8` — `daysPerWeek` is derived from the selected days, never stored
 
@@ -140,3 +143,4 @@ The six steps between `story` and `review` show a progress hairline; `Routes.pro
 ## 7. Change log
 
 - `2026-07-23` — Claude — initial version: 8-step flow, wire mapping, recent-activity/detraining fields, profile save gate.
+- `2026-07-24` — Claude — `ONB-7`: submit now also kicks off `POST /program/generate` (awaited on the loading screen) after the profile save, wiring the live program API. See the `plan` memory file.

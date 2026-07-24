@@ -81,7 +81,9 @@ sealed class WorkoutPlan with _$WorkoutPlan {
     required List<TimelinePhase> timeline,
     required List<PlanText> inferredNeeds,
     required PlanText rationale,
-    required NutritionTarget nutrition,
+    // Null when the backend cannot compute a nutrition target (missing body
+    // data); the plan screen hides the nutrition card rather than inventing one.
+    NutritionTarget? nutrition,
     required List<PlanSession> sessions,
   }) = _WorkoutPlan;
 

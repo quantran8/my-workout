@@ -2006,6 +2006,18 @@ abstract class AppLocalizations {
   /// **'Buổi tập đã được lưu'**
   String get practiceWorkoutSavedToast;
 
+  /// No description provided for @practiceSessionStartError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không bắt đầu được buổi tập. Vui lòng thử lại.'**
+  String get practiceSessionStartError;
+
+  /// No description provided for @practiceHoldBanner.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã điều chỉnh theo tình trạng hôm nay của bạn'**
+  String get practiceHoldBanner;
+
   /// No description provided for @practiceRestTitle.
   ///
   /// In vi, this message translates to:
@@ -2720,6 +2732,60 @@ abstract class AppLocalizations {
   /// **'Tạo tài khoản thành công'**
   String get authRegisterSuccess;
 
+  /// No description provided for @profileTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cá nhân'**
+  String get profileTitle;
+
+  /// No description provided for @profileEyebrow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản của bạn'**
+  String get profileEyebrow;
+
+  /// No description provided for @profileAccountSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get profileAccountSection;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileProviderLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập bằng'**
+  String get profileProviderLabel;
+
+  /// No description provided for @profileNamePlaceholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt'**
+  String get profileNamePlaceholder;
+
+  /// No description provided for @profileSignOutSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên đăng nhập'**
+  String get profileSignOutSection;
+
+  /// No description provided for @profileSignOutHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng xuất khỏi thiết bị này. Kế hoạch và lịch sử tập vẫn được giữ an toàn trong tài khoản.'**
+  String get profileSignOutHint;
+
   /// No description provided for @reviewSavingCta.
   ///
   /// In vi, this message translates to:
@@ -2743,6 +2809,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không lưu được hồ sơ. Vui lòng thử lại.'**
   String get profileSaveErrorUnknown;
+
+  /// No description provided for @planGenerateErrorNetwork.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.'**
+  String get planGenerateErrorNetwork;
+
+  /// No description provided for @planGenerateErrorUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tạo được kế hoạch. Vui lòng thử lại.'**
+  String get planGenerateErrorUnknown;
 
   /// No description provided for @basicsRecentActivityLabel.
   ///

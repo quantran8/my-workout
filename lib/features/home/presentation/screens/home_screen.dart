@@ -10,12 +10,14 @@ import '../../../../core/widgets/screen_enter.dart';
 import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
-import '../../../auth/presentation/widgets/account_sheet.dart';
 import '../../../plan/data/plan_providers.dart';
 import '../../../plan/models/plan_text.dart';
 import '../../../plan/models/workout_plan.dart';
+import '../../../practice/data/session_launch.dart';
 import '../../data/access_controller.dart';
+import '../../data/dashboard_providers.dart';
 import '../../data/session_log_controller.dart';
+import '../../models/dashboard.dart';
 import '../../models/progress_report.dart';
 import '../../models/session_log.dart';
 import '../widgets/home_bottom_nav.dart';
@@ -31,8 +33,13 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final now = ref.watch(nowProvider);
-    final log = ref.watch(sessionLogControllerProvider);
-    final access = ref.watch(accessProvider);
+    // Null while the dashboard request is in flight (or signed out) — Home falls
+    // back to the local session log so it renders immediately rather than
+    // blocking. Once resolved, the backend's computed metrics take over.
+    final dashboard = ref.watch(dashboardProvider).value;
+    final SessionLog log =
+        dashboard?.sessionLog ?? ref.watch(sessionLogControllerProvider);
+    final access = dashboard?.accessTier ?? ref.watch(accessProvider);
     // Null while the plan is still generating — every consumer below already
     // falls back, so home renders rather than blocking on it.
     final plan = ref.watch(planProvider).value;
@@ -40,17 +47,19 @@ class HomeScreen extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final today = DateTime(now.year, now.month, now.day);
 
-    final due = log.dueAsOf(now);
-    final done = log.completedAsOf(now);
-    final streak = log.streakAsOf(now);
+    // Headline metrics come off the server-computed dashboard when present; the
+    // local SessionLog derivations are the offline/first-frame fallback.
+    final dueCount = dashboard?.due ?? log.dueAsOf(now).length;
+    final done = dashboard?.done ?? log.completedAsOf(now);
+    final streak = dashboard?.streak ?? log.streakAsOf(now);
+    final adherence = dashboard?.adherence ?? log.adherenceAsOf(now);
     final report = ProgressReport.from(log.baselineSessions);
 
     // The next unfinished training day, which drives the hero card. Null once
     // every scheduled session is logged.
     final next = log.days.where((d) => !d.completed).firstOrNull;
     final isToday = next?.day == today;
-    final isTomorrow =
-        next?.day == today.add(const Duration(days: 1));
+    final isTomorrow = next?.day == today.add(const Duration(days: 1));
 
     final session = plan?.sessions.firstOrNull;
 
@@ -68,15 +77,13 @@ class HomeScreen extends ConsumerWidget {
                       AppSpacing.screenH,
                       8,
                       AppSpacing.screenH,
-                      HomeBottomNav.height +
-                          MediaQuery.viewPaddingOf(context).bottom +
-                          24,
+                      HomeBottomNav.height + MediaQuery.viewPaddingOf(context).bottom + 24,
                     ),
                     children: [
                       _Greeting(
                         date: DateFormat.yMMMMEEEEd(locale).format(now),
                         title: t.homeGreeting,
-                        onProfile: () => AccountSheet.show(context),
+                        onProfile: () => context.go(Routes.profile),
                       ),
                       const SizedBox(height: 24),
 
@@ -123,13 +130,10 @@ class HomeScreen extends ConsumerWidget {
                             Expanded(
                               child: HomeMetricTile(
                                 label: t.homeAdherenceLabel,
-                                value:
-                                    '${(log.adherenceAsOf(now) * 100).round()}',
+                                value: '${(adherence * 100).round()}',
                                 unit: '%',
-                                caption: t.homeAdherenceFoot(done, due.length),
-                                figure: AdherenceRing(
-                                  value: log.adherenceAsOf(now),
-                                ),
+                                caption: t.homeAdherenceFoot(done, dueCount),
+                                figure: AdherenceRing(value: adherence),
                               ),
                             ),
                           ],
@@ -139,11 +143,8 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 26),
                       _SectionHead(
                         title: t.homeProgressTitle,
-                        actionLabel: access == AccessTier.paid
-                            ? t.homeProgressProLink
-                            : t.homeProgressUpsellLink,
-                        onAction: () =>
-                            ref.read(accessProvider.notifier).toggle(),
+                        actionLabel: access == AccessTier.paid ? t.homeProgressProLink : t.homeProgressUpsellLink,
+                        onAction: () => ref.read(accessProvider.notifier).toggle(),
                       ),
                       const SizedBox(height: 12),
                       _card(
@@ -153,8 +154,7 @@ class HomeScreen extends ConsumerWidget {
                             : LockedProgressCard(
                                 report: report,
                                 t: t,
-                                onUnlock: () =>
-                                    showAppToast(ref, t.homeUnlockToast),
+                                onUnlock: () => showAppToast(ref, t.homeUnlockToast),
                               ),
                       ),
 
@@ -167,6 +167,7 @@ class HomeScreen extends ConsumerWidget {
                           t: t,
                           log: log,
                           session: session,
+                          recent: dashboard?.recent,
                           onTap: () => showAppToast(ref, t.homeRecentToast),
                         ),
                       ),
@@ -177,16 +178,8 @@ class HomeScreen extends ConsumerWidget {
               HomeBottomNav(
                 currentIndex: 0,
                 items: [
-                  HomeNavItem(
-                    icon: Icons.home_rounded,
-                    label: t.homeNavHome,
-                    onTap: () {},
-                  ),
-                  HomeNavItem(
-                    icon: Icons.article_outlined,
-                    label: t.homeNavPlan,
-                    onTap: () => context.go(Routes.plan),
-                  ),
+                  HomeNavItem(icon: Icons.home_rounded, label: t.homeNavHome, onTap: () {}),
+                  HomeNavItem(icon: Icons.article_outlined, label: t.homeNavPlan, onTap: () => context.go(Routes.plan)),
                   HomeNavItem(
                     icon: Icons.schedule_rounded,
                     label: t.homeNavLog,
@@ -195,7 +188,7 @@ class HomeScreen extends ConsumerWidget {
                   HomeNavItem(
                     icon: Icons.person_outline_rounded,
                     label: t.homeNavProfile,
-                    onTap: () => showAppToast(ref, t.homeNavToast),
+                    onTap: () => context.go(Routes.profile),
                   ),
                 ],
               ),
@@ -206,12 +199,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _start(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations t,
-    bool isToday,
-  ) {
+  void _start(BuildContext context, WidgetRef ref, AppLocalizations t, bool isToday) {
     if (!isToday) {
       showAppToast(ref, t.homeTomorrowToast);
       return;
@@ -222,8 +210,23 @@ class HomeScreen extends ConsumerWidget {
       return;
     }
 
-    // Open the active-session screen; saving there logs the day and returns.
-    context.go(Routes.practice);
+    // Start the real session for the day the backend says is next. Without it
+    // (dashboard still loading, or no plan) fall back to the standalone runner.
+    final next = ref.read(dashboardProvider).value?.nextSession;
+    if (next == null) {
+      context.go(Routes.practice);
+      return;
+    }
+    ref.read(pendingSessionProvider.notifier).set(
+          SessionLaunch(
+            programRevisionId: next.programRevisionId,
+            plannedSessionId: next.plannedSessionId,
+            name: next.name,
+          ),
+        );
+    // Readiness gate first (SESSION-1); it begins the session and hands off to
+    // the runner with live data.
+    context.go(Routes.readiness);
   }
 
   Widget _card(int index, Widget child) => ScreenEnter(
@@ -236,11 +239,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _Greeting extends StatelessWidget {
-  const _Greeting({
-    required this.date,
-    required this.title,
-    required this.onProfile,
-  });
+  const _Greeting({required this.date, required this.title, required this.onProfile});
 
   final String date;
   final String title;
@@ -257,11 +256,7 @@ class _Greeting extends StatelessWidget {
             children: [
               Text(
                 date,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.muted,
-                ),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.muted),
               ),
               const SizedBox(height: 4),
               Text(title, style: AppText.title),
@@ -287,10 +282,7 @@ class _Greeting extends StatelessWidget {
                 ),
                 border: Border.all(color: AppColors.line),
               ),
-              child: const Text(
-                'M',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-              ),
+              child: const Text('M', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
             ),
           ),
         ),
@@ -335,11 +327,7 @@ class _SectionHead extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.cyan,
-                ),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.cyan),
               ),
             ),
           ),
@@ -353,12 +341,7 @@ enum _HeroState { today, tomorrow, rest, allDone }
 /// The one thing to do next, or an explicit rest day. Never empty — a blank
 /// hero would read as a broken plan rather than a scheduled recovery.
 class _HeroCard extends StatelessWidget {
-  const _HeroCard({
-    required this.t,
-    required this.session,
-    required this.state,
-    required this.onStart,
-  });
+  const _HeroCard({required this.t, required this.session, required this.state, required this.onStart});
 
   final AppLocalizations t;
   final PlanSession? session;
@@ -375,9 +358,7 @@ class _HeroCard extends StatelessWidget {
       _HeroState.rest || _HeroState.allDone => t.homeNextEyebrowRest,
     };
 
-    final title = resting
-        ? t.homeRestTitle
-        : session?.name.resolve(t) ?? t.homeRestTitle;
+    final title = resting ? t.homeRestTitle : session?.name.resolve(t) ?? t.homeRestTitle;
 
     return Container(
       constraints: const BoxConstraints(minHeight: 222),
@@ -445,37 +426,21 @@ class _HeroCard extends StatelessWidget {
                         Container(
                           width: 6,
                           height: 6,
-                          decoration: const BoxDecoration(
-                            color: AppColors.cyan,
-                            shape: BoxShape.circle,
-                          ),
+                          decoration: const BoxDecoration(color: AppColors.cyan, shape: BoxShape.circle),
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '${session?.duration ?? '45'} ${t.unitMinutes}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.muted,
-                          ),
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.muted),
                         ),
                       ],
                     ),
                     if (session case final session?)
                       Text(
                         t.planSessionExercises(session.exercises.length),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.muted,
-                        ),
+                        style: TextStyle(fontSize: 12, color: AppColors.muted),
                       ),
-                    Text(
-                      t.homeSessionRpe,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.muted,
-                      ),
-                    ),
+                    Text(t.homeSessionRpe, style: TextStyle(fontSize: 12, color: AppColors.muted)),
                   ],
                 ),
               const SizedBox(height: 20),
@@ -489,22 +454,13 @@ class _HeroCard extends StatelessWidget {
                     foregroundColor: AppColors.bg,
                     disabledBackgroundColor: const Color(0xFF303033),
                     disabledForegroundColor: AppColors.muted,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadii.button),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.button)),
                   ),
-                  child: Text(
-                    switch (state) {
-                      _HeroState.today => t.homeStartCta,
-                      _HeroState.tomorrow => t.homeViewCta,
-                      _HeroState.rest || _HeroState.allDone =>
-                        t.homeCompletedCta,
-                    },
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  child: Text(switch (state) {
+                    _HeroState.today => t.homeStartCta,
+                    _HeroState.tomorrow => t.homeViewCta,
+                    _HeroState.rest || _HeroState.allDone => t.homeCompletedCta,
+                  }, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                 ),
               ),
             ],
@@ -527,20 +483,14 @@ class _HeroOrbit extends StatelessWidget {
         height: 170,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: AppColors.lime.withValues(alpha: 0.11),
-            width: 18,
-          ),
+          border: Border.all(color: AppColors.lime.withValues(alpha: 0.11), width: 18),
         ),
         child: Padding(
           padding: const EdgeInsets.all(18),
           child: DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.cyan.withValues(alpha: 0.08),
-                width: 10,
-              ),
+              border: Border.all(color: AppColors.cyan.withValues(alpha: 0.08), width: 10),
             ),
           ),
         ),
@@ -555,17 +505,22 @@ class _RecentRow extends StatelessWidget {
     required this.t,
     required this.log,
     required this.session,
+    required this.recent,
     required this.onTap,
   });
 
   final AppLocalizations t;
   final SessionLog log;
   final PlanSession? session;
+  final DashboardRecentSession? recent;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    // The server's recent session is authoritative; the local log only signals
+    // presence for the offline/first-frame fallback.
     final last = log.days.where((d) => d.completed).lastOrNull;
+    final hasRecent = recent != null || last != null;
 
     return Material(
       color: AppColors.surface,
@@ -589,11 +544,7 @@ class _RecentRow extends StatelessWidget {
                   color: AppColors.cyan.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: const Icon(
-                  Icons.fitness_center_rounded,
-                  size: 20,
-                  color: AppColors.cyan,
-                ),
+                child: const Icon(Icons.fitness_center_rounded, size: 20, color: AppColors.cyan),
               ),
               const SizedBox(width: 13),
               Expanded(
@@ -601,37 +552,31 @@ class _RecentRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      last == null
+                      !hasRecent
                           ? t.homeRecentEmpty
-                          : session?.name.resolve(t) ?? t.homeRecentTitle,
+                          : recent?.name ??
+                                session?.name.resolve(t) ??
+                                t.homeRecentTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                     ),
-                    if (last != null) ...[
+                    if (hasRecent) ...[
                       const SizedBox(height: 3),
                       Text(
-                        t.homeRecentMeta(100, 6),
+                        // Server volume/exercises when present; the local
+                        // fallback has no per-session figures, so it shows 0.
+                        t.homeRecentMeta(recent?.volumeKg ?? 0, recent?.exercises ?? 0),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.muted,
-                        ),
+                        style: TextStyle(fontSize: 12, color: AppColors.muted),
                       ),
                     ],
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.muted2,
-                size: 24,
-              ),
+              Icon(Icons.chevron_right_rounded, color: AppColors.muted2, size: 24),
             ],
           ),
         ),

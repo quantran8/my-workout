@@ -1037,6 +1037,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get practiceWorkoutSavedToast => 'Workout saved';
 
   @override
+  String get practiceSessionStartError =>
+      'Could not start the session. Please try again.';
+
+  @override
+  String get practiceHoldBanner => 'Adjusted for how you\'re feeling today';
+
+  @override
   String get practiceRestTitle => 'Rest';
 
   @override
@@ -1419,6 +1426,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRegisterSuccess => 'Account created';
 
   @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileEyebrow => 'Your account';
+
+  @override
+  String get profileAccountSection => 'Account';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileNameLabel => 'Name';
+
+  @override
+  String get profileProviderLabel => 'Signed in with';
+
+  @override
+  String get profileNamePlaceholder => 'Not set';
+
+  @override
+  String get profileSignOutSection => 'Session';
+
+  @override
+  String get profileSignOutHint =>
+      'Sign out on this device. Your plan and history stay safe on your account.';
+
+  @override
   String get reviewSavingCta => 'Saving your profile…';
 
   @override
@@ -1432,6 +1467,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profileSaveErrorUnknown =>
       'Could not save your profile. Please try again.';
+
+  @override
+  String get planGenerateErrorNetwork =>
+      'Could not reach the server. Check your connection and try again.';
+
+  @override
+  String get planGenerateErrorUnknown =>
+      'Could not generate your plan. Please try again.';
 
   @override
   String get basicsRecentActivityLabel => 'Recent activity level';

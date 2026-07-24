@@ -219,6 +219,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       // Log the day so home's streak and adherence advance.
       final log = ref.read(sessionLogControllerProvider.notifier);
       if (log.hasPendingToday) log.completeToday();
+      // Clear the finished session so the next launch starts fresh (the
+      // provider is keepAlive).
+      notifier.reset();
       showAppToast(ref, t.practiceWorkoutSavedToast);
       if (context.mounted) context.go(Routes.home);
     } else {

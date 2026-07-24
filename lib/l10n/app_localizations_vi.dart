@@ -1032,6 +1032,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get practiceWorkoutSavedToast => 'Buổi tập đã được lưu';
 
   @override
+  String get practiceSessionStartError =>
+      'Không bắt đầu được buổi tập. Vui lòng thử lại.';
+
+  @override
+  String get practiceHoldBanner =>
+      'Đã điều chỉnh theo tình trạng hôm nay của bạn';
+
+  @override
   String get practiceRestTitle => 'Nghỉ';
 
   @override
@@ -1413,6 +1421,34 @@ class AppLocalizationsVi extends AppLocalizations {
   String get authRegisterSuccess => 'Tạo tài khoản thành công';
 
   @override
+  String get profileTitle => 'Cá nhân';
+
+  @override
+  String get profileEyebrow => 'Tài khoản của bạn';
+
+  @override
+  String get profileAccountSection => 'Tài khoản';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileNameLabel => 'Tên';
+
+  @override
+  String get profileProviderLabel => 'Đăng nhập bằng';
+
+  @override
+  String get profileNamePlaceholder => 'Chưa đặt';
+
+  @override
+  String get profileSignOutSection => 'Phiên đăng nhập';
+
+  @override
+  String get profileSignOutHint =>
+      'Đăng xuất khỏi thiết bị này. Kế hoạch và lịch sử tập vẫn được giữ an toàn trong tài khoản.';
+
+  @override
   String get reviewSavingCta => 'Đang lưu hồ sơ…';
 
   @override
@@ -1426,6 +1462,14 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get profileSaveErrorUnknown =>
       'Không lưu được hồ sơ. Vui lòng thử lại.';
+
+  @override
+  String get planGenerateErrorNetwork =>
+      'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.';
+
+  @override
+  String get planGenerateErrorUnknown =>
+      'Không tạo được kế hoạch. Vui lòng thử lại.';
 
   @override
   String get basicsRecentActivityLabel => 'Mức vận động gần đây';

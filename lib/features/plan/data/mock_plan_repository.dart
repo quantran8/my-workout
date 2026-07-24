@@ -17,6 +17,17 @@ class MockPlanRepository implements PlanRepository {
   /// Long enough for screen 9's four stage checks to play through.
   final Duration delay;
 
+  /// The mock has no persistence, so reading the "active" plan just builds it
+  /// again from the same answers.
+  @override
+  Future<WorkoutPlan> fetchPlan(OnboardingData data, ComputedRules rules) =>
+      generatePlan(data, rules);
+
+  /// The mock can always produce a plan, so it always "has" one — the router
+  /// gate never diverts to generation in demo/test mode.
+  @override
+  Future<bool> hasActivePlan() async => true;
+
   @override
   Future<WorkoutPlan> generatePlan(
     OnboardingData data,

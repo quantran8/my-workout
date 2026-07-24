@@ -1516,7 +1516,7 @@ $PlanTextCopyWith<$Res> get name {
 /// @nodoc
 mixin _$WorkoutPlan {
 
- PlanText get headline; PlanText get summary; List<PlanMetric> get heroMetrics; List<TimelinePhase> get timeline; List<PlanText> get inferredNeeds; PlanText get rationale; NutritionTarget get nutrition; List<PlanSession> get sessions;
+ PlanText get headline; PlanText get summary; List<PlanMetric> get heroMetrics; List<TimelinePhase> get timeline; List<PlanText> get inferredNeeds; PlanText get rationale; NutritionTarget? get nutrition; List<PlanSession> get sessions;
 /// Create a copy of WorkoutPlan
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1549,11 +1549,11 @@ abstract mixin class $WorkoutPlanCopyWith<$Res>  {
   factory $WorkoutPlanCopyWith(WorkoutPlan value, $Res Function(WorkoutPlan) _then) = _$WorkoutPlanCopyWithImpl;
 @useResult
 $Res call({
- PlanText headline, PlanText summary, List<PlanMetric> heroMetrics, List<TimelinePhase> timeline, List<PlanText> inferredNeeds, PlanText rationale, NutritionTarget nutrition, List<PlanSession> sessions
+ PlanText headline, PlanText summary, List<PlanMetric> heroMetrics, List<TimelinePhase> timeline, List<PlanText> inferredNeeds, PlanText rationale, NutritionTarget? nutrition, List<PlanSession> sessions
 });
 
 
-$PlanTextCopyWith<$Res> get headline;$PlanTextCopyWith<$Res> get summary;$PlanTextCopyWith<$Res> get rationale;$NutritionTargetCopyWith<$Res> get nutrition;
+$PlanTextCopyWith<$Res> get headline;$PlanTextCopyWith<$Res> get summary;$PlanTextCopyWith<$Res> get rationale;$NutritionTargetCopyWith<$Res>? get nutrition;
 
 }
 /// @nodoc
@@ -1566,7 +1566,7 @@ class _$WorkoutPlanCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutPlan
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? headline = null,Object? summary = null,Object? heroMetrics = null,Object? timeline = null,Object? inferredNeeds = null,Object? rationale = null,Object? nutrition = null,Object? sessions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? headline = null,Object? summary = null,Object? heroMetrics = null,Object? timeline = null,Object? inferredNeeds = null,Object? rationale = null,Object? nutrition = freezed,Object? sessions = null,}) {
   return _then(_self.copyWith(
 headline: null == headline ? _self.headline : headline // ignore: cast_nullable_to_non_nullable
 as PlanText,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
@@ -1574,8 +1574,8 @@ as PlanText,heroMetrics: null == heroMetrics ? _self.heroMetrics : heroMetrics /
 as List<PlanMetric>,timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
 as List<TimelinePhase>,inferredNeeds: null == inferredNeeds ? _self.inferredNeeds : inferredNeeds // ignore: cast_nullable_to_non_nullable
 as List<PlanText>,rationale: null == rationale ? _self.rationale : rationale // ignore: cast_nullable_to_non_nullable
-as PlanText,nutrition: null == nutrition ? _self.nutrition : nutrition // ignore: cast_nullable_to_non_nullable
-as NutritionTarget,sessions: null == sessions ? _self.sessions : sessions // ignore: cast_nullable_to_non_nullable
+as PlanText,nutrition: freezed == nutrition ? _self.nutrition : nutrition // ignore: cast_nullable_to_non_nullable
+as NutritionTarget?,sessions: null == sessions ? _self.sessions : sessions // ignore: cast_nullable_to_non_nullable
 as List<PlanSession>,
   ));
 }
@@ -1610,9 +1610,12 @@ $PlanTextCopyWith<$Res> get rationale {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$NutritionTargetCopyWith<$Res> get nutrition {
-  
-  return $NutritionTargetCopyWith<$Res>(_self.nutrition, (value) {
+$NutritionTargetCopyWith<$Res>? get nutrition {
+    if (_self.nutrition == null) {
+    return null;
+  }
+
+  return $NutritionTargetCopyWith<$Res>(_self.nutrition!, (value) {
     return _then(_self.copyWith(nutrition: value));
   });
 }
@@ -1694,7 +1697,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget nutrition,  List<PlanSession> sessions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget? nutrition,  List<PlanSession> sessions)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkoutPlan() when $default != null:
 return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_that.inferredNeeds,_that.rationale,_that.nutrition,_that.sessions);case _:
@@ -1715,7 +1718,7 @@ return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget nutrition,  List<PlanSession> sessions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget? nutrition,  List<PlanSession> sessions)  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutPlan():
 return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_that.inferredNeeds,_that.rationale,_that.nutrition,_that.sessions);}
@@ -1732,7 +1735,7 @@ return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget nutrition,  List<PlanSession> sessions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlanText headline,  PlanText summary,  List<PlanMetric> heroMetrics,  List<TimelinePhase> timeline,  List<PlanText> inferredNeeds,  PlanText rationale,  NutritionTarget? nutrition,  List<PlanSession> sessions)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutPlan() when $default != null:
 return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_that.inferredNeeds,_that.rationale,_that.nutrition,_that.sessions);case _:
@@ -1747,7 +1750,7 @@ return $default(_that.headline,_that.summary,_that.heroMetrics,_that.timeline,_t
 @JsonSerializable()
 
 class _WorkoutPlan implements WorkoutPlan {
-  const _WorkoutPlan({required this.headline, required this.summary, required final  List<PlanMetric> heroMetrics, required final  List<TimelinePhase> timeline, required final  List<PlanText> inferredNeeds, required this.rationale, required this.nutrition, required final  List<PlanSession> sessions}): _heroMetrics = heroMetrics,_timeline = timeline,_inferredNeeds = inferredNeeds,_sessions = sessions;
+  const _WorkoutPlan({required this.headline, required this.summary, required final  List<PlanMetric> heroMetrics, required final  List<TimelinePhase> timeline, required final  List<PlanText> inferredNeeds, required this.rationale, this.nutrition, required final  List<PlanSession> sessions}): _heroMetrics = heroMetrics,_timeline = timeline,_inferredNeeds = inferredNeeds,_sessions = sessions;
   factory _WorkoutPlan.fromJson(Map<String, dynamic> json) => _$WorkoutPlanFromJson(json);
 
 @override final  PlanText headline;
@@ -1774,7 +1777,7 @@ class _WorkoutPlan implements WorkoutPlan {
 }
 
 @override final  PlanText rationale;
-@override final  NutritionTarget nutrition;
+@override final  NutritionTarget? nutrition;
  final  List<PlanSession> _sessions;
 @override List<PlanSession> get sessions {
   if (_sessions is EqualUnmodifiableListView) return _sessions;
@@ -1816,11 +1819,11 @@ abstract mixin class _$WorkoutPlanCopyWith<$Res> implements $WorkoutPlanCopyWith
   factory _$WorkoutPlanCopyWith(_WorkoutPlan value, $Res Function(_WorkoutPlan) _then) = __$WorkoutPlanCopyWithImpl;
 @override @useResult
 $Res call({
- PlanText headline, PlanText summary, List<PlanMetric> heroMetrics, List<TimelinePhase> timeline, List<PlanText> inferredNeeds, PlanText rationale, NutritionTarget nutrition, List<PlanSession> sessions
+ PlanText headline, PlanText summary, List<PlanMetric> heroMetrics, List<TimelinePhase> timeline, List<PlanText> inferredNeeds, PlanText rationale, NutritionTarget? nutrition, List<PlanSession> sessions
 });
 
 
-@override $PlanTextCopyWith<$Res> get headline;@override $PlanTextCopyWith<$Res> get summary;@override $PlanTextCopyWith<$Res> get rationale;@override $NutritionTargetCopyWith<$Res> get nutrition;
+@override $PlanTextCopyWith<$Res> get headline;@override $PlanTextCopyWith<$Res> get summary;@override $PlanTextCopyWith<$Res> get rationale;@override $NutritionTargetCopyWith<$Res>? get nutrition;
 
 }
 /// @nodoc
@@ -1833,7 +1836,7 @@ class __$WorkoutPlanCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutPlan
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? headline = null,Object? summary = null,Object? heroMetrics = null,Object? timeline = null,Object? inferredNeeds = null,Object? rationale = null,Object? nutrition = null,Object? sessions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? headline = null,Object? summary = null,Object? heroMetrics = null,Object? timeline = null,Object? inferredNeeds = null,Object? rationale = null,Object? nutrition = freezed,Object? sessions = null,}) {
   return _then(_WorkoutPlan(
 headline: null == headline ? _self.headline : headline // ignore: cast_nullable_to_non_nullable
 as PlanText,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
@@ -1841,8 +1844,8 @@ as PlanText,heroMetrics: null == heroMetrics ? _self._heroMetrics : heroMetrics 
 as List<PlanMetric>,timeline: null == timeline ? _self._timeline : timeline // ignore: cast_nullable_to_non_nullable
 as List<TimelinePhase>,inferredNeeds: null == inferredNeeds ? _self._inferredNeeds : inferredNeeds // ignore: cast_nullable_to_non_nullable
 as List<PlanText>,rationale: null == rationale ? _self.rationale : rationale // ignore: cast_nullable_to_non_nullable
-as PlanText,nutrition: null == nutrition ? _self.nutrition : nutrition // ignore: cast_nullable_to_non_nullable
-as NutritionTarget,sessions: null == sessions ? _self._sessions : sessions // ignore: cast_nullable_to_non_nullable
+as PlanText,nutrition: freezed == nutrition ? _self.nutrition : nutrition // ignore: cast_nullable_to_non_nullable
+as NutritionTarget?,sessions: null == sessions ? _self._sessions : sessions // ignore: cast_nullable_to_non_nullable
 as List<PlanSession>,
   ));
 }
@@ -1878,9 +1881,12 @@ $PlanTextCopyWith<$Res> get rationale {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$NutritionTargetCopyWith<$Res> get nutrition {
-  
-  return $NutritionTargetCopyWith<$Res>(_self.nutrition, (value) {
+$NutritionTargetCopyWith<$Res>? get nutrition {
+    if (_self.nutrition == null) {
+    return null;
+  }
+
+  return $NutritionTargetCopyWith<$Res>(_self.nutrition!, (value) {
     return _then(_self.copyWith(nutrition: value));
   });
 }

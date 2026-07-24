@@ -408,7 +408,13 @@ class PracticeState {
 /// Drives the whole practice flow: the set overview → exercise loop → rest, and
 /// the cardio overview → continuous / structured runners. Every timer lives
 /// here so they survive rebuilds and sheet opens, and are cancelled on dispose.
-@riverpod
+///
+/// keepAlive: `beginSession`/`loadExecution` run on the readiness route, then
+/// the app navigates to the practice runner. An autoDispose provider would be
+/// torn down in the gap between the two routes, dropping the loaded session and
+/// bouncing the runner back to its standalone demo state. [reset] returns it to
+/// the empty state after a session ends.
+@Riverpod(keepAlive: true)
 class Practice extends _$Practice {
   Timer? _timedTimer;
   Timer? _restTimer;
@@ -424,6 +430,14 @@ class Practice extends _$Practice {
       _structuredTimer?.cancel();
     });
     return const PracticeState();
+  }
+
+  /// Return to the empty state after a session ends (or is abandoned), so a
+  /// keepAlive provider does not carry a finished session's loaded exercises
+  /// into the next one.
+  void reset() {
+    _cancelAll();
+    state = const PracticeState();
   }
 
   /// Sets the launch mode and lands on that mode's overview.

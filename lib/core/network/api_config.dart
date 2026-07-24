@@ -13,7 +13,7 @@ String get apiBaseUrl {
   const override = String.fromEnvironment('API_BASE_URL');
   if (override.isNotEmpty) return override;
 
-  const port = 5000;
+  const port = 5003;
   if (!kIsWeb && Platform.isAndroid) {
     return 'http://10.0.2.2:$port/api/v1';
   }

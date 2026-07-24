@@ -39,10 +39,18 @@ class SetOverviewView extends ConsumerWidget {
           ]
         : _demoExercises(t);
 
+    // Reasons the session was reduced/held at the readiness gate. Backend copy
+    // (Vietnamese), shown verbatim — the client cannot re-derive why.
+    final reasons = state.readiness?.reasons ?? const [];
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 132),
       children: [
         Text(t.practiceOverviewTitle, style: AppText.title.copyWith(fontSize: 34, height: 1.06)),
+        if (reasons.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _ReadinessBanner(title: t.practiceHoldBanner, reasons: reasons),
+        ],
         const SizedBox(height: 28),
         _statRow(t, ref),
         const SizedBox(height: 40),
@@ -253,6 +261,57 @@ class SetOverviewView extends ConsumerWidget {
       ],
     ),
   );
+}
+
+/// A coral notice listing why the session was adjusted at the readiness gate.
+/// A reduction is a caution, not more body copy, so it reads like the plan
+/// screen's health notice.
+class _ReadinessBanner extends StatelessWidget {
+  const _ReadinessBanner({required this.title, required this.reasons});
+
+  final String title;
+  final List<String> reasons;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.pink.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(AppRadii.field),
+        border: Border.all(color: AppColors.pink.withValues(alpha: 0.16)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.shield_moon_outlined, size: 18, color: AppColors.pink),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFFFD5DE),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          for (final reason in reasons) ...[
+            const SizedBox(height: 6),
+            Text(
+              '• $reason',
+              style: const TextStyle(fontSize: 13, height: 1.4, color: Color(0xFFFFD5DE)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 class _Stat extends StatelessWidget {

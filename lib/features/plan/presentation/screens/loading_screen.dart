@@ -10,9 +10,12 @@ import '../../../../core/widgets/loader_ring.dart';
 
 import '../../../../core/widgets/screen_scaffold.dart';
 import '../../../../core/widgets/stage_check_row.dart';
+import '../../../../core/widgets/toast.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../router.dart';
+import '../../data/plan_messages.dart';
 import '../../data/plan_providers.dart';
+import '../../models/workout_plan.dart';
 
 /// Screen 9 — the pipeline made visible while the plan is generated.
 ///
@@ -45,6 +48,34 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen> {
       }
       setState(() => _stage++);
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // Own the trigger here rather than relying on the review screen: if the
+      // user reloads onto this screen, or the review-screen kick-off was
+      // missed, this still starts generation (no-op if already running).
+      ref.read(programGenerateProvider.notifier).ensureStarted();
+      // Act on an outcome that resolved before this screen mounted — ref.listen
+      // in build() only fires on later changes, so it would miss that case.
+      _onGenerated(ref.read(programGenerateProvider));
+    });
+  }
+
+  void _onGenerated(AsyncValue<WorkoutPlan?> state) {
+    if (_navigated) return;
+    final router = GoRouter.of(context);
+    final t = AppLocalizations.of(context);
+
+    if (state case AsyncData(value: final _?)) {
+      _navigated = true;
+      // Let the final stage register before moving on.
+      Future.delayed(const Duration(milliseconds: 260), () {
+        if (mounted) router.go(Routes.plan);
+      });
+    } else if (state case AsyncError(:final error)) {
+      _navigated = true;
+      showAppToast(ref, planErrorMessage(t, error));
+      router.go(Routes.review);
+    }
   }
 
   @override
@@ -57,16 +88,9 @@ class _LoadingScreenState extends ConsumerState<LoadingScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
 
-    ref.listen(planProvider, (previous, next) {
-      if (_navigated || !next.hasValue) return;
-      _navigated = true;
-      // Capture the router now — `context` must not be touched after the gap.
-      final router = GoRouter.of(context);
-      Future.delayed(const Duration(milliseconds: 260), () {
-        // Let the final stage register before moving on.
-        if (mounted) router.go(Routes.plan);
-      });
-    });
+    // Navigate on the generation outcome as it changes. The already-resolved-
+    // on-mount case is handled once in initState's post-frame callback.
+    ref.listen(programGenerateProvider, (_, next) => _onGenerated(next));
 
     final titles = [
       t.loadingTitle1,

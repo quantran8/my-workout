@@ -5,7 +5,7 @@
 | **unit** | `lib/features/auth` |
 | **kind** | `feature` |
 | **status** | `live` |
-| **last_updated** | `2026-07-23` |
+| **last_updated** | `2026-07-24` |
 
 **Source paths**
 
@@ -14,6 +14,7 @@
 - [`data/token_store.dart`](../../../../lib/features/auth/data/token_store.dart) — Keychain/Keystore persistence
 - [`data/auth_exception.dart`](../../../../lib/features/auth/data/auth_exception.dart) — Dio error → typed failure
 - [`presentation/screens/`](../../../../lib/features/auth/presentation/screens/) — login, register
+- [`../profile/presentation/screens/profile_screen.dart`](../../../../lib/features/profile/presentation/screens/profile_screen.dart) — Profile tab; hosts the sign-out action
 - [`../../core/network/auth_interceptor.dart`](../../../../lib/core/network/auth_interceptor.dart) — token attach + 401 retry
 - [`../../router.dart`](../../../../lib/router.dart) — route gating
 
@@ -93,10 +94,10 @@ Any authenticated request
 
 ### `AUTH-6` — sign-out succeeds locally even if the server call fails
 
-- **Trigger** — sign-out from the account sheet.
-- **Effect** — `POST /auth/logout` (best effort), then storage is cleared and state set to signed out regardless of the outcome.
+- **Trigger** — sign-out from the profile screen (`ProfileScreen`, the Profile tab).
+- **Effect** — `POST /auth/logout` (best effort), then storage is cleared and state set to signed out regardless of the outcome. The screen does not navigate on its own; clearing the session makes the router redirect to `/login` (`AUTH-5`).
 - **Why** — a user asking to sign out on a flaky network must not stay signed in.
-- **Code** — [`auth_repository.dart:52`](../../../../lib/features/auth/data/auth_repository.dart#L52) — `logout`
+- **Code** — [`auth_repository.dart:52`](../../../../lib/features/auth/data/auth_repository.dart#L52) — `logout`; [`profile_screen.dart`](../../../../lib/features/profile/presentation/screens/profile_screen.dart) — the sign-out button.
 
 ### `AUTH-7` — the refresh token lives in the platform keychain, not preferences
 
@@ -135,3 +136,4 @@ Any authenticated request
 ## 7. Change log
 
 - `2026-07-23` — Claude — initial version: email/password auth, session restore, 401 retry, route gating.
+- `2026-07-24` — Claude — sign-out moved from the `AccountSheet` bottom sheet to a dedicated `ProfileScreen` (Profile tab, `/profile`); the sheet was deleted. `AUTH-6` updated.

@@ -5,7 +5,7 @@
 | **unit** | `lib/features/practice` |
 | **kind** | `feature` |
 | **status** | `live` |
-| **last_updated** | `2026-07-23` |
+| **last_updated** | `2026-07-24` |
 
 **Source paths**
 
@@ -13,7 +13,9 @@
 - [`data/practice_repository.dart`](../../../../lib/features/practice/data/practice_repository.dart) — the six session calls
 - [`data/practice_mapper.dart`](../../../../lib/features/practice/data/practice_mapper.dart) — **the wire contract**
 - [`models/session_models.dart`](../../../../lib/features/practice/models/session_models.dart) — execution snapshot types
-- [`presentation/screens/readiness_screen.dart`](../../../../lib/features/practice/presentation/screens/readiness_screen.dart) — the safety gate
+- [`presentation/screens/readiness_screen.dart`](../../../../lib/features/practice/presentation/screens/readiness_screen.dart) — the safety gate (pure form)
+- [`presentation/screens/readiness_route.dart`](../../../../lib/features/practice/presentation/screens/readiness_route.dart) — hosts the gate, owns `beginSession`→`loadExecution`→navigate
+- [`data/session_launch.dart`](../../../../lib/features/practice/data/session_launch.dart) — the `pendingSession` handoff between Home and the gate
 - [`presentation/widgets/`](../../../../lib/features/practice/presentation/widgets/) — set/cardio surfaces, sheets
 
 ---
@@ -27,10 +29,14 @@ Runs a live workout: the exercise list, the per-set runner with its timers, the 
 ## 2. Flow
 
 ```
-Readiness gate  → POST /session/create
+Home hero "Start"  → arm pendingSession from dashboard.nextSession
+                   → /readiness
+
+Readiness gate  → POST /session/create   (programRevisionId + plannedSessionId)
                 → POST /session/:id/readiness
-                  ↳ verdict = hold → do not train; show the backend's reasons
+                  ↳ any verdict (incl. hold) → still proceed; reasons are shown
                 → POST /session/:id/execution   (immutable snapshot, exercises hydrated)
+                → /practice
 
 Set runner (per exercise, per set)
   reps: tap ✓            → POST /session/:id/sets → rest
@@ -48,13 +54,27 @@ Finish → POST /session/:id/complete  (carries sessionRpe)
 
 ## 3. Business logic
 
-### `PRACTICE-1` — the readiness gate runs before any training, and can stop it
+### `PRACTICE-1` — the readiness gate runs before any training, and can reduce it
 
-- **Trigger** — starting a session.
-- **Effect** — answers post to `/readiness`; the backend returns a verdict. `hold` means at least part of the session must not be trained, and the runner surfaces the backend's own Vietnamese reasons rather than inventing its own.
+- **Trigger** — starting a session (the readiness route, reached from the Home hero).
+- **Effect** — answers post to `/readiness`; the backend returns a verdict. A `hold` does **not** cancel the session client-side (`SESSION-2`): the execution snapshot already has the modifications applied, so the runner loads normally and surfaces the backend's own Vietnamese reasons (`ReadinessResult.reasons`) in a coral banner on the overview.
 - **Edge cases** — skipping the gate sends `answered: false`, which the backend treats as its conservative "unknown" branch and **caps volume at 70%**. That is a real cost, not a no-op — a skip is a choice, not an absence.
-- **Why** — `affectsNormalMovement` on a discomfort is the single answer most likely to escalate the verdict to `hold`, which is why it is a separate switch and not folded into severity.
-- **Code** — [`readiness_screen.dart`](../../../../lib/features/practice/presentation/screens/readiness_screen.dart); [`practice_controller.dart:447`](../../../../lib/features/practice/presentation/controller/practice_controller.dart#L447) — `beginSession`
+- **Why** — `affectsNormalMovement` on a discomfort is the single answer most likely to escalate the verdict to `hold`, which is why it is a separate switch and not folded into severity. Client-side blocking would double-enforce what the snapshot already reflects and could hide items the backend deemed safe.
+- **Code** — [`readiness_route.dart`](../../../../lib/features/practice/presentation/screens/readiness_route.dart) — `_begin`; [`practice_controller.dart`](../../../../lib/features/practice/presentation/controller/practice_controller.dart) — `beginSession`; [`set_overview_view.dart`](../../../../lib/features/practice/presentation/widgets/set_overview_view.dart) — `_ReadinessBanner`
+
+### `PRACTICE-12` — a session is launched from Home with the dashboard's next-session ids
+
+- **Trigger** — the Home hero "Start" for a day that is due.
+- **Effect** — `dashboard.nextSession` (which the backend picks, `DASHBOARD-4`) supplies `programRevisionId` + `plannedSessionId`; Home arms `pendingSession` with them and routes to `/readiness`. The readiness route reads it, begins the session, loads the snapshot, then navigates to `/practice` and clears the handoff. Which day is "today" is the **backend's** decision — the client never matches weekdays.
+- **Edge cases** — if `dashboard.nextSession` is null (still loading, or no plan), Home falls back to opening `/practice` in its standalone demo. Opening `/readiness` with nothing armed bounces to `/home`.
+- **Why** — `POST /session/create` needs `programRevisionId`, which only the dashboard carries; threading it through avoids a second program fetch and keeps day-selection server-owned.
+- **Code** — [`session_launch.dart`](../../../../lib/features/practice/data/session_launch.dart) — `PendingSession`; [`home_screen.dart`](../../../../lib/features/home/presentation/screens/home_screen.dart) — `_start`; [`readiness_route.dart`](../../../../lib/features/practice/presentation/screens/readiness_route.dart)
+
+### `PRACTICE-13` — the practice controller is keepAlive across the launch hop
+
+- **Effect** — `Practice` is `@Riverpod(keepAlive: true)`. `beginSession`/`loadExecution` run on the readiness route; the loaded session must survive the navigation to `/practice`. `reset()` returns it to the empty state after a session completes (`_openFinish`), so a keepAlive provider does not carry a finished session's exercises into the next launch.
+- **Edge cases** — an autoDispose provider would be torn down between the two routes, dropping the loaded session and bouncing the runner to its demo state (`PRACTICE-10`).
+- **Code** — [`practice_controller.dart`](../../../../lib/features/practice/presentation/controller/practice_controller.dart) — `Practice`, `reset`; [`practice_screen.dart`](../../../../lib/features/practice/presentation/screens/practice_screen.dart) — `_openFinish`
 
 ### `PRACTICE-2` — the runner performs the *effective* prescription, not the planned one
 
@@ -163,3 +183,4 @@ All four timers are cancelled in `ref.onDispose`.
 ## 7. Change log
 
 - `2026-07-23` — Claude — initial version: session lifecycle, readiness gate, set/rest rules, pain-stop, wire mapping, interval blocks.
+- `2026-07-24` — Claude — wired the launch flow that was previously unreachable: Home hero → `/readiness` (armed from `dashboard.nextSession`) → `beginSession`/`loadExecution` → `/practice`. `PRACTICE-1` updated (hold no longer blocks client-side; SESSION-2), added `PRACTICE-12` (launch handoff) and `PRACTICE-13` (keepAlive). Cross-repo: backend `DASHBOARD-4` now carries `programRevisionId`.

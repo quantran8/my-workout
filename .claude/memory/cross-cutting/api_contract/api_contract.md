@@ -5,7 +5,7 @@
 | **unit** | `cross-cutting` |
 | **kind** | `cross-cutting` |
 | **status** | `live` |
-| **last_updated** | `2026-07-23` |
+| **last_updated** | `2026-07-24` |
 
 **Source paths**
 
@@ -88,10 +88,11 @@ Not a sequence. These rules apply to every request.
 
 - NestJS's `ValidationPipe` returns `message` as a **string array** for validation failures and a plain string elsewhere. Error mappers handle both.
 - `ValidationPipe` runs with `whitelist: true`: a field the DTO does not declare is silently stripped, not rejected. A typo'd key therefore looks like it worked.
-- The plan feature still uses `MockPlanRepository`; [`ApiPlanRepository`](../../../../lib/features/plan/data/api_plan_repository.dart) exists but is not wired.
+- The plan feature is **live** against the backend's program API ([`ApiPlanRepository`](../../../../lib/features/plan/data/api_plan_repository.dart), the default in `planRepositoryProvider`); `MockPlanRepository` is the offline fallback. The backend calls it a **program** at `/program/*`, not `/plans` — [`program_mapper.dart`](../../../../lib/features/plan/data/program_mapper.dart) bridges the two shapes. See the `plan` memory file.
 
 ---
 
 ## 6. Change log
 
 - `2026-07-23` — Claude — initial version: enum vocabulary contract, base URL, interceptor, 404 semantics.
+- `2026-07-24` — Claude — plan feature wired live to the `/program/*` API (was `MockPlanRepository`); noted the plan/program name mismatch and the mapper seam.

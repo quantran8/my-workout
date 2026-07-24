@@ -96,9 +96,9 @@ _WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) => _WorkoutPlan(
       .map((e) => PlanText.fromJson(e as Map<String, dynamic>))
       .toList(),
   rationale: PlanText.fromJson(json['rationale'] as Map<String, dynamic>),
-  nutrition: NutritionTarget.fromJson(
-    json['nutrition'] as Map<String, dynamic>,
-  ),
+  nutrition: json['nutrition'] == null
+      ? null
+      : NutritionTarget.fromJson(json['nutrition'] as Map<String, dynamic>),
   sessions: (json['sessions'] as List<dynamic>)
       .map((e) => PlanSession.fromJson(e as Map<String, dynamic>))
       .toList(),

@@ -88,10 +88,10 @@ class _PlanBody extends ConsumerWidget {
         children: [
           // Cards cascade in, staggered by 60ms.
           _card(0, _hero(numbers)),
-          _card(1, _timeline()),
-          _card(2, _needs()),
+          if (plan.timeline.isNotEmpty) _card(1, _timeline()),
+          if (plan.inferredNeeds.isNotEmpty) _card(2, _needs()),
           _card(3, _rationale()),
-          _card(4, _nutrition(numbers)),
+          if (plan.nutrition case final nutrition?) _card(4, _nutrition(numbers, nutrition)),
           _card(5, _schedule()),
 
           const SizedBox(height: 20),
@@ -218,9 +218,7 @@ class _PlanBody extends ConsumerWidget {
     child: Text(plan.rationale.resolve(t), style: AppText.bodySm),
   );
 
-  Widget _nutrition(NumberFormat numbers) {
-    final n = plan.nutrition;
-
+  Widget _nutrition(NumberFormat numbers, NutritionTarget n) {
     return AccentCard(
       tone: AccentTone.cyan,
       eyebrow: t.planNutritionTitle,

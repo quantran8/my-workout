@@ -11,6 +11,12 @@ part of 'practice_controller.dart';
 /// Drives the whole practice flow: the set overview → exercise loop → rest, and
 /// the cardio overview → continuous / structured runners. Every timer lives
 /// here so they survive rebuilds and sheet opens, and are cancelled on dispose.
+///
+/// keepAlive: `beginSession`/`loadExecution` run on the readiness route, then
+/// the app navigates to the practice runner. An autoDispose provider would be
+/// torn down in the gap between the two routes, dropping the loaded session and
+/// bouncing the runner back to its standalone demo state. [reset] returns it to
+/// the empty state after a session ends.
 
 @ProviderFor(Practice)
 final practiceProvider = PracticeProvider._();
@@ -18,18 +24,30 @@ final practiceProvider = PracticeProvider._();
 /// Drives the whole practice flow: the set overview → exercise loop → rest, and
 /// the cardio overview → continuous / structured runners. Every timer lives
 /// here so they survive rebuilds and sheet opens, and are cancelled on dispose.
+///
+/// keepAlive: `beginSession`/`loadExecution` run on the readiness route, then
+/// the app navigates to the practice runner. An autoDispose provider would be
+/// torn down in the gap between the two routes, dropping the loaded session and
+/// bouncing the runner back to its standalone demo state. [reset] returns it to
+/// the empty state after a session ends.
 final class PracticeProvider
     extends $NotifierProvider<Practice, PracticeState> {
   /// Drives the whole practice flow: the set overview → exercise loop → rest, and
   /// the cardio overview → continuous / structured runners. Every timer lives
   /// here so they survive rebuilds and sheet opens, and are cancelled on dispose.
+  ///
+  /// keepAlive: `beginSession`/`loadExecution` run on the readiness route, then
+  /// the app navigates to the practice runner. An autoDispose provider would be
+  /// torn down in the gap between the two routes, dropping the loaded session and
+  /// bouncing the runner back to its standalone demo state. [reset] returns it to
+  /// the empty state after a session ends.
   PracticeProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'practiceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -50,11 +68,17 @@ final class PracticeProvider
   }
 }
 
-String _$practiceHash() => r'20ecb80fdb67471520d1b6ffc7ae71f01f42deed';
+String _$practiceHash() => r'62cfedacab11181f5b858bb93d79afcf61b4f709';
 
 /// Drives the whole practice flow: the set overview → exercise loop → rest, and
 /// the cardio overview → continuous / structured runners. Every timer lives
 /// here so they survive rebuilds and sheet opens, and are cancelled on dispose.
+///
+/// keepAlive: `beginSession`/`loadExecution` run on the readiness route, then
+/// the app navigates to the practice runner. An autoDispose provider would be
+/// torn down in the gap between the two routes, dropping the loaded session and
+/// bouncing the runner back to its standalone demo state. [reset] returns it to
+/// the empty state after a session ends.
 
 abstract class _$Practice extends $Notifier<PracticeState> {
   PracticeState build();

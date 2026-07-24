@@ -21,7 +21,8 @@ void main() {
         ...plan.heroMetrics.map((m) => m.caption),
         ...plan.timeline.expand((p) => [p.weekRange, p.focus, p.detail]),
         ...plan.inferredNeeds,
-        plan.nutrition.body, plan.nutrition.healthNote,
+        // The mock always supplies nutrition; the API may omit it.
+        if (plan.nutrition case final n?) ...[n.body, n.healthNote],
         ...plan.sessions.expand((s) => [
           s.name,
           ...s.exercises.map((e) => e.name),
